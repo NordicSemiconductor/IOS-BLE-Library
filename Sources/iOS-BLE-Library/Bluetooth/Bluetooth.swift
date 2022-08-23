@@ -109,11 +109,11 @@ extension Bluetooth {
     
     // MARK: Connect
     
-    func connect<T: BluetoothDevice>(to device: T) async throws {
+    public func connect<T: BluetoothDevice>(to device: T) async throws {
         try await connect(toDeviceWithUUID: device.uuidString)
     }
     
-    func connect(toDeviceWithUUID deviceUUID: String) async throws {
+    public func connect(toDeviceWithUUID deviceUUID: String) async throws {
         guard let uuid = UUID(uuidString: deviceUUID),
               let peripheral = bluetoothManager.retrievePeripherals(withIdentifiers: [uuid]).first else {
             throw BluetoothError.cantRetrievePeripheral
