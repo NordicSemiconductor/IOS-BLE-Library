@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "ios-common-libraries",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NordicPlayground/IOS-Common-Libraries",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3f8b83086b1370853f04c808651cc8b8248d38c0"
+      }
+    }
+  ],
+  "version" : 2
+}
