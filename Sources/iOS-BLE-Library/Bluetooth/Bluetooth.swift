@@ -25,7 +25,7 @@ public final class Bluetooth: NSObject {
     
     // MARK: - ScannerFilter
     
-    public enum ScannerFilter: Equatable {
+    public enum ScannerFilter: Hashable, Equatable {
         case none
         case matchingServiceUUID(_ uuid: CBUUID)
         case connectable
