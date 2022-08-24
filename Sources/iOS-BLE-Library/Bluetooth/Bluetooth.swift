@@ -23,18 +23,18 @@ public final class Bluetooth: NSObject {
         case notificationChange(_ continuation: CheckedContinuation<Bool, Error>)
     }
     
-    // MARK: - ScanCondition
+    // MARK: - ScannerFilter
     
-    public enum ScanCondition: Equatable {
-        case matchingAll
+    public enum ScannerFilter: Equatable {
+        case none
         case matchingServiceUUID(_ uuid: CBUUID)
         case connectable
         
-        internal func scanServices() -> [CBUUID] {
+        internal func filterServices() -> [CBUUID] {
             switch self {
             case .matchingServiceUUID(let uuid):
                 return [uuid]
-            case .connectable, .matchingAll:
+            case .none, .connectable:
                 return []
             }
         }
@@ -54,7 +54,7 @@ public final class Bluetooth: NSObject {
     private lazy var bluetoothManager = CBCentralManager(delegate: self, queue: nil)
     
     @Published internal var managerState: CBManagerState = .unknown
-    @Published internal var conditions: [ScanCondition] = [.matchingAll]
+    @Published internal var filters: [ScannerFilter] = [.none]
     @Published internal var shouldScan = false
     
     internal var continuations = [String: AwaitContinuation]()
@@ -85,15 +85,15 @@ extension Bluetooth {
         shouldScan.toggle()
     }
     
-    public func scan(with conditions: [ScanCondition] = [.matchingAll]) -> AnyPublisher<ScanData, Never> {
-        self.conditions = conditions
+    public func scan(with filters: [ScannerFilter] = [.none]) -> AnyPublisher<ScanData, Never> {
+        self.filters = filters
         
         return turnOnBluetoothRadio()
             .filter { $0 == .poweredOn }
-            .combineLatest($shouldScan, $conditions)
+            .combineLatest($shouldScan, $filters)
             .flatMap { (_, isScanning, scanConditions) -> PassthroughSubject<ScanData, Never> in
                 if isScanning {
-                    let scanServices = scanConditions.flatMap { $0.scanServices() }
+                    let scanServices = scanConditions.flatMap { $0.filterServices() }
                     self.bluetoothManager.scanForPeripherals(withServices: scanServices,
                                                              options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
                     self.isScanning = true

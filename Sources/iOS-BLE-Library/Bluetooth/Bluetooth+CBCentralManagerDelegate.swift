@@ -15,7 +15,7 @@ extension Bluetooth: CBCentralManagerDelegate {
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any], rssi RSSI: NSNumber) {
         let isConnectable = (advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue
-        if conditions.contains(where: { $0 == .connectable }) {
+        if filters.contains(where: { $0 == .connectable }) {
             if isConnectable ?? false {
                 devicePublisher.send((peripheral, advertisementData, RSSI))
             }
