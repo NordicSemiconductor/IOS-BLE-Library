@@ -61,7 +61,6 @@ public final class Bluetooth: NSObject {
     internal var connectedStreams = [String: [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]]()
     
     private var connectedPeripherals = [String: CBPeripheral]()
-    private var cancellable = Set<AnyCancellable>()
 }
 
 // MARK: - API
@@ -107,6 +106,18 @@ extension Bluetooth {
             .eraseToAnyPublisher()
     }
     
+    public func scan(forDeviceWithUUID uuid: CBUUID) async throws -> CBPeripheral? {
+        defer {
+            bluetoothManager.stopScan()
+        }
+        
+        for try await newDevice in scan().timeout(.seconds(5), scheduler: DispatchQueue.main).values {
+            guard newDevice.peripheral.uuidString == uuid.uuidString else { continue }
+            return newDevice.peripheral
+        }
+        return nil
+    }
+    
     // MARK: Connect
     
     public func connect<T: BluetoothDevice>(to device: T) async throws {
@@ -114,8 +125,16 @@ extension Bluetooth {
     }
     
     public func connect(toDeviceWithUUID deviceUUID: String) async throws {
-        guard let uuid = UUID(uuidString: deviceUUID),
-              let peripheral = bluetoothManager.retrievePeripherals(withIdentifiers: [uuid]).first else {
+        guard let uuid = UUID(uuidString: deviceUUID) else {
+            throw BluetoothError.cantRetrievePeripheral
+        }
+        
+        var peripheral = bluetoothManager.retrievePeripherals(withIdentifiers: [uuid]).first
+        if peripheral == nil {
+            peripheral = try await scan(forDeviceWithUUID: CBUUID(string: deviceUUID))
+        }
+        
+        guard let peripheral = peripheral else {
             throw BluetoothError.cantRetrievePeripheral
         }
         
