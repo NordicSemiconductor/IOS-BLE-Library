@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - BluetoothError
 
-public enum BluetoothError: LocalizedError {
+public enum BluetoothError: LocalizedError, Equatable {
     
     // MARK: Error(s)
     
