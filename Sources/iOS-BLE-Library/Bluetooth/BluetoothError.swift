@@ -18,6 +18,10 @@ public enum BluetoothError: LocalizedError {
     case cantRetrievePeripheral, cantRetrieveService(_ uuid: String), cantRetrieveCharacteristic(_ uuid: String)
     case expectedServiceNotFound, noCharacteristicsForService, noServicesForPeripheral
     
+    /**
+     This is returned when we detect `CBError` with code 15, which means 'Insufficient Encryption'. Usually this means Pairing is required to proceed reading Characteristics / Toggling Notifications and so on, hence why this specific case is returned.
+     */
+    case pairingRequired
     case operationInProgress, coreBluetoothError(description: String)
     
     // MARK: Descriptpion
@@ -47,6 +51,8 @@ public enum BluetoothError: LocalizedError {
             return "CBPeripheral does not declare any Service(s)."
         case .noCharacteristicsForService:
             return "CBPeripheral does not declare any Characteristic(s)."
+        case .pairingRequired:
+            return "Insufficient Encryption. Do you need to pair with this Device first?"
         case .operationInProgress:
             return "An operation with this CBPeripheral is already in progress."
         case .coreBluetoothError(description: let description):

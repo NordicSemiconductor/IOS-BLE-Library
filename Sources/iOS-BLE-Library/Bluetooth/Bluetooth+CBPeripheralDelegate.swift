@@ -57,6 +57,13 @@ extension Bluetooth: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         logger.debug("[Callback] peripheral(peripheral: \(peripheral), didUpdateValueFor: \(characteristic), error: \(error.debugDescription))")
         if let error = error {
+            guard (error as NSError).code != 15 else {
+                connectedStreams[peripheral.identifier.uuidString]?.forEach {
+                    $0.finish(throwing: BluetoothError.pairingRequired)
+                }
+                return
+            }
+            
             let rethrow = BluetoothError.coreBluetoothError(description: error.localizedDescription)
             connectedStreams[peripheral.identifier.uuidString]?.forEach {
                 $0.finish(throwing: rethrow)
