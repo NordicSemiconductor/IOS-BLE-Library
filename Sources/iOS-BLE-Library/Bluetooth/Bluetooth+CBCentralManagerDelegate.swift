@@ -43,6 +43,7 @@ extension Bluetooth: CBCentralManagerDelegate {
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         logger.debug("[Callback] centralManager(central: \(central), didFailToConnect: \(peripheral), error: \(error.debugDescription))")
+        // Can only happen when trying to connect.
         guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         if let error = error {
             let rethrow = BluetoothError.failedToConnect(description: error.localizedDescription)
@@ -56,17 +57,18 @@ extension Bluetooth: CBCentralManagerDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         logger.debug("[Callback] centralManager(central: \(central), didDisconnectPeripheral: \(peripheral), error: \(error.debugDescription))")
-        guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         if let error = error {
             let rethrow = BluetoothError(error)
-            continuation.resume(throwing: rethrow)
+            // Can happen at any time.
+            reportContinuationError(rethrow, for: peripheral)
             reportConnectedStreamError(rethrow, for: peripheral)
         } else {
             // Success.
             connectedStreams[peripheral.identifier.uuidString]?.forEach {
                 $0.finish()
             }
-            continuation.resume(returning: peripheral)
+            guard case .connection(let ccontinuation)? = continuations[peripheral.identifier.uuidString] else { return }
+            ccontinuation.resume(returning: peripheral)
         }
     }
 }
