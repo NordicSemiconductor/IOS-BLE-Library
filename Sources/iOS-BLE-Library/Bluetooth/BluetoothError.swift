@@ -24,6 +24,17 @@ public enum BluetoothError: LocalizedError, Equatable {
     case pairingRequired
     case operationInProgress, coreBluetoothError(description: String)
     
+    // MARK: Init
+    
+    init(_ error: Error) {
+        switch (error as NSError).code {
+        case 15:
+            self = .pairingRequired
+        default:
+            self = .coreBluetoothError(description: error.localizedDescription)
+        }
+    }
+    
     // MARK: Descriptpion
     
     public var errorDescription: String? { localizedDescription }

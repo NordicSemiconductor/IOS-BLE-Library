@@ -148,9 +148,9 @@ extension Bluetooth {
             connectedPeripherals[deviceUUID] = connectedPeripheral
             continuations.removeValue(forKey: deviceUUID)
         }
-        catch {
+        catch let error as BluetoothError {
             continuations.removeValue(forKey: deviceUUID)
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+            throw error
         }
     }
     
@@ -177,9 +177,9 @@ extension Bluetooth {
             continuations.removeValue(forKey: deviceUUID)
             return peripheralWithServices.services ?? []
         }
-        catch {
+        catch let error as BluetoothError {
             continuations.removeValue(forKey: deviceUUID)
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+            throw error
         }
     }
     
@@ -207,8 +207,8 @@ extension Bluetooth {
             }
             return updatedService.characteristics
         }
-        catch {
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+        catch let error as BluetoothError {
+            throw error
         }
     }
     
@@ -270,8 +270,8 @@ extension Bluetooth {
             }
             return readData
         }
-        catch {
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+        catch let error as BluetoothError {
+            throw error
         }
     }
     
@@ -312,8 +312,8 @@ extension Bluetooth {
             }
             return writeData
         }
-        catch {
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+        catch let error as BluetoothError {
+            throw error
         }
     }
     
@@ -352,8 +352,8 @@ extension Bluetooth {
             }
             return isNotifying
         }
-        catch {
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+        catch let error as BluetoothError {
+            throw error
         }
     }
     
@@ -378,9 +378,9 @@ extension Bluetooth {
             connectedPeripherals.removeValue(forKey: disconnectedPeripheral.identifier.uuidString)
             continuations.removeValue(forKey: deviceUUID)
         }
-        catch {
+        catch let error as BluetoothError {
             continuations.removeValue(forKey: deviceUUID)
-            throw BluetoothError.coreBluetoothError(description: error.localizedDescription)
+            throw error
         }
     }
 }
