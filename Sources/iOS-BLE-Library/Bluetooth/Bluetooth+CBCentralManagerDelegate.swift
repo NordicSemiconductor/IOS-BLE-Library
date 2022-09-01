@@ -45,7 +45,7 @@ extension Bluetooth: CBCentralManagerDelegate {
         logger.debug("[Callback] centralManager(central: \(central), didFailToConnect: \(peripheral), error: \(error.debugDescription))")
         guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         if let error = error {
-            let rethrow = BluetoothError(error)
+            let rethrow = BluetoothError.failedToConnect(description: error.localizedDescription)
             continuation.resume(throwing: rethrow)
             reportConnectedStreamError(rethrow, for: peripheral)
         } else {

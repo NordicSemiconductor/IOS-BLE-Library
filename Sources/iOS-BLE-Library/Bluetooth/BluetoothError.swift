@@ -14,7 +14,7 @@ public enum BluetoothError: LocalizedError, Equatable {
     // MARK: Error(s)
     
     case bluetoothPoweredOff
-    case failedToConnect, failedToDiscoverCharacteristics, failedToDiscoverServices
+    case failedToConnect(description: String), failedToDiscoverCharacteristics, failedToDiscoverServices
     case cantRetrievePeripheral, cantRetrieveService(_ uuid: String), cantRetrieveCharacteristic(_ uuid: String)
     case expectedServiceNotFound, noCharacteristicsForService, noServicesForPeripheral
     
@@ -44,8 +44,8 @@ public enum BluetoothError: LocalizedError, Equatable {
         switch self {
         case .bluetoothPoweredOff:
             return "Bluetooth is Powered Off."
-        case .failedToConnect:
-            return "Failed to connect to CBPeripheral."
+        case .failedToConnect(let description):
+            return "Failed to connect to CBPeripheral: \(description)."
         case .cantRetrievePeripheral:
             return "Can't retrieve CBPeripheral."
         case .cantRetrieveService(let name):
