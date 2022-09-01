@@ -26,8 +26,9 @@ internal extension Bluetooth {
     }
     
     func reportConnectedStreamError<T: BluetoothDevice>(_ bluetoothError: BluetoothError, for device: T) {
-        connectedStreams[device.uuidString]?.forEach {
+        dataStreams[device.uuidString]?.forEach {
             $0.finish(throwing: bluetoothError)
         }
+        dataStreams[device.uuidString]?.removeAll()
     }
 }

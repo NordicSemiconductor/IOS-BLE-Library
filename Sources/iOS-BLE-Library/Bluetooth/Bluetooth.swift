@@ -59,7 +59,7 @@ public final class Bluetooth: NSObject {
     @Published internal var shouldScan = false
     
     internal var continuations = [String: AwaitContinuation]()
-    internal var connectedStreams = [String: [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]]()
+    internal var dataStreams = [String: [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]]()
     
     private var connectedPeripherals = [String: CBPeripheral]()
 }
@@ -235,7 +235,7 @@ extension Bluetooth {
                                          inServiceWithUUIDString serviceUUIDString: String,
                                          device: T) -> AsyncCharacteristicData {
         let stream = AsyncThrowingStream<AsyncStreamValue, Error> { continuation in
-            connectedStreams[device.uuidString]?.append(continuation)
+            dataStreams[device.uuidString]?.append(continuation)
         }
         return AsyncCharacteristicData(serviceUUID: serviceUUIDString,
                                        characteristicUUID: characteristicUUIDString,

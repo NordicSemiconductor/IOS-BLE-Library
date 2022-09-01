@@ -59,7 +59,7 @@ extension Bluetooth: CBPeripheralDelegate {
         if let error = error {
             reportConnectedStreamError(BluetoothError(error), for: peripheral)
         } else {
-            connectedStreams[peripheral.identifier.uuidString]?.forEach {
+            dataStreams[peripheral.identifier.uuidString]?.forEach {
                 $0.yield((characteristic, characteristic.value))
             }
         }
