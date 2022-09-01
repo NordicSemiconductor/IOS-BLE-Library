@@ -18,6 +18,7 @@ public final class Bluetooth: NSObject {
     
     enum AwaitContinuation {
         case connection(_ continuation: CheckedContinuation<CBPeripheral, Error>)
+        case serviceDiscovery(_ continuation: CheckedContinuation<CBPeripheral, Error>)
         case updatedService(_ continuation: CheckedContinuation<CBService, Error>)
         case attribute(_ continuation: CheckedContinuation<Data?, Error>)
         case notificationChange(_ continuation: CheckedContinuation<Bool, Error>)
@@ -169,7 +170,7 @@ extension Bluetooth {
         
         do {
             let peripheralWithServices = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CBPeripheral, Error>) -> Void in
-                continuations[deviceUUID] = .connection(continuation)
+                continuations[deviceUUID] = .serviceDiscovery(continuation)
                 let cbUUIDServices = serviceUUIDs.map { CBUUID(string: $0) }
                 peripheral.discoverServices(cbUUIDServices)
             }

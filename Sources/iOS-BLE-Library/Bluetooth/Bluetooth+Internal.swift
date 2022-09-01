@@ -14,6 +14,8 @@ internal extension Bluetooth {
         switch pendingContinuation {
         case .connection(let connection):
             connection.resume(throwing: bluetoothError)
+        case .serviceDiscovery(let discovery):
+            discovery.resume(throwing: bluetoothError)
         case .updatedService(let service):
             service.resume(throwing: bluetoothError)
         case .attribute(let att):

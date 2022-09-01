@@ -14,7 +14,7 @@ extension Bluetooth: CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         logger.debug("[Callback] peripheral(peripheral: \(peripheral), didDiscoverServices error: \(error.debugDescription))")
-        guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
+        guard case .serviceDiscovery(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         if let error = error {
             continuation.resume(throwing: BluetoothError(error))
         } else {
