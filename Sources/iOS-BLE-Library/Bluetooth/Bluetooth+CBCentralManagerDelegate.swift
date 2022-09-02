@@ -48,7 +48,7 @@ extension Bluetooth: CBCentralManagerDelegate {
         if let error = error {
             let rethrow = BluetoothError.failedToConnect(description: error.localizedDescription)
             continuation.resume(throwing: rethrow)
-            reportConnectedStreamError(rethrow, for: peripheral)
+            reportDataStreamError(rethrow, for: peripheral)
         } else {
             // Success.
             continuation.resume(returning: peripheral)
@@ -58,10 +58,18 @@ extension Bluetooth: CBCentralManagerDelegate {
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         logger.debug("[Callback] centralManager(central: \(central), didDisconnectPeripheral: \(peripheral), error: \(error.debugDescription))")
         if let error = error {
-            let rethrow = BluetoothError(error)
-            // Can happen at any time.
-            reportContinuationError(rethrow, for: peripheral)
-            reportConnectedStreamError(rethrow, for: peripheral)
+            // If there's a Connection Continuation, it's very likely this is a user-requested disconnection.
+            // Otherwise it's unexpected and is likely 'an error'.
+            guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else {
+                let error = BluetoothError.unexpectedDeviceDisconnection(description: error.localizedDescription)
+                reportContinuationError(error, for: peripheral)
+                reportDataStreamError(error, for: peripheral)
+                return
+            }
+            
+            let error = BluetoothError(error)
+            continuation.resume(throwing: error)
+            reportDataStreamError(error, for: peripheral)
         } else {
             // Success.
             dataStreams[peripheral.identifier.uuidString]?.forEach {

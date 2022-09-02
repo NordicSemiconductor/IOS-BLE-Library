@@ -22,7 +22,8 @@ public enum BluetoothError: LocalizedError, Equatable {
      This is returned when we detect `CBError` with code 15, which means 'Insufficient Encryption'. Usually this means Pairing is required to proceed reading Characteristics / Toggling Notifications and so on, hence why this specific case is returned.
      */
     case pairingRequired
-    case operationInProgress, coreBluetoothError(description: String)
+    case operationInProgress
+    case unexpectedDeviceDisconnection(description: String), coreBluetoothError(description: String)
     
     // MARK: Init
     
@@ -66,6 +67,8 @@ public enum BluetoothError: LocalizedError, Equatable {
             return "Insufficient Encryption. Do you need to pair with this Device first?"
         case .operationInProgress:
             return "An operation with this CBPeripheral is already in progress."
+        case .unexpectedDeviceDisconnection(description: let description):
+            return "Device Disconnected Unexpectedly. Reason: \(description)."
         case .coreBluetoothError(description: let description):
             return description
         }

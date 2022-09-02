@@ -57,7 +57,7 @@ extension Bluetooth: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         logger.debug("[Callback] peripheral(peripheral: \(peripheral), didUpdateValueFor: \(characteristic), error: \(error.debugDescription))")
         if let error = error {
-            reportConnectedStreamError(BluetoothError(error), for: peripheral)
+            reportDataStreamError(BluetoothError(error), for: peripheral)
         } else {
             dataStreams[peripheral.identifier.uuidString]?.forEach {
                 $0.yield((characteristic, characteristic.value))
