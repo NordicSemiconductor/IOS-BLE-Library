@@ -2,7 +2,7 @@
 
 # iOS-BLE-Library
 
-![Bluetooth Logo](https://favpng.com/png_view/bluetooth-logo-vector-logo-bluetooth-special-interest-group-bluetooth-low-energy-wireless-png/60TWQnnZ)
+![Bluetooth Logo](https://img2.freepng.es/20180203/rrw/kisspng-bluetooth-low-energy-wireless-speaker-headset-bluetooth-png-transparent-picture-5a756c996d8f82.9161960415176449534488.jpg)
 
 An in-development Bluetooth Low Energy Library by Nordic Semiconductor to interact with the ![CoreBluetooth API](https://developer.apple.com/documentation/corebluetooth), which is not complicated, but requires writing a similar amount of boilerplate around it to interact with it from the app's logic or UI. So, instead of copying / pasting the same code and adapting it for each particular app's use, we're striving to build a modern API that we can use across all of our apps.
 
