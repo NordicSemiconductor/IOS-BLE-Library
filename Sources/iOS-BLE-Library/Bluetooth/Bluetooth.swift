@@ -85,6 +85,16 @@ extension Bluetooth {
         shouldScan.toggle()
     }
     
+    public func stopScanner() async {
+        guard isScanning else { return }
+        
+        // Toggle Scanner, which is not immediate.
+        toggleScanner()
+        // Wait for first value change in 'isScanning' to return false, meaning Scanning has stopped.
+        _ = await $isScanning.values.first(where: { !$0 })
+        assert(!isScanning)
+    }
+    
     public func scan(with filters: [ScannerFilter] = [.none]) -> AnyPublisher<ScanData, Never> {
         self.filters = filters
         
