@@ -25,6 +25,8 @@ public enum BluetoothError: LocalizedError, Equatable {
     case operationInProgress
     case unexpectedDeviceDisconnection(description: String), coreBluetoothError(description: String)
     
+    case timeout
+    
     // MARK: Init
     
     init(_ error: Error) {
@@ -71,6 +73,8 @@ public enum BluetoothError: LocalizedError, Equatable {
             return "Device Disconnected Unexpectedly. Reason: \(description)."
         case .coreBluetoothError(description: let description):
             return description
+        case .timeout:
+            return "Timeout Error"
         }
     }
 }

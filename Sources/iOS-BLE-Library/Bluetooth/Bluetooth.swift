@@ -50,7 +50,7 @@ public final class Bluetooth: NSObject {
     
     // MARK: - Internal Properties
     
-    internal lazy var logger = Logger(subsystem: "com.nordicsemi.nRF-BLe-Library",
+    internal lazy var logger = L(subsystem: "com.nordicsemi.nRF-BLe-Library",
                                       category: String(describing: Self.self))
     private lazy var bluetoothManager = CBCentralManager(delegate: self, queue: nil)
     
@@ -62,6 +62,8 @@ public final class Bluetooth: NSObject {
     internal var dataStreams = [String: [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]]()
     
     private var connectedPeripherals = [String: CBPeripheral]()
+    
+    private var cancelables = Set<AnyCancellable>()
 }
 
 // MARK: - API
@@ -85,6 +87,26 @@ extension Bluetooth {
         shouldScan.toggle()
     }
     
+    // MARK: Stop Scanner
+    public func stopScanner() -> Future<Void, Never> {
+        guard isScanning else {
+            return Future {
+                $0(.success(()))
+            }
+        }
+        
+        return Future { promise in
+            self.shouldScan = false
+            self.$isScanning
+                .first(where: { !$0 })
+                .sink { _ in
+                    promise(.success(()))
+                }
+                .store(in: &self.cancelables)
+        }
+    }
+    
+    @available(iOS 15.0, *)
     public func stopScanner() async {
         guard isScanning else { return }
         
@@ -95,6 +117,7 @@ extension Bluetooth {
         assert(!isScanning)
     }
     
+    // MARK: Start Scan
     public func scan(with filters: [ScannerFilter] = [.none]) -> AnyPublisher<ScanData, Never> {
         self.filters = filters
         
@@ -117,6 +140,23 @@ extension Bluetooth {
             .eraseToAnyPublisher()
     }
     
+    public func scan(forDeviceWithUUID uuid: CBUUID) -> Future<CBPeripheral?, Never> {
+        Future { promise in
+            self.scan()
+                .first(where: { $0.peripheral.uuidString == uuid.uuidString } )
+                .map { $0.peripheral }
+                .timeout(.seconds(5), scheduler: DispatchQueue.main)
+                .sink { completion in
+                    promise(.success(nil))
+                } receiveValue: { peripheral in
+                    promise(.success(peripheral))
+                }
+            // TODO: Does it lead to memory leaks?
+                .store(in: &self.cancelables)
+        }
+    }
+    
+    @available(iOS 15.0, *)
     public func scan(forDeviceWithUUID uuid: CBUUID) async throws -> CBPeripheral? {
         defer {
             bluetoothManager.stopScan()
@@ -131,10 +171,36 @@ extension Bluetooth {
     
     // MARK: Connect
     
+    public func connect(toDeviceWithUUID deviceUUID: String) -> Future<CBPeripheral, Error> {
+        guard let uuid = UUID(uuidString: deviceUUID) else {
+            return Future {
+                $0(.failure(BluetoothError.cantRetrievePeripheral))
+            }
+        }
+        
+        let peripheral = bluetoothManager.retrievePeripherals(withIdentifiers: [uuid]).first
+        
+        if let peripheral {
+            return Future {
+                $0(.success(peripheral))
+            }
+        } else {
+            return Future { promise in
+                self.scan(forDeviceWithUUID: CBUUID(string: deviceUUID))
+                    .sink { p in
+                        promise(.success(p!))
+                    }
+                    .store(in: &self.cancelables)
+            }
+        }
+    }
+    
+    @available(iOS 15.0, *)
     public func connect<T: BluetoothDevice>(to device: T) async throws {
         try await connect(toDeviceWithUUID: device.uuidString)
     }
     
+    @available(iOS 15.0, *)
     public func connect(toDeviceWithUUID deviceUUID: String) async throws {
         guard let uuid = UUID(uuidString: deviceUUID) else {
             throw BluetoothError.cantRetrievePeripheral

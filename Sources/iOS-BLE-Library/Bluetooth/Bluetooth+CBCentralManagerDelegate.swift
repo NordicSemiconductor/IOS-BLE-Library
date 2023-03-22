@@ -25,9 +25,9 @@ extension Bluetooth: CBCentralManagerDelegate {
     }
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        logger.debug("[Callback] centralManagerDidUpdateState(central: \(central))")
+        logger.d("[Callback] centralManagerDidUpdateState(central: \(central))")
         managerState = central.state
-        logger.info("Bluetooth changed state: \(central.state)")
+        logger.i("Bluetooth changed state: \(central.state)")
         
         if central.state != .poweredOn {
             shouldScan = false
@@ -35,14 +35,14 @@ extension Bluetooth: CBCentralManagerDelegate {
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        logger.debug("[Callback] centralManager(central: \(central), didConnect: \(peripheral))")
+        logger.d("[Callback] centralManager(central: \(central), didConnect: \(peripheral))")
         dataStreams[peripheral.identifier.uuidString] = [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]()
         guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         continuation.resume(returning: peripheral)
     }
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        logger.debug("[Callback] centralManager(central: \(central), didFailToConnect: \(peripheral), error: \(error.debugDescription))")
+        logger.d("[Callback] centralManager(central: \(central), didFailToConnect: \(peripheral), error: \(error.debugDescription))")
         // Can only happen when trying to connect.
         guard case .connection(let continuation)? = continuations[peripheral.identifier.uuidString] else { return }
         if let error = error {
@@ -56,7 +56,7 @@ extension Bluetooth: CBCentralManagerDelegate {
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        logger.debug("[Callback] centralManager(central: \(central), didDisconnectPeripheral: \(peripheral), error: \(error.debugDescription))")
+        logger.d("[Callback] centralManager(central: \(central), didDisconnectPeripheral: \(peripheral), error: \(error.debugDescription))")
         if let error = error {
             // If there's a Connection Continuation, it's very likely this is a user-requested disconnection.
             // Otherwise it's unexpected and is likely 'an error'.

@@ -8,6 +8,15 @@
         "branch" : "feature/reduce_pckage_version",
         "revision" : "5a5023a3ef91f0d7842bf5dd64e6523ad4406052"
       }
+    },
+    {
+      "identity" : "ios-corebluetooth-mock",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
+      "state" : {
+        "revision" : "4be1df9b8573b81548dc620a40e8b511057991d2",
+        "version" : "0.16.1"
+      }
     }
   ],
   "version" : 2
