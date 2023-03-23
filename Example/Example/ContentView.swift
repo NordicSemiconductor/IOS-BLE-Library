@@ -1,25 +1,15 @@
 //
 //  ContentView.swift
-//  Example
+//  Example-Combine
 //
-//  Created by Nick Kibysh on 09/01/2023.
+//  Created by Nick Kibysh on 23/03/2023.
 //
 
 import SwiftUI
-import iOS_BLE_Library
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-            Button("Start Scan") {
-                
-            }
-        }
-        .padding()
+        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 

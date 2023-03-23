@@ -17,10 +17,10 @@ extension Bluetooth: CBCentralManagerDelegate {
         let isConnectable = (advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue
         if filters.contains(where: { $0 == .connectable }) {
             if isConnectable ?? false {
-                devicePublisher.send((peripheral, advertisementData, RSSI))
+                devicePublisher.send(ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI))
             }
         } else {
-            devicePublisher.send((peripheral, advertisementData, RSSI))
+            devicePublisher.send(ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI))
         }
     }
     

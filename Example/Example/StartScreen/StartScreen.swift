@@ -9,17 +9,30 @@ import SwiftUI
 import iOS_Common_Libraries
 
 struct StartScreen: View {
-    @StateObject var viewModel = ViewModel()
+    @StateObject var viewModel = CombineViewModel()
     
     var body: some View {
         NavigationView {
-            Button("Start Scan") {
-                Task {
-                    viewModel.startScan()
-                }
+            VStack {
+                bluetoothState
+                Divider()
+                Spacer()
             }
         }
     }
+    
+    @ViewBuilder
+    var bluetoothState: some View {
+        HStack {
+            Text("Bluetooth State:")
+            Spacer()
+            Text(viewModel.state.rawValue)
+                .foregroundColor(.green)
+        }
+        .padding()
+    }
+    
+    
 }
 
 struct StartScreen_Previews: PreviewProvider {

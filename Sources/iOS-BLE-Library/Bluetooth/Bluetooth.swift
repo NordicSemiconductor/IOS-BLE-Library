@@ -45,7 +45,6 @@ public final class Bluetooth: NSObject {
     
     @Published public private(set) var isScanning = false
     
-    public typealias ScanData = (peripheral: CBPeripheral, advertisementData: [String: Any], RSSI: NSNumber)
     public private(set) lazy var devicePublisher = PassthroughSubject<ScanData, Never>()
     
     // MARK: - Internal Properties
