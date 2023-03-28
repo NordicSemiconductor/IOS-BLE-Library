@@ -11,30 +11,25 @@
 		01116E43296C41EE001A693B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01116E42296C41EE001A693B /* Assets.xcassets */; };
 		01116E47296C41EE001A693B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01116E46296C41EE001A693B /* Preview Assets.xcassets */; };
 		01116E50296C43C6001A693B /* iOS-BLE-Library in Frameworks */ = {isa = PBXBuildFile; productRef = 01116E4F296C43C6001A693B /* iOS-BLE-Library */; };
-		012BFD8929CB4F800050F23F /* Example_Async_AwaitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012BFD8829CB4F800050F23F /* Example_Async_AwaitApp.swift */; };
-		012BFD8B29CB4F800050F23F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012BFD8A29CB4F800050F23F /* ContentView.swift */; };
-		012BFD8D29CB4F810050F23F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 012BFD8C29CB4F810050F23F /* Assets.xcassets */; };
-		012BFD9029CB4F810050F23F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 012BFD8F29CB4F810050F23F /* Preview Assets.xcassets */; };
 		012BFD9629CB50980050F23F /* ReadableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012BFD9529CB50980050F23F /* ReadableError.swift */; };
 		012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */; };
 		012D4B8729CC713B00839213 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8629CC713B00839213 /* ContentView.swift */; };
 		012D4B8D29CCA17700839213 /* FileStartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* FileStartScreen+ViewModel.swift */; };
-		012D4B8E29CCA17800839213 /* FileStartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* FileStartScreen+ViewModel.swift */; };
 		012D4B9329CCB48000839213 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResult.swift */; };
-		012D4B9429CCB48000839213 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResult.swift */; };
 		012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */ = {isa = PBXBuildFile; productRef = 012D4B9729CCB67200839213 /* CoreBluetoothMock */; };
 		01500F8D297AA98200504009 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01500F8C297AA98200504009 /* StartScreen.swift */; };
 		01500F8F297AA99500504009 /* StartScreen+CombineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01500F8E297AA99500504009 /* StartScreen+CombineViewModel.swift */; };
+		01BFF23829CDA2C700536696 /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23729CDA2C700536696 /* Mocker.swift */; };
+		01BFF23A29CDA36900536696 /* Aliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23929CDA36900536696 /* Aliases.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		01116E3B296C41ED001A693B /* Example-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01116E3B296C41ED001A693B /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01116E3E296C41ED001A693B /* ExampleAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAppDelegate.swift; sourceTree = "<group>"; };
 		01116E42296C41EE001A693B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01116E44296C41EE001A693B /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		01116E46296C41EE001A693B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		01116E4D296C4203001A693B /* IOS-BLE-Library */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "IOS-BLE-Library"; path = ..; sourceTree = "<group>"; };
-		012BFD8629CB4F800050F23F /* Example-Async-Await.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-Async-Await.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		012BFD8829CB4F800050F23F /* Example_Async_AwaitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Async_AwaitApp.swift; sourceTree = "<group>"; };
 		012BFD8A29CB4F800050F23F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		012BFD8C29CB4F810050F23F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -47,6 +42,8 @@
 		012D4B9229CCB48000839213 /* ScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResult.swift; sourceTree = "<group>"; };
 		01500F8C297AA98200504009 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		01500F8E297AA99500504009 /* StartScreen+CombineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+CombineViewModel.swift"; sourceTree = "<group>"; };
+		01BFF23729CDA2C700536696 /* Mocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
+		01BFF23929CDA36900536696 /* Aliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aliases.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,13 +53,6 @@
 			files = (
 				012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */,
 				01116E50296C43C6001A693B /* iOS-BLE-Library in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		012BFD8329CB4F800050F23F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,8 +74,7 @@
 		01116E3C296C41ED001A693B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				01116E3B296C41ED001A693B /* Example-Combine.app */,
-				012BFD8629CB4F800050F23F /* Example-Async-Await.app */,
+				01116E3B296C41ED001A693B /* Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +131,8 @@
 			isa = PBXGroup;
 			children = (
 				012BFD9529CB50980050F23F /* ReadableError.swift */,
+				01BFF23729CDA2C700536696 /* Mocker.swift */,
+				01BFF23929CDA36900536696 /* Aliases.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -169,9 +160,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		01116E3A296C41ED001A693B /* Example-Combine */ = {
+		01116E3A296C41ED001A693B /* Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01116E4A296C41EE001A693B /* Build configuration list for PBXNativeTarget "Example-Combine" */;
+			buildConfigurationList = 01116E4A296C41EE001A693B /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
 				01116E37296C41ED001A693B /* Sources */,
 				01116E38296C41ED001A693B /* Frameworks */,
@@ -181,30 +172,13 @@
 			);
 			dependencies = (
 			);
-			name = "Example-Combine";
+			name = Example;
 			packageProductDependencies = (
 				01116E4F296C43C6001A693B /* iOS-BLE-Library */,
 				012D4B9729CCB67200839213 /* CoreBluetoothMock */,
 			);
 			productName = Example;
-			productReference = 01116E3B296C41ED001A693B /* Example-Combine.app */;
-			productType = "com.apple.product-type.application";
-		};
-		012BFD8529CB4F800050F23F /* Example-Async-Await */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 012BFD9329CB4F810050F23F /* Build configuration list for PBXNativeTarget "Example-Async-Await" */;
-			buildPhases = (
-				012BFD8229CB4F800050F23F /* Sources */,
-				012BFD8329CB4F800050F23F /* Frameworks */,
-				012BFD8429CB4F800050F23F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Example-Async-Await";
-			productName = "Example-Async-Await";
-			productReference = 012BFD8629CB4F800050F23F /* Example-Async-Await.app */;
+			productReference = 01116E3B296C41ED001A693B /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -218,9 +192,6 @@
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					01116E3A296C41ED001A693B = {
-						CreatedOnToolsVersion = 14.2;
-					};
-					012BFD8529CB4F800050F23F = {
 						CreatedOnToolsVersion = 14.2;
 					};
 				};
@@ -241,8 +212,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				01116E3A296C41ED001A693B /* Example-Combine */,
-				012BFD8529CB4F800050F23F /* Example-Async-Await */,
+				01116E3A296C41ED001A693B /* Example */,
 			);
 		};
 /* End PBXProject section */
@@ -257,15 +227,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		012BFD8429CB4F800050F23F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				012BFD9029CB4F810050F23F /* Preview Assets.xcassets in Resources */,
-				012BFD8D29CB4F810050F23F /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -273,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01BFF23A29CDA36900536696 /* Aliases.swift in Sources */,
 				01500F8D297AA98200504009 /* StartScreen.swift in Sources */,
 				01500F8F297AA99500504009 /* StartScreen+CombineViewModel.swift in Sources */,
 				012D4B8D29CCA17700839213 /* FileStartScreen+ViewModel.swift in Sources */,
@@ -280,18 +242,8 @@
 				012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */,
 				012BFD9629CB50980050F23F /* ReadableError.swift in Sources */,
 				012D4B9329CCB48000839213 /* ScanResult.swift in Sources */,
+				01BFF23829CDA2C700536696 /* Mocker.swift in Sources */,
 				01116E3F296C41ED001A693B /* ExampleAppDelegate.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		012BFD8229CB4F800050F23F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				012D4B8E29CCA17800839213 /* FileStartScreen+ViewModel.swift in Sources */,
-				012BFD8B29CB4F800050F23F /* ContentView.swift in Sources */,
-				012D4B9429CCB48000839213 /* ScanResult.swift in Sources */,
-				012BFD8929CB4F800050F23F /* Example_Async_AwaitApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,69 +445,6 @@
 			};
 			name = Release;
 		};
-		012BFD9129CB4F810050F23F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Example-Async-Await/Preview Content\"";
-				DEVELOPMENT_TEAM = P3R8YQEV4L;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nordicsemi.Example-Async-Await";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		012BFD9229CB4F810050F23F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Example-Async-Await/Preview Content\"";
-				DEVELOPMENT_TEAM = P3R8YQEV4L;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nordicsemi.Example-Async-Await";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -568,20 +457,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01116E4A296C41EE001A693B /* Build configuration list for PBXNativeTarget "Example-Combine" */ = {
+		01116E4A296C41EE001A693B /* Build configuration list for PBXNativeTarget "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01116E4B296C41EE001A693B /* Debug */,
 				01116E4C296C41EE001A693B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		012BFD9329CB4F810050F23F /* Build configuration list for PBXNativeTarget "Example-Async-Await" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				012BFD9129CB4F810050F23F /* Debug */,
-				012BFD9229CB4F810050F23F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

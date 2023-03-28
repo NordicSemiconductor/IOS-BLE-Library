@@ -13,7 +13,7 @@ struct ScanResult: View {
     let scanData: Bluetooth.ScanData
     
     var body: some View {
-        Text(scanData.)
+        Text(scanData.peripheral.name ?? "n/a")
     }
 }
 

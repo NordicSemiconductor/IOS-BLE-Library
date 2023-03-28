@@ -27,9 +27,10 @@ let package = Package(
             name: "iOS-BLE-Library",
             dependencies: [
                 .product(name: "iOSCommonLibraries", package: "iOS-Common-Libraries"),
+                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")
             ]),
         .testTarget(
             name: "iOS-BLE-LibraryTests",
-            dependencies: ["iOS-BLE-Library", .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")]),
+            dependencies: ["iOS-BLE-Library"]),
     ]
 )
