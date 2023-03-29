@@ -23,15 +23,21 @@ extension StartScreen {
         init(bluetooth: Bluetooth = Bluetooth()) {
             self.bluetooth = bluetooth
             
+            bluetooth.turnOnBluetoothRadio()
+                .map { StartScreen.State(cbState: $0) }
+                .sink(to: \.state, in: self, assigningInCaseOfError: .unknown)
+                .store(in: &cancelable)
+            
             bluetooth.$isScanning
                 .sink(to: \.isScanning, in: self, assigningInCaseOfError: false)
                 .store(in: &cancelable)
+            
         }
         
         func startScan() {
             bluetooth.scan()
                 .scan([Bluetooth.ScanData](), { acc, new in
-                    acc + [new]
+                    acc.appendedOrReplaced(new, where: { $0.peripheral.identifier == new.peripheral.identifier })
                 })
                 .sink(to: \.scanResults, in: self, assigningInCaseOfError: [])
                 .store(in: &cancelable)

@@ -13,16 +13,13 @@ struct ScanResult: View {
     let scanData: Bluetooth.ScanData
     
     var body: some View {
-        Text(scanData.peripheral.name ?? "n/a")
+        HStack {
+            Text(scanData.peripheral.name ?? "n/a")
+            Spacer()
+            Circle()
+                .fill(scanData.advertisementData.isConnectable == true ? .green : .red)
+                .frame(size: CGSize(width: 10, height: 10))
+        }
+        .padding()
     }
 }
-
-//struct ScanResult_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ScanResult(scanData: Bluetooth.ScanData(
-//            peripheral: CBPeripheral,
-//            advertisementData: [:],
-//            RSSI: NSNumber(integerLiteral: -55))
-//        )
-//    }
-//}

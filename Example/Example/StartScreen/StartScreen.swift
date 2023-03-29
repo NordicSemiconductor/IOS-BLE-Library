@@ -7,18 +7,18 @@
 
 import SwiftUI
 import iOS_Common_Libraries
+import CoreBluetoothMock
 
 struct StartScreen: View {
-    @StateObject var viewModel = CombineViewModel()
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
-        NavigationView {
-            VStack {
-                bluetoothState
-                Divider()
-                Spacer()
-            }
+        VStack {
+            bluetoothState
+            devicesBlock
+            Spacer()
         }
+        .navigationBarTitle("Scaner")
     }
     
     @ViewBuilder
@@ -32,11 +32,51 @@ struct StartScreen: View {
         .padding()
     }
     
+    @ViewBuilder
+    var devicesBlock: some View {
+        VStack {
+            Spacer()
+            if !viewModel.isScanning {
+                Button("Start Scan") {
+                    viewModel.startScan()
+                }
+            } else {
+                if viewModel.scanResults.isEmpty {
+                    Text("Scanning...").font(.title)
+                        .foregroundColor(.secondary)
+                } else {
+                    deviceList
+                }
+            }
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder
+    var deviceList: some View {
+        List {
+            Section {
+                ForEach(viewModel.scanResults, id: \.peripheral.identifier) { sr in
+                    ScanResult(scanData: sr)
+                }
+            } header: {
+                Text("Scan Results")
+            }
+        }
+    }
     
 }
 
 struct StartScreen_Previews: PreviewProvider {
+    
     static var previews: some View {
-        StartScreen()
+        NavigationView {
+            if #available(iOS 14.0, *) {
+                StartScreen()
+                    .navigationTitle("Scanner")
+            } else {
+                EmptyView()
+            }
+        }
     }
 }

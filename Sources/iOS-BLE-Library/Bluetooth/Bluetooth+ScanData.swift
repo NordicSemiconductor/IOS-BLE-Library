@@ -11,12 +11,12 @@ import CoreBluetooth
 extension Bluetooth {
     public struct ScanData {
         public var peripheral: CBPeripheral
-        public var advertisementData: [String: Any]
+        public var advertisementData: AdvertisementData
         public var RSSI: NSNumber
         
         public init(peripheral: CBPeripheral, advertisementData: [String : Any], RSSI: NSNumber) {
             self.peripheral = peripheral
-            self.advertisementData = advertisementData
+            self.advertisementData = AdvertisementData(advertisementData)
             self.RSSI = RSSI
         }
     }
