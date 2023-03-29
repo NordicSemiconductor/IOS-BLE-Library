@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct DeviceDetailsScreen: View {
+    @ObservedObject var viewModel: ViewModel
+    
     var body: some View {
-        Text("Hello, World!")
+        Text(viewModel.name)
     }
 }
-
+/*
 struct DeviceDetailsScreen_Previews: PreviewProvider {
     static var previews: some View {
         DeviceDetailsScreen()
     }
 }
+*/

@@ -14,7 +14,7 @@
 		012BFD9629CB50980050F23F /* ReadableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012BFD9529CB50980050F23F /* ReadableError.swift */; };
 		012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */; };
 		012D4B8729CC713B00839213 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8629CC713B00839213 /* ContentView.swift */; };
-		012D4B8D29CCA17700839213 /* FileStartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* FileStartScreen+ViewModel.swift */; };
+		012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */; };
 		012D4B9329CCB48000839213 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResult.swift */; };
 		012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */ = {isa = PBXBuildFile; productRef = 012D4B9729CCB67200839213 /* CoreBluetoothMock */; };
 		01500F8D297AA98200504009 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01500F8C297AA98200504009 /* StartScreen.swift */; };
@@ -40,7 +40,7 @@
 		012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+Ext.swift"; sourceTree = "<group>"; };
 		012D4B8629CC713B00839213 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		012D4B8829CC717D00839213 /* Example-Combine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Example-Combine-Info.plist"; sourceTree = "<group>"; };
-		012D4B8C29CCA17700839213 /* FileStartScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileStartScreen+ViewModel.swift"; sourceTree = "<group>"; };
+		012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+ViewModel.swift"; sourceTree = "<group>"; };
 		012D4B9229CCB48000839213 /* ScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResult.swift; sourceTree = "<group>"; };
 		01500F8C297AA98200504009 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		016ED1C329D4504C00B875FC /* Array+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Ext.swift"; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 				016ED1C529D4856B00B875FC /* DeviceDetailsScreen */,
 				01500F8C297AA98200504009 /* StartScreen.swift */,
 				012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */,
-				012D4B8C29CCA17700839213 /* FileStartScreen+ViewModel.swift */,
+				012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */,
 				012D4B9529CCB49000839213 /* ScanResult */,
 			);
 			path = StartScreen;
@@ -258,7 +258,7 @@
 			files = (
 				01BFF23A29CDA36900536696 /* Aliases.swift in Sources */,
 				01500F8D297AA98200504009 /* StartScreen.swift in Sources */,
-				012D4B8D29CCA17700839213 /* FileStartScreen+ViewModel.swift in Sources */,
+				012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */,
 				012D4B8729CC713B00839213 /* ContentView.swift in Sources */,
 				012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */,
 				012BFD9629CB50980050F23F /* ReadableError.swift in Sources */,

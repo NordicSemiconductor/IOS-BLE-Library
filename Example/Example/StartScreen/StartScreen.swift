@@ -10,7 +10,7 @@ import iOS_Common_Libraries
 import CoreBluetoothMock
 
 struct StartScreen: View {
-    @StateObject var viewModel = ViewModel()
+    @StateObject private var viewModel = ViewModel()
     
     var body: some View {
         VStack {
@@ -57,7 +57,13 @@ struct StartScreen: View {
         List {
             Section {
                 ForEach(viewModel.scanResults, id: \.peripheral.identifier) { sr in
-                    ScanResult(scanData: sr)
+                    NavigationLink {
+                        DeviceDetailsScreen(
+                            viewModel: DeviceDetailsScreen.ViewModel(scanData: sr)
+                        )
+                    } label: {
+                        ScanResult(scanData: sr)
+                    }
                 }
             } header: {
                 Text("Scan Results")

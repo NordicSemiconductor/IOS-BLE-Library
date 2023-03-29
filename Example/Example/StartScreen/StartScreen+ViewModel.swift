@@ -20,6 +20,8 @@ extension StartScreen {
         
         private var cancelable = Set<AnyCancellable>()
         
+        private var deviceViewModels: [DeviceDetailsScreen.ViewModel] = []
+        
         init(bluetooth: Bluetooth = Bluetooth()) {
             self.bluetooth = bluetooth
             
@@ -41,6 +43,10 @@ extension StartScreen {
                 })
                 .sink(to: \.scanResults, in: self, assigningInCaseOfError: [])
                 .store(in: &cancelable)
+        }
+        
+        func deviceViewModel(with scanData: Bluetooth.ScanData) {
+            
         }
     }
 }
