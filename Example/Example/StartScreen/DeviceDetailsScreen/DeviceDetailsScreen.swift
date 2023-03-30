@@ -11,13 +11,28 @@ struct DeviceDetailsScreen: View {
     @ObservedObject var viewModel: ViewModel
     
     var body: some View {
-        Text(viewModel.name)
+        VStack {
+            VStack {
+                AdvertisementDataView(advertisementData: viewModel.advertisementData)
+            }
+            .padding()
+            Button("Connect") {
+                Task {
+                    await viewModel.connect()
+                }
+            }
+            .disabled(!viewModel.isConnectable)
+            Spacer()
+        }
     }
 }
-/*
-struct DeviceDetailsScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        DeviceDetailsScreen()
-    }
-}
-*/
+
+//
+//struct DeviceDetailsScreen_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DeviceDetailsScreen(
+//            viewModel:
+//        )
+//    }
+//}
+//

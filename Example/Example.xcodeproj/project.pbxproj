@@ -23,6 +23,9 @@
 		016ED1CB29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */; };
 		01BFF23829CDA2C700536696 /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23729CDA2C700536696 /* Mocker.swift */; };
 		01BFF23A29CDA36900536696 /* Aliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23929CDA36900536696 /* Aliases.swift */; };
+		01EFE87C29D57FE300BC5AA9 /* AdvertisementDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */; };
+		01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */; };
+		01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +51,9 @@
 		016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailsScreen+ViewModel.swift"; sourceTree = "<group>"; };
 		01BFF23729CDA2C700536696 /* Mocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
 		01BFF23929CDA36900536696 /* Aliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aliases.swift; sourceTree = "<group>"; };
+		01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementDataView.swift; sourceTree = "<group>"; };
+		01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanReadableStringConvertable.swift; sourceTree = "<group>"; };
+		01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +142,7 @@
 			children = (
 				016ED1C229D4503F00B875FC /* Extensions */,
 				012BFD9529CB50980050F23F /* ReadableError.swift */,
+				01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */,
 				01BFF23729CDA2C700536696 /* Mocker.swift */,
 				01BFF23929CDA36900536696 /* Aliases.swift */,
 			);
@@ -166,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				016ED1C329D4504C00B875FC /* Array+Ext.swift */,
+				01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -173,10 +181,19 @@
 		016ED1C529D4856B00B875FC /* DeviceDetailsScreen */ = {
 			isa = PBXGroup;
 			children = (
+				01EFE87A29D57FD100BC5AA9 /* SubViews */,
 				016ED1C829D4859500B875FC /* DeviceDetailsScreen.swift */,
 				016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */,
 			);
 			path = DeviceDetailsScreen;
+			sourceTree = "<group>";
+		};
+		01EFE87A29D57FD100BC5AA9 /* SubViews */ = {
+			isa = PBXGroup;
+			children = (
+				01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */,
+			);
+			path = SubViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +274,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				01BFF23A29CDA36900536696 /* Aliases.swift in Sources */,
+				01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */,
+				01EFE87C29D57FE300BC5AA9 /* AdvertisementDataView.swift in Sources */,
 				01500F8D297AA98200504009 /* StartScreen.swift in Sources */,
 				012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */,
 				012D4B8729CC713B00839213 /* ContentView.swift in Sources */,
@@ -267,6 +286,7 @@
 				012D4B9329CCB48000839213 /* ScanResult.swift in Sources */,
 				016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */,
 				01BFF23829CDA2C700536696 /* Mocker.swift in Sources */,
+				01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */,
 				01116E3F296C41ED001A693B /* ExampleAppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
