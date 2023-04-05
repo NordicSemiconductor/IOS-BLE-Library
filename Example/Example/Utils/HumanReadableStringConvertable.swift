@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import iOS_Bluetooth_Numbers_Database
 
 protocol HumanReadableStringConvertable {
     var humanReadableString: String { get }
@@ -28,7 +29,12 @@ extension NSNumber: HumanReadableStringConvertable {
 }
 
 extension CBUUID: HumanReadableStringConvertable {
-    var humanReadableString: String { self.uuidString }
+    var humanReadableString: String {
+        Service.find(by: self)?.name ??
+        Characteristic.find(by: self)?.name ??
+        Descriptor.find(by: self)?.name ??
+        self.uuidString
+    }
 }
 
 extension Data: HumanReadableStringConvertable {

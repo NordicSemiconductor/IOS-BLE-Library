@@ -20,7 +20,7 @@ extension StartScreen {
         
         private var cancelable = Set<AnyCancellable>()
         
-        private var deviceViewModels: [DeviceDetailsScreen.ViewModel] = []
+        private var deviceViewModels: [UUID: DeviceDetailsScreen.ViewModel] = [:]
         
         init(bluetooth: Bluetooth = Bluetooth()) {
             self.bluetooth = bluetooth
@@ -45,8 +45,14 @@ extension StartScreen {
                 .store(in: &cancelable)
         }
         
-        func deviceViewModel(with scanData: Bluetooth.ScanData) {
-            
+        func deviceViewModel(with scanData: Bluetooth.ScanData) -> DeviceDetailsScreen.ViewModel {
+            if let vm = deviceViewModels[scanData.peripheral.identifier] {
+                return vm
+            } else {
+                let vm = DeviceDetailsScreen.ViewModel(scanData: scanData)
+                deviceViewModels[scanData.peripheral.identifier] = vm
+                return vm
+            }
         }
     }
 }

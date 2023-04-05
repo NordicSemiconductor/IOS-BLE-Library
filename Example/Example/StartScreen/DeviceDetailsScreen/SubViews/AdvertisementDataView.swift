@@ -13,45 +13,22 @@ struct AdvertisementDataView: View {
     
     var body: some View {
         Group {
-            ForEach(advertisementData.readableFormat, id: \.title) { item in
+            ForEach(advertisementData.readableFormat) { item in
                 ItemView(title: item.title, value: item.value)
             }
         }
     }
 }
 
-struct ItemView: View {
-    let icon: Image?
-    let title: String
-    let value: String
-    
-    init(image: String, title: String, value: String) {
-        self.init(image: Image(image), title: title, value: value)
-    }
-    
-    init(systemImage: String, title: String, value: String) {
-        self.init(image: Image(systemName: systemImage), title: title, value: value)
-    }
-    
-    init(image: Image? = nil, title: String, value: String) {
-        self.icon = image
-        self.value = value
-        self.title = title
-    }
-    
-    var body: some View {
-        HStack {
-            self.icon
-            Text(self.title)
-            Spacer()
-            Text(self.value).foregroundColor(.secondary)
+
+struct AdvDataView_Previews: PreviewProvider {
+    static var previews: some View {
+        List {
+            AdvertisementDataView(
+                advertisementData: .fullMock
+            )
         }
+        .padding()
+        .previewLayout(.sizeThatFits)
     }
 }
-
-
-//struct AdvDataView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AdvDataView()
-//    }
-//}

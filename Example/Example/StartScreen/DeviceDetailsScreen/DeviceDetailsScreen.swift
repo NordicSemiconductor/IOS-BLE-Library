@@ -16,6 +16,16 @@ struct DeviceDetailsScreen: View {
                 AdvertisementDataView(advertisementData: viewModel.advertisementData)
             }
             .padding()
+            Text("\(viewModel.discoveredServices.count)")
+            Text(viewModel.serviceName)
+//            List {
+//                ForEach(viewModel.discoveredServices) { service in
+//                    Text(service.name)
+//                    ForEach(service.characteristics) { characteristic in
+//                        Text(characteristic.name)
+//                    }
+//                }
+//            }
             Button("Connect") {
                 Task {
                     await viewModel.connect()

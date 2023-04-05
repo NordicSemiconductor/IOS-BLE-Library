@@ -9,17 +9,26 @@ import Foundation
 import iOS_BLE_Library
 
 extension AdvertisementData {
-    var readableFormat: [(title: String, value: String)] {
-        var fields: [(title: String, value: String)] = []
+    struct Record: Identifiable {
+        let key: String
+        let title: String
+        let value: String
         
-        localName.map { fields.append(("Local Name", $0.humanReadableString)) }
-        manufacturerData.map { fields.append(("Manufacturer Data", $0.humanReadableString)) }
-        serviceData.map { fields.append(("Service Data", $0.humanReadableString)) }
-        serviceUUIDs.map { fields.append(("Service UUIDs", $0.humanReadableString)) }
-        overflowServiceUUIDs.map { fields.append(("Overflow Service UUIDs", $0.humanReadableString)) }
-        txPowerLevel.map { fields.append(("TX Power Level", $0.humanReadableString)) }
-        isConnectable.map { fields.append(("Is Connectable", $0.humanReadableString)) }
-        solicitedServiceUUIDs.map { fields.append(("Solicited Service UUIDs", $0.humanReadableString)) }
-        return fields
+        var id: String { key }
+    }
+    
+    var readableFormat: [Record] {
+        var records = [Record]()
+        
+        localName.map { records.append(Record(key: CBAdvertisementDataLocalNameKey, title: "Local Name", value: $0.humanReadableString)) }
+        manufacturerData.map { records.append(Record(key: CBAdvertisementDataManufacturerDataKey, title: "Manufacturer Data", value: $0.humanReadableString)) }
+        serviceData.map { records.append(Record(key: CBAdvertisementDataServiceDataKey, title: "Service Data", value: $0.humanReadableString)) }
+        serviceUUIDs.map { records.append(Record(key: CBAdvertisementDataServiceUUIDsKey, title: "Service UUIDs", value: $0.humanReadableString)) }
+        overflowServiceUUIDs.map { records.append(Record(key: CBAdvertisementDataOverflowServiceUUIDsKey, title: "Overflow Service UUIDs", value: $0.humanReadableString)) }
+        txPowerLevel.map { records.append(Record(key: CBAdvertisementDataTxPowerLevelKey, title: "TX Power Level", value: $0.humanReadableString)) }
+        isConnectable.map { records.append(Record(key: CBAdvertisementDataIsConnectable, title: "Is Connectable", value: $0.humanReadableString)) }
+        solicitedServiceUUIDs.map { records.append(Record(key: CBAdvertisementDataSolicitedServiceUUIDsKey, title: "Solicited Service UUIDs", value: $0.humanReadableString)) }
+        
+        return records
     }
 }

@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "ios-bluetooth-numbers-database",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NickKibish/iOS-Bluetooth-Numbers-Database.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d3e5b5b57dc704008cceeb5d2390c87aad1e8bbb"
+      }
+    },
+    {
       "identity" : "ios-common-libraries",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NordicPlayground/IOS-Common-Libraries",

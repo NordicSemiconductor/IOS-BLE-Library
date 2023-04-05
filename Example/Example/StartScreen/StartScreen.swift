@@ -59,7 +59,7 @@ struct StartScreen: View {
                 ForEach(viewModel.scanResults, id: \.peripheral.identifier) { sr in
                     NavigationLink {
                         DeviceDetailsScreen(
-                            viewModel: DeviceDetailsScreen.ViewModel(scanData: sr)
+                            viewModel: viewModel.deviceViewModel(with: sr)
                         )
                     } label: {
                         ScanResult(scanData: sr)
