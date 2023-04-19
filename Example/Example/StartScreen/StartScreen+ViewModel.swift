@@ -27,9 +27,20 @@ extension StartScreen {
         
         private var deviceViewModels: [UUID: DeviceDetailsScreen.ViewModel] = [:]
         
-        
+        private let centralManager = CentralManager()
         
         func startScan() {
+            centralManager.scan()
+                .scan([ScanResult]()) { arr, sr in
+                    arr.appendedOrReplaced(sr, where: { $0.id == sr.id })
+                }
+                .sink { _ in
+                    
+                } receiveValue: { sr in
+                    self.scanResults = sr
+                }
+                .store(in: &cancelable)
+
         }
         
         func deviceViewModel(with scanData: ScanResult) -> DeviceDetailsScreen.ViewModel {

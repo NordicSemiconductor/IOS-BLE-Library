@@ -10,7 +10,7 @@ import CoreBluetooth
 import AsyncAlgorithms
 
 // MARK: - CBCentralManagerDelegate
-
+/*
 extension Bluetooth: CBCentralManagerDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
@@ -87,3 +87,4 @@ extension Bluetooth: CBCentralManagerDelegate {
         }
     }
 }
+*/

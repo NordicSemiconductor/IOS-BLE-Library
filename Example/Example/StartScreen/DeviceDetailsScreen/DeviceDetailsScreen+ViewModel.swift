@@ -24,15 +24,14 @@ extension DeviceDetailsScreen {
         
         @Published var discoveredServices: [Service] = []
         
-        init(deviceId: CBUUID, bluetooth: Bluetooth = Bluetooth()) {
+        init(deviceId: CBUUID) {
             self.deviceId = deviceId
-            self.discoverDevice()
         }
         
-        convenience
-        init(deviceId: String, bluetooth: Bluetooth = Bluetooth()) {
+        
+        init(deviceId: String) {
             let id = CBUUID(string: deviceId)
-            self.init(deviceId: id, bluetooth: bluetooth)
+            self.deviceId = id
         }
         
         func discoverDevice() {

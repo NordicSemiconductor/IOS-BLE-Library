@@ -7,7 +7,7 @@
 
 import SwiftUI
 import iOS_Common_Libraries
-import CoreBluetoothMock
+import CoreBluetooth
 
 struct StartScreen: View {
     @StateObject private var viewModel = ViewModel()

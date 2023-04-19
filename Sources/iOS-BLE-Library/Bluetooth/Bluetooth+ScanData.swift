@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreBluetooth
-
+/*
 extension Bluetooth {
     public struct ScanData {
         public var peripheral: CBPeripheral
@@ -21,3 +21,4 @@ extension Bluetooth {
         }
     }
 }
+*/

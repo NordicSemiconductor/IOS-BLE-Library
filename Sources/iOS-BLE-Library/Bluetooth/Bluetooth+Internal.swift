@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 internal extension Bluetooth {
     
     func reportContinuationError<T: CBPeripheral>(_ bluetoothError: BluetoothError, for device: T) {
@@ -32,3 +32,4 @@ internal extension Bluetooth {
         dataStreams[device.identifier.uuidString]?.removeAll()
     }
 }
+*/

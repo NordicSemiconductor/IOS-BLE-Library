@@ -13,7 +13,7 @@ extension AdvertisementData {
     
     var readableFormat: [Record] {
         var records = [Record]()
-        
+        /*
         localName.map { records.append(Record(key: CBAdvertisementDataLocalNameKey, title: "Local Name", value: $0.humanReadableString)) }
         manufacturerData.map { records.append(Record(key: CBAdvertisementDataManufacturerDataKey, title: "Manufacturer Data", value: $0.humanReadableString)) }
         serviceData.map { records.append(Record(key: CBAdvertisementDataServiceDataKey, title: "Service Data", value: $0.humanReadableString)) }
@@ -22,7 +22,7 @@ extension AdvertisementData {
         txPowerLevel.map { records.append(Record(key: CBAdvertisementDataTxPowerLevelKey, title: "TX Power Level", value: $0.humanReadableString)) }
         isConnectable.map { records.append(Record(key: CBAdvertisementDataIsConnectable, title: "Is Connectable", value: $0.humanReadableString)) }
         solicitedServiceUUIDs.map { records.append(Record(key: CBAdvertisementDataSolicitedServiceUUIDsKey, title: "Solicited Service UUIDs", value: $0.humanReadableString)) }
-        
+        */
         return records
     }
 }

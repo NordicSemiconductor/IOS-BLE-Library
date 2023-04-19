@@ -9,7 +9,7 @@ import Foundation
 import CoreBluetooth
 
 // MARK: - CBPeripheralDelegate
-
+/*
 extension Bluetooth: CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -65,3 +65,4 @@ extension Bluetooth: CBPeripheralDelegate {
         }
     }
 }
+*/

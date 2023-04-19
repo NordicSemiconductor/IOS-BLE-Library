@@ -10,7 +10,15 @@ import iOS_BLE_Library
 
 extension DeviceDetailsScreen {
     class PreviewViewModel: ViewModel {
-        override init(deviceId: CBUUID, bluetooth: Bluetooth = Bluetooth()) {
+        override init(deviceId: String) {
+            super.init(deviceId: deviceId)
+            
+            self.name = "New Device"
+            self.advertisementData = .fullMock
+            self.isConnectable = true
+        }
+        
+        override init(deviceId: CBUUID) {
             super.init(deviceId: deviceId)
             
             self.name = "New Device"

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreBluetoothMock
+import CoreBluetooth
 
 extension CBManagerState {
     var ready: Bool? {
@@ -17,6 +17,8 @@ extension CBManagerState {
             return nil
         case .poweredOff, .unauthorized, .unsupported:
             return false
+        @unknown default:
+            fatalError()
         }
     }
 }

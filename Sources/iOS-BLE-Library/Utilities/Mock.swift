@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import CoreBluetoothMock
+import CoreBluetooth
 
 // MARK: - Constants
-
+/*
 extension CBMUUID {
     static let nordicBlinkyService  = CBMUUID(string: "00001523-1212-EFDE-1523-785FEABCD123")
     static let buttonCharacteristic = CBMUUID(string: "00001524-1212-EFDE-1523-785FEABCD123")
@@ -133,3 +133,4 @@ let blinky = CBMPeripheralSpec
         delegate: BlinkyCBMPeripheralSpecDelegate()
     )
     .build()
+*/

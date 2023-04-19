@@ -10,12 +10,12 @@ import Foundation
 import Combine
 import os
 import CoreBluetooth
-import CoreBluetoothMock
+import CoreBluetooth
 import iOS_Common_Libraries
 import AsyncAlgorithms
 
 // MARK: - Bluetooth
-
+/*
 public final class Bluetooth: NSObject {
     
     // MARK: - MODERN ASYNC PART
@@ -85,7 +85,7 @@ public final class Bluetooth: NSObject {
     
     internal lazy var logger = L(subsystem: "com.nordicsemi.nRF-BLe-Library",
                                       category: String(describing: Self.self))
-    private var bluetoothManager: CBMCentralManager!
+    private var bluetoothManager: CBCentralManager!
     
 //    @Published internal var managerState: CBManagerState = .unknown
     var filters: [ScannerFilter] = [.none]
@@ -420,3 +420,4 @@ extension Bluetooth {
         }
     }
 }
+*/
