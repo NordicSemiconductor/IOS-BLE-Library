@@ -12,10 +12,27 @@ import os
 import CoreBluetooth
 import CoreBluetoothMock
 import iOS_Common_Libraries
+import AsyncAlgorithms
 
 // MARK: - Bluetooth
 
 public final class Bluetooth: NSObject {
+    
+    // MARK: - MODERN ASYNC PART
+    let stateChannel = AsyncChannel<CBManagerState>()
+    
+    public internal (set) var currentState: CBManagerState = .unknown
+    public var state: AsyncBroadcastSequence<AsyncChannel<CBManagerState>> {
+        stateChannel.broadcast()
+    }
+    
+    public internal (set) var isScanning: Bool = false
+    public var isScanningBroadcast: AsyncBroadcastSequence<AsyncChannel<Bool>> {
+        isScanningChannel.broadcast()
+    }
+    
+    let scanResultChannel = AsyncChannel<ScanData>()
+    let isScanningChannel = AsyncChannel<Bool>()
     
     enum AwaitContinuation {
         case connection(_ continuation: CheckedContinuation<CBPeripheral, Error>)
@@ -48,21 +65,21 @@ public final class Bluetooth: NSObject {
     
     public init(forceMock: Bool = false ) {
         super.init()
+        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        CBMCentralManagerMock.simulatePeripherals([blinky])
+        
         self.bluetoothManager = CBMCentralManagerFactory.instance(
             delegate: self,
             queue: nil,
             forceMock: forceMock
         )
-        
-        CBMCentralManagerMock.simulateInitialState(.poweredOn)
-        CBMCentralManagerMock.simulatePeripherals([blinky])
     }
     
     // MARK: - Public Properties
     
-    @Published public private(set) var isScanning = false
+//    @Published public private(set) var isScanning = false
     
-    public private(set) lazy var devicePublisher = PassthroughSubject<ScanData, Never>()
+//    public private(set) lazy var devicePublisher = PassthroughSubject<ScanData, Never>()
     
     // MARK: - Internal Properties
     
@@ -70,15 +87,16 @@ public final class Bluetooth: NSObject {
                                       category: String(describing: Self.self))
     private var bluetoothManager: CBMCentralManager!
     
-    @Published internal var managerState: CBManagerState = .unknown
-    @Published internal var filters: [ScannerFilter] = [.none]
-    @Published internal var shouldScan = false
+//    @Published internal var managerState: CBManagerState = .unknown
+    var filters: [ScannerFilter] = [.none]
+    var shouldScan = false
     
     internal var continuations = [String: AwaitContinuation]()
     internal var dataStreams = [String: [AsyncThrowingStream<AsyncStreamValue, Error>.Continuation]]()
     
     private var connectedPeripherals = [String: CBPeripheral]()
     
+    // TODO: - Combine -> AsyncSequence
     private var cancelables = Set<AnyCancellable>()
 }
 
@@ -93,14 +111,13 @@ extension Bluetooth {
      
      The first call to `CBCentralManager.state` is the one that turns on the BLE Radio if it's available, and successive calls check whether it turned on or not, but they cannot be made one after the other or the second will return an error. This is why we make this first call ahead of time.
      */
-    public func turnOnBluetoothRadio() -> AnyPublisher<CBManagerState, Never> {
+    // TODO: - Combine -> AsyncSequence
+    public func turnOnBluetoothRadio() -> AsyncBroadcastSequence<AsyncChannel<CBMManagerState>> {
         shouldScan = true
-        _ = bluetoothManager.state
-        return $managerState.eraseToAnyPublisher()
-    }
-    
-    public func toggleScanner() {
-        shouldScan.toggle()
+        Task {
+            await stateChannel.send(bluetoothManager.state)
+        }
+        return stateChannel.broadcast()
     }
     
     // MARK: Stop Scanner
@@ -108,33 +125,22 @@ extension Bluetooth {
         guard isScanning else { return }
         
         // Toggle Scanner, which is not immediate.
-        toggleScanner()
+//        toggleScanner()
         // Wait for first value change in 'isScanning' to return false, meaning Scanning has stopped.
-        _ = await $isScanning.values.first(where: { !$0 })
+//        _ = await $isScanning.values.first(where: { !$0 })
         assert(!isScanning)
     }
     
     // MARK: Start Scan
-    public func scan(with filters: [ScannerFilter] = [.none]) -> AnyPublisher<ScanData, Never> {
-        self.filters = filters
+    // TODO: - Combine -> AsyncSequence
+    public func scan(with services: [CBUUID]? = nil) async -> AsyncBroadcastSequence<AsyncChannel<ScanData>> {
+        if currentState != .poweredOn {
+            await _ = state.first(where: { $0 == .poweredOn })
+        }
         
-        return turnOnBluetoothRadio()
-            .filter { $0 == .poweredOn }
-            .combineLatest($shouldScan, $filters)
-            .flatMap { (_, isScanning, scanConditions) -> PassthroughSubject<ScanData, Never> in
-                if isScanning {
-                    let scanServices = scanConditions.flatMap { $0.filterServices() }
-                    self.bluetoothManager.scanForPeripherals(withServices: scanServices,
-                                                             options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
-                    self.isScanning = true
-                } else {
-                    self.bluetoothManager.stopScan()
-                    self.isScanning = false
-                }
-                
-                return self.devicePublisher
-            }
-            .eraseToAnyPublisher()
+        bluetoothManager.scanForPeripherals(withServices: services)
+        
+        return scanResultChannel.broadcast()
     }
     
     public func scan(forDeviceWithUUID uuid: CBUUID) async throws -> CBPeripheral? {
@@ -142,10 +148,10 @@ extension Bluetooth {
             bluetoothManager.stopScan()
         }
         
-        for try await newDevice in scan().timeout(.seconds(5), scheduler: DispatchQueue.main).values {
-            guard newDevice.peripheral.identifier.uuidString == uuid.uuidString else { continue }
-            return newDevice.peripheral
-        }
+//        for try await newDevice in scan().timeout(.seconds(5), scheduler: DispatchQueue.main).values {
+//            guard newDevice.peripheral.identifier.uuidString == uuid.uuidString else { continue }
+//            return newDevice.peripheral
+//        }
         return nil
     }
     

@@ -62,7 +62,7 @@ struct StartScreen: View {
                             viewModel: viewModel.deviceViewModel(with: sr)
                         )
                     } label: {
-                        ScanResult(scanData: sr)
+                        ScanResultView(scanResult: sr)
                     }
                 }
             } header: {

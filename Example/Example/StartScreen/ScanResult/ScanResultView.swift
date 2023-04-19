@@ -9,15 +9,15 @@ import SwiftUI
 import iOS_BLE_Library
 import CoreBluetooth
 
-struct ScanResult: View {
-    let scanData: Bluetooth.ScanData
+struct ScanResultView: View {
+    let scanResult: ScanResult
     
     var body: some View {
         HStack {
-            Text(scanData.peripheral.name ?? "n/a")
+            Text(scanResult.name)
             Spacer()
             Circle()
-                .fill(scanData.advertisementData.isConnectable == true ? .green : .red)
+                .fill(scanResult.advertisementData.isConnectable == true ? .green : .red)
                 .frame(size: CGSize(width: 10, height: 10))
         }
         .padding()

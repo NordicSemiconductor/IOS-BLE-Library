@@ -13,19 +13,17 @@ struct DeviceDetailsScreen: View {
     var body: some View {
         VStack {
             VStack {
-                AdvertisementDataView(advertisementData: viewModel.advertisementData)
+                ItemListView(itemList: viewModel.advertisementData.readableFormat)
             }
             .padding()
-            Text("\(viewModel.discoveredServices.count)")
-            Text(viewModel.serviceName)
-//            List {
-//                ForEach(viewModel.discoveredServices) { service in
-//                    Text(service.name)
-//                    ForEach(service.characteristics) { characteristic in
-//                        Text(characteristic.name)
-//                    }
-//                }
-//            }
+            List {
+                ForEach(viewModel.discoveredServices) { service in
+                    NestedItemView(item: service)
+                    ForEach(service.characteristics) { characteristic in
+                        NestedItemView(item: characteristic)
+                    }
+                }
+            }
             Button("Connect") {
                 Task {
                     await viewModel.connect()
@@ -37,12 +35,9 @@ struct DeviceDetailsScreen: View {
     }
 }
 
-//
-//struct DeviceDetailsScreen_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DeviceDetailsScreen(
-//            viewModel:
-//        )
-//    }
-//}
-//
+struct DeviceDetailsScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        DeviceDetailsScreen(viewModel: DeviceDetailsScreen.PreviewViewModel(deviceId: UUID().uuidString))
+    }
+}
+

@@ -7,26 +7,32 @@
 
 import Foundation
 import CoreBluetooth
+import AsyncAlgorithms
 
 // MARK: - CBCentralManagerDelegate
 
 extension Bluetooth: CBCentralManagerDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
-                        advertisementData: [String : Any], rssi RSSI: NSNumber) {
+                               advertisementData: [String : Any], rssi RSSI: NSNumber) async {
         let isConnectable = (advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue
         if filters.contains(where: { $0 == .connectable }) {
             if isConnectable ?? false {
-                devicePublisher.send(ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI))
+                
+                let sd = ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI)
+//                scanResultChannel.send(<#T##element: ScanData##ScanData#>)
             }
         } else {
-            devicePublisher.send(ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI))
+//            devicePublisher.send(ScanData(peripheral: peripheral, advertisementData: advertisementData, RSSI: RSSI))
         }
     }
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         logger.d("[Callback] centralManagerDidUpdateState(central: \(central))")
-        managerState = central.state
+        currentState = central.state
+        Task {
+            await stateChannel.send(central.state)
+        }
         logger.i("Bluetooth changed state: \(central.state)")
         
         if central.state != .poweredOn {

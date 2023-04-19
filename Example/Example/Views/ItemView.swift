@@ -36,6 +36,16 @@ struct ItemView: View {
     }
 }
 
+extension ItemView {
+    init<K: Hashable>(image: String, itemModel: ItemModel<K>) {
+        self.init(image: image, title: itemModel.title, value: itemModel.value)
+    }
+    
+    init<K: Hashable>(systemImage: String, itemModel: ItemModel<K>) {
+        self.init(systemImage: systemImage, title: itemModel.title, value: itemModel.value)
+    }
+}
+
 struct ItemView_Previews: PreviewProvider {
     static var previews: some View {
         Group {

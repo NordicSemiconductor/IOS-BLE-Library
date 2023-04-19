@@ -8,12 +8,12 @@
 import SwiftUI
 import iOS_BLE_Library
 
-struct AdvertisementDataView: View {
-    let advertisementData: AdvertisementData
+struct ItemListView<K: Hashable>: View {
+    let itemList: [ItemModel<K>]
     
     var body: some View {
         Group {
-            ForEach(advertisementData.readableFormat) { item in
+            ForEach(itemList) { item in
                 ItemView(title: item.title, value: item.value)
             }
         }
@@ -21,12 +21,10 @@ struct AdvertisementDataView: View {
 }
 
 
-struct AdvDataView_Previews: PreviewProvider {
+struct ItemListView_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            AdvertisementDataView(
-                advertisementData: .fullMock
-            )
+            ItemListView(itemList: AdvertisementData.fullMock.readableFormat)
         }
         .padding()
         .previewLayout(.sizeThatFits)

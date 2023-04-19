@@ -9,13 +9,7 @@ import Foundation
 import iOS_BLE_Library
 
 extension AdvertisementData {
-    struct Record: Identifiable {
-        let key: String
-        let title: String
-        let value: String
-        
-        var id: String { key }
-    }
+    typealias Record = ItemModel<String>
     
     var readableFormat: [Record] {
         var records = [Record]()

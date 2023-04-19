@@ -15,7 +15,7 @@
 		012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */; };
 		012D4B8729CC713B00839213 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8629CC713B00839213 /* ContentView.swift */; };
 		012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */; };
-		012D4B9329CCB48000839213 /* ScanResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResult.swift */; };
+		012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResultView.swift */; };
 		012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */ = {isa = PBXBuildFile; productRef = 012D4B9729CCB67200839213 /* CoreBluetoothMock */; };
 		01500F8D297AA98200504009 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01500F8C297AA98200504009 /* StartScreen.swift */; };
 		016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016ED1C329D4504C00B875FC /* Array+Ext.swift */; };
@@ -23,9 +23,13 @@
 		016ED1CB29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */; };
 		01A6B60329DCBBC30048DFCE /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60229DCBBC30048DFCE /* ItemView.swift */; };
 		01A6B60629DD643B0048DFCE /* AdvertisementData+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60529DD643B0048DFCE /* AdvertisementData+Mock.swift */; };
+		01A6B60A29DD7F870048DFCE /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60929DD7F870048DFCE /* ItemModel.swift */; };
+		01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */; };
+		01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */; };
+		01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B61129DD92FD0048DFCE /* NestedItemView.swift */; };
 		01BFF23829CDA2C700536696 /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23729CDA2C700536696 /* Mocker.swift */; };
 		01BFF23A29CDA36900536696 /* Aliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFF23929CDA36900536696 /* Aliases.swift */; };
-		01EFE87C29D57FE300BC5AA9 /* AdvertisementDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */; };
+		01EFE87C29D57FE300BC5AA9 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */; };
 		01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */; };
 		01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */; };
 		01EFE88329DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database in Frameworks */ = {isa = PBXBuildFile; productRef = 01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */; };
@@ -47,16 +51,20 @@
 		012D4B8629CC713B00839213 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		012D4B8829CC717D00839213 /* Example-Combine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Example-Combine-Info.plist"; sourceTree = "<group>"; };
 		012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+ViewModel.swift"; sourceTree = "<group>"; };
-		012D4B9229CCB48000839213 /* ScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResult.swift; sourceTree = "<group>"; };
+		012D4B9229CCB48000839213 /* ScanResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultView.swift; sourceTree = "<group>"; };
 		01500F8C297AA98200504009 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		016ED1C329D4504C00B875FC /* Array+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Ext.swift"; sourceTree = "<group>"; };
 		016ED1C829D4859500B875FC /* DeviceDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailsScreen.swift; sourceTree = "<group>"; };
 		016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailsScreen+ViewModel.swift"; sourceTree = "<group>"; };
 		01A6B60229DCBBC30048DFCE /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		01A6B60529DD643B0048DFCE /* AdvertisementData+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Mock.swift"; sourceTree = "<group>"; };
+		01A6B60929DD7F870048DFCE /* ItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
+		01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
+		01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemModel.swift; sourceTree = "<group>"; };
+		01A6B61129DD92FD0048DFCE /* NestedItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemView.swift; sourceTree = "<group>"; };
 		01BFF23729CDA2C700536696 /* Mocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
 		01BFF23929CDA36900536696 /* Aliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aliases.swift; sourceTree = "<group>"; };
-		01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementDataView.swift; sourceTree = "<group>"; };
+		01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanReadableStringConvertable.swift; sourceTree = "<group>"; };
 		01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +106,8 @@
 		01116E3D296C41ED001A693B /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				01A6B60829DD7E770048DFCE /* Models */,
+				01A6B60729DD7E6F0048DFCE /* Views */,
 				012BFD9429CB508D0050F23F /* Utils */,
 				01500F8B297AA95D00504009 /* StartScreen */,
 				01116E3E296C41ED001A693B /* ExampleAppDelegate.swift */,
@@ -113,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				01A6B60529DD643B0048DFCE /* AdvertisementData+Mock.swift */,
+				01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */,
 				01116E46296C41EE001A693B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -159,7 +170,7 @@
 		012D4B9529CCB49000839213 /* ScanResult */ = {
 			isa = PBXGroup;
 			children = (
-				012D4B9229CCB48000839213 /* ScanResult.swift */,
+				012D4B9229CCB48000839213 /* ScanResultView.swift */,
 			);
 			path = ScanResult;
 			sourceTree = "<group>";
@@ -195,11 +206,28 @@
 			path = DeviceDetailsScreen;
 			sourceTree = "<group>";
 		};
+		01A6B60729DD7E6F0048DFCE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				01A6B60229DCBBC30048DFCE /* ItemView.swift */,
+				01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */,
+				01A6B61129DD92FD0048DFCE /* NestedItemView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		01A6B60829DD7E770048DFCE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				01A6B60929DD7F870048DFCE /* ItemModel.swift */,
+				01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		01EFE87A29D57FD100BC5AA9 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
-				01EFE87B29D57FE300BC5AA9 /* AdvertisementDataView.swift */,
-				01A6B60229DCBBC30048DFCE /* ItemView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -286,7 +314,7 @@
 				01BFF23A29CDA36900536696 /* Aliases.swift in Sources */,
 				01A6B60629DD643B0048DFCE /* AdvertisementData+Mock.swift in Sources */,
 				01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */,
-				01EFE87C29D57FE300BC5AA9 /* AdvertisementDataView.swift in Sources */,
+				01EFE87C29D57FE300BC5AA9 /* ItemListView.swift in Sources */,
 				01A6B60329DCBBC30048DFCE /* ItemView.swift in Sources */,
 				01500F8D297AA98200504009 /* StartScreen.swift in Sources */,
 				012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */,
@@ -294,12 +322,16 @@
 				012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */,
 				012BFD9629CB50980050F23F /* ReadableError.swift in Sources */,
 				016ED1C929D4859500B875FC /* DeviceDetailsScreen.swift in Sources */,
+				01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */,
 				016ED1CB29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift in Sources */,
-				012D4B9329CCB48000839213 /* ScanResult.swift in Sources */,
+				01A6B60A29DD7F870048DFCE /* ItemModel.swift in Sources */,
+				012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */,
 				016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */,
 				01BFF23829CDA2C700536696 /* Mocker.swift in Sources */,
 				01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */,
 				01116E3F296C41ED001A693B /* ExampleAppDelegate.swift in Sources */,
+				01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */,
+				01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
