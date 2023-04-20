@@ -8,13 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0103093929EFF1D100BA46A8 /* Aliases.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0103093829EFF1D100BA46A8 /* Aliases.swift.swift */; };
-		01116E3F296C41ED001A693B /* ExampleAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01116E3E296C41ED001A693B /* ExampleAppDelegate.swift */; };
+		0103093B29F019C200BA46A8 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0103093A29F019C200BA46A8 /* ExampleApp.swift */; };
 		01116E43296C41EE001A693B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01116E42296C41EE001A693B /* Assets.xcassets */; };
 		01116E47296C41EE001A693B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01116E46296C41EE001A693B /* Preview Assets.xcassets */; };
 		01116E50296C43C6001A693B /* iOS-BLE-Library in Frameworks */ = {isa = PBXBuildFile; productRef = 01116E4F296C43C6001A693B /* iOS-BLE-Library */; };
 		012BFD9629CB50980050F23F /* ReadableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012BFD9529CB50980050F23F /* ReadableError.swift */; };
 		012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */; };
-		012D4B8729CC713B00839213 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8629CC713B00839213 /* ContentView.swift */; };
 		012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */; };
 		012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResultView.swift */; };
 		012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */ = {isa = PBXBuildFile; productRef = 012D4B9729CCB67200839213 /* CoreBluetoothMock */; };
@@ -36,8 +35,8 @@
 
 /* Begin PBXFileReference section */
 		0103093829EFF1D100BA46A8 /* Aliases.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aliases.swift.swift; sourceTree = "<group>"; };
+		0103093A29F019C200BA46A8 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
 		01116E3B296C41ED001A693B /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		01116E3E296C41ED001A693B /* ExampleAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAppDelegate.swift; sourceTree = "<group>"; };
 		01116E42296C41EE001A693B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01116E44296C41EE001A693B /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		01116E46296C41EE001A693B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -48,7 +47,6 @@
 		012BFD8F29CB4F810050F23F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		012BFD9529CB50980050F23F /* ReadableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadableError.swift; sourceTree = "<group>"; };
 		012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+Ext.swift"; sourceTree = "<group>"; };
-		012D4B8629CC713B00839213 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		012D4B8829CC717D00839213 /* Example-Combine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Example-Combine-Info.plist"; sourceTree = "<group>"; };
 		012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+ViewModel.swift"; sourceTree = "<group>"; };
 		012D4B9229CCB48000839213 /* ScanResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultView.swift; sourceTree = "<group>"; };
@@ -108,8 +106,7 @@
 				01A6B60729DD7E6F0048DFCE /* Views */,
 				012BFD9429CB508D0050F23F /* Utils */,
 				01500F8B297AA95D00504009 /* StartScreen */,
-				01116E3E296C41ED001A693B /* ExampleAppDelegate.swift */,
-				012D4B8629CC713B00839213 /* ContentView.swift */,
+				0103093A29F019C200BA46A8 /* ExampleApp.swift */,
 				01116E42296C41EE001A693B /* Assets.xcassets */,
 				01116E44296C41EE001A693B /* Example.entitlements */,
 				01116E45296C41EE001A693B /* Preview Content */,
@@ -314,7 +311,6 @@
 				01A6B60329DCBBC30048DFCE /* ItemView.swift in Sources */,
 				01500F8D297AA98200504009 /* StartScreen.swift in Sources */,
 				012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */,
-				012D4B8729CC713B00839213 /* ContentView.swift in Sources */,
 				012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */,
 				0103093929EFF1D100BA46A8 /* Aliases.swift.swift in Sources */,
 				012BFD9629CB50980050F23F /* ReadableError.swift in Sources */,
@@ -325,7 +321,7 @@
 				012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */,
 				016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */,
 				01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */,
-				01116E3F296C41ED001A693B /* ExampleAppDelegate.swift in Sources */,
+				0103093B29F019C200BA46A8 /* ExampleApp.swift in Sources */,
 				01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */,
 				01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */,
 			);
@@ -455,7 +451,6 @@
 				DEVELOPMENT_TEAM = P3R8YQEV4L;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				EXECUTABLE_NAME = ExampleAppDelegate.swift;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Example-Combine-Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "You need to grant Bluetooth permission to have the ability to use the app.";
@@ -469,7 +464,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
@@ -498,7 +493,6 @@
 				DEVELOPMENT_TEAM = P3R8YQEV4L;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				EXECUTABLE_NAME = ExampleAppDelegate.swift;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Example-Combine-Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "You need to grant Bluetooth permission to have the ability to use the app.";
@@ -512,7 +506,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;

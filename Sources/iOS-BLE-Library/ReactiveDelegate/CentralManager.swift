@@ -18,6 +18,8 @@ extension CentralManager {
 }
 
 public class CentralManager {
+    private let isScanningChannel = CurrentValueSubject<Bool, Never>(false)
+    
     public let centralManager: CBCentralManager
     public let centralManagerDelegate: ReactiveCentralManagerDelegate
     
@@ -36,23 +38,65 @@ public class CentralManager {
     }
 }
 
+// MARK: Channels
 extension CentralManager {
-    public func scan() -> AnyPublisher<ScanResult, Error> {
+    public var stateChannel: AnyPublisher<CBManagerState, Never> {
+        centralManagerDelegate.statePublisher
+            .share()
+            .eraseToAnyPublisher()
+    }
+    
+    public var scanResultsChannel: AnyPublisher<ScanResult, Never> {
+        centralManagerDelegate.scanResultSubject
+            .share()
+            .eraseToAnyPublisher()
+    }
+    
+    public var connetedPeripheralChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
+        centralManagerDelegate.connetedPeripheralSubject
+            .share()
+            .eraseToAnyPublisher()
+    }
+    
+    public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
+        centralManagerDelegate.disconnectedPeripheralsSubject
+            .share()
+            .eraseToAnyPublisher()
+    }
+}
+
+extension CentralManager {
+    public func stopScan() {
+        centralManager.stopScan()
+        isScanningChannel.send(false)
+    }
+    
+    public func scanForPeripherals(withServices services: [CBUUID]?) -> AnyPublisher<ScanResult, Error> {
+        stopScan()
+        isScanningChannel.send(true)
+        
         return centralManagerDelegate.stateSubject
+            .prefix(untilOutputFrom: isScanningChannel.first { !$0 }.share())
             .tryFirst { state in
                 guard let determined = state.ready else { return false }
 
                 guard determined else { throw CentralManagerError.badState(state) }
                 return true
             }
-            .mapError { $0 as Swift.Error }
-            .flatMap { _ -> AnyPublisher<ScanResult, Swift.Error> in
-                self.centralManager.scanForPeripherals(withServices: [])
+            .flatMap { _ in
+                // TODO: Check for mmemory leaks
+                self.isScanningChannel.send(true)
+                self.centralManager.scanForPeripherals(withServices: services)
                 return self.centralManagerDelegate.scanResultSubject
-                    .setFailureType(to: Swift.Error.self)
-                    .eraseToAnyPublisher()
+                    .setFailureType(to: Error.self)
+            }
+            .mapError{ [weak self] e in
+                self?.stopScan()
+                return e
             }
             .eraseToAnyPublisher()
     }
+    
+    
 }
 

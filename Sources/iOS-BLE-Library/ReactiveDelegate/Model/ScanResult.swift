@@ -19,9 +19,7 @@ public struct ScanResult {
         self.advertisementData = AdvertisementData(advertisementData)
     }
     
-    public var name: String {
-        peripheral.name
-        ?? advertisementData.localName
-        ?? "n/a"
+    public var name: String? {
+        peripheral.name ?? advertisementData.localName
     }
 }

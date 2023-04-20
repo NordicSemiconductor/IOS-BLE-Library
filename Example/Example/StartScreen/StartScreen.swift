@@ -19,6 +19,23 @@ struct StartScreen: View {
             Spacer()
         }
         .navigationBarTitle("Scaner")
+        .toolbar {
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    viewModel.stopScan()
+                } label: {
+                    Image(systemName: "stop.fill")
+                }
+
+            }
+        }
+        .alert(
+            viewModel.displayError?.title ?? "Error",
+            isPresented: $viewModel.showError) {
+                Button("Ok") {
+                    
+                }
+            }
     }
     
     @ViewBuilder

@@ -17,7 +17,26 @@ extension StartScreen {
         case poweredOff = "Bluetooth is powered OFF"
         case poweredOn = "Powered ON"
         
-        init(cbState: CBManagerState) {
+        init(cbmState: CBManagerState) {
+            switch cbmState {
+            case .unknown:
+                self = .unknown
+            case .resetting:
+                self = .resetting
+            case .unsupported:
+                self = .unsupported
+            case .unauthorized:
+                self = .unauthorized
+            case .poweredOff:
+                self = .poweredOff
+            case .poweredOn:
+                self = .poweredOn
+            @unknown default:
+                fatalError()
+            }
+        }
+        
+        init(cbState: CoreBluetooth.CBManagerState) {
             switch cbState {
             case .unknown:
                 self = .unknown

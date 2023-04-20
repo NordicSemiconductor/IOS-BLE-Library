@@ -14,7 +14,7 @@ struct ScanResultView: View {
     
     var body: some View {
         HStack {
-            Text(scanResult.name)
+            Text(scanResult.name ?? "n/a")
             Spacer()
             Circle()
                 .fill(scanResult.advertisementData.isConnectable == true ? .green : .red)
