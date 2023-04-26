@@ -31,6 +31,8 @@
 		01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */; };
 		01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */; };
 		01EFE88329DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database in Frameworks */ = {isa = PBXBuildFile; productRef = 01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */; };
+		01F3BA1129F93C1A009D3886 /* StartScreen+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F3BA1029F93C1A009D3886 /* StartScreen+Model.swift */; };
+		01F3BA1429F946DA009D3886 /* StartScreen+DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F3BA1329F946DA009D3886 /* StartScreen+DisplayLink.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +65,8 @@
 		01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanReadableStringConvertable.swift; sourceTree = "<group>"; };
 		01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Ext.swift"; sourceTree = "<group>"; };
+		01F3BA1029F93C1A009D3886 /* StartScreen+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+Model.swift"; sourceTree = "<group>"; };
+		01F3BA1329F946DA009D3886 /* StartScreen+DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StartScreen+DisplayLink.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,8 +176,10 @@
 		01500F8B297AA95D00504009 /* StartScreen */ = {
 			isa = PBXGroup;
 			children = (
+				01F3BA0F29F93C0A009D3886 /* Model */,
 				016ED1C529D4856B00B875FC /* DeviceDetailsScreen */,
 				01500F8C297AA98200504009 /* StartScreen.swift */,
+				01F3BA1229F94459009D3886 /* ConnectionLink */,
 				012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */,
 				012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */,
 				012D4B9529CCB49000839213 /* ScanResult */,
@@ -224,6 +230,22 @@
 			children = (
 			);
 			path = SubViews;
+			sourceTree = "<group>";
+		};
+		01F3BA0F29F93C0A009D3886 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				01F3BA1029F93C1A009D3886 /* StartScreen+Model.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		01F3BA1229F94459009D3886 /* ConnectionLink */ = {
+			isa = PBXGroup;
+			children = (
+				01F3BA1329F946DA009D3886 /* StartScreen+DisplayLink.swift */,
+			);
+			path = ConnectionLink;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,6 +343,8 @@
 				012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */,
 				016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */,
 				01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */,
+				01F3BA1429F946DA009D3886 /* StartScreen+DisplayLink.swift in Sources */,
+				01F3BA1129F93C1A009D3886 /* StartScreen+Model.swift in Sources */,
 				0103093B29F019C200BA46A8 /* ExampleApp.swift in Sources */,
 				01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */,
 				01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */,

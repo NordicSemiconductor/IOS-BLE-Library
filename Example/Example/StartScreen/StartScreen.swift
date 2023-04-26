@@ -16,17 +16,12 @@ struct StartScreen: View {
         VStack {
             bluetoothState
             devicesBlock
-            Spacer()
         }
         .navigationBarTitle("Scaner")
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
-                    if viewModel.isScanning {
-                        viewModel.stopScan()
-                    } else {
-                        viewModel.startScan()
-                    }
+                    viewModel.toggleScan()
                 } label: {
                     if viewModel.isScanning {
                         Image(systemName: "stop.fill")
@@ -38,11 +33,9 @@ struct StartScreen: View {
             }
         }
         .alert(
-            viewModel.displayError?.title ?? "Error",
+            viewModel.displayError?.title ?? viewModel.displayError?.message ?? "Error",
             isPresented: $viewModel.showError) {
-                Button("Ok") {
-                    
-                }
+                Button("OK") { }
             }
     }
     
@@ -88,14 +81,22 @@ struct StartScreen: View {
     var deviceList: some View {
         List {
             Section {
-                ForEach(viewModel.scanResults, id: \.peripheral.identifier) { sr in
-                    NavigationLink {
-                        DeviceDetailsScreen(
-                            viewModel: viewModel.deviceViewModel(with: sr)
-                        )
+                ForEach(viewModel.displayResults) { sr in
+//                    DisplayLink(displayData: sr)
+                    Button {
+                        viewModel.connect(uuid: sr.id)
                     } label: {
-                        ScanResultView(scanResult: sr)
+                        if viewModel.connetedDevices.contains(sr.id) {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                ScanResultView(scanResult: sr)
+                            }
+                        } else {
+                            ScanResultView(scanResult: sr)
+                        }
                     }
+
                 }
             } header: {
                 Text("Scan Results")

@@ -70,16 +70,8 @@ public class CentralManager {
 
 // MARK: Methods
 extension CentralManager {
-    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> AnyPublisher<CBPeripheral, Error> {
-        return Deferred {
-            Future<Void, Never> { promise in
-                self.centralManager.connect(peripheral, options: options)
-                promise(.success(()))
-            }
-        }
-        .flatMap {
-            self.connectedPeripheralChannel
-        }
+    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.Peripheral {
+        return self.connectedPeripheralChannel
         .tryFilter { r in
             guard r.0.identifier == peripheral.identifier else {
                 return false
@@ -92,7 +84,9 @@ extension CentralManager {
             }
         }
         .map { $0.0 }
-        .eraseToAnyPublisher()
+        .peripheral {
+            self.centralManager.connect(peripheral, options: options)
+        }
     }
 }
 
