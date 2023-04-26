@@ -22,9 +22,17 @@ struct StartScreen: View {
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
-                    viewModel.stopScan()
+                    if viewModel.isScanning {
+                        viewModel.stopScan()
+                    } else {
+                        viewModel.startScan()
+                    }
                 } label: {
-                    Image(systemName: "stop.fill")
+                    if viewModel.isScanning {
+                        Image(systemName: "stop.fill")
+                    } else {
+                        Image(systemName: "play.fill")
+                    }
                 }
 
             }
@@ -41,10 +49,17 @@ struct StartScreen: View {
     @ViewBuilder
     var bluetoothState: some View {
         HStack {
-            Text("Bluetooth State:")
+            Text("State:")
             Spacer()
             Text(viewModel.state.rawValue)
                 .foregroundColor(.green)
+            if viewModel.isScanning {
+                Image(systemName: "scanner.fill")
+                    .foregroundColor(.nordicBlue)
+            } else {
+                Image(systemName: "scanner")
+                    .foregroundColor(.nordicMiddleGrey)
+            }
         }
         .padding()
     }
@@ -53,7 +68,7 @@ struct StartScreen: View {
     var devicesBlock: some View {
         VStack {
             Spacer()
-            if !viewModel.isScanning {
+            if !viewModel.isScanning && viewModel.scanResults.isEmpty {
                 Button("Start Scan") {
                     viewModel.startScan()
                 }

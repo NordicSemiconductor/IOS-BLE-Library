@@ -17,7 +17,7 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
     
     let stateSubject = CurrentValueSubject<CBManagerState, Never>(.unknown)
     let scanResultSubject = PassthroughSubject<ScanResult, Never>()
-    let connetedPeripheralSubject = PassthroughSubject<(CBPeripheral, Error?), Never>()
+    let connectedPeripheralSubject = PassthroughSubject<(CBPeripheral, Error?), Never>()
     let disconnectedPeripheralsSubject = PassthroughSubject<(CBPeripheral, Error?), Never>()
     
     public var statePublisher: AnyPublisher<CBManagerState, Never> {
@@ -52,12 +52,12 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        connetedPeripheralSubject.send((peripheral, nil))
+        connectedPeripheralSubject.send((peripheral, nil))
     }
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         let e = error ?? BluetoothError.failedToConnect
-        connetedPeripheralSubject.send((peripheral, e))
+        connectedPeripheralSubject.send((peripheral, e))
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {

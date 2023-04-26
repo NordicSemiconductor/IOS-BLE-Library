@@ -17,15 +17,43 @@ extension CentralManager {
     }
 }
 
+private class Observer: NSObject {
+    @objc private weak var cm: CBCentralManager!
+    private weak var publisher: CurrentValueSubject<Bool, Never>!
+    private var obserwation: NSKeyValueObservation?
+    
+    init(cm: CBCentralManager, publisher: CurrentValueSubject<Bool, Never>) {
+        self.cm = cm
+        self.publisher = publisher
+        super.init()
+    }
+    
+    func setup() {
+        obserwation = observe(\.cm?.isScanning,
+                               options: [.old, .new],
+                               changeHandler: { _, change in
+            
+            change.newValue?.flatMap { [weak self] new in
+                self?.publisher.send(new) }
+            }
+        )
+    }
+}
+
 public class CentralManager {
-    private let isScanningChannel = CurrentValueSubject<Bool, Never>(false)
+    private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
+    private let killSwitchSubject = PassthroughSubject<Void, Never>()
+    private lazy var observer = Observer(cm: centralManager, publisher: isScanningSubject)
     
     public let centralManager: CBCentralManager
     public let centralManagerDelegate: ReactiveCentralManagerDelegate
     
+    var observation: NSKeyValueObservation?
+    
     public init(centralManagerDelegate: ReactiveCentralManagerDelegate = ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main) {
         self.centralManagerDelegate = centralManagerDelegate
         self.centralManager = CBCentralManager(delegate: centralManagerDelegate, queue: queue)
+        observer.setup()
     }
     
     public init(centralManager: CBCentralManager) throws {
@@ -35,6 +63,36 @@ public class CentralManager {
         
         self.centralManager = centralManager
         self.centralManagerDelegate = reactiveDelegate
+        
+        observer.setup()
+    }
+}
+
+// MARK: Methods
+extension CentralManager {
+    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> AnyPublisher<CBPeripheral, Error> {
+        return Deferred {
+            Future<Void, Never> { promise in
+                self.centralManager.connect(peripheral, options: options)
+                promise(.success(()))
+            }
+        }
+        .flatMap {
+            self.connectedPeripheralChannel
+        }
+        .tryFilter { r in
+            guard r.0.identifier == peripheral.identifier else {
+                return false
+            }
+            
+            if let e = r.1 {
+                throw e
+            } else {
+                return true
+            }
+        }
+        .map { $0.0 }
+        .eraseToAnyPublisher()
     }
 }
 
@@ -42,25 +100,26 @@ public class CentralManager {
 extension CentralManager {
     public var stateChannel: AnyPublisher<CBManagerState, Never> {
         centralManagerDelegate.statePublisher
-            .share()
+            .eraseToAnyPublisher()
+    }
+    
+    public var isScanningChannel: AnyPublisher<Bool, Never> {
+        isScanningSubject
             .eraseToAnyPublisher()
     }
     
     public var scanResultsChannel: AnyPublisher<ScanResult, Never> {
         centralManagerDelegate.scanResultSubject
-            .share()
             .eraseToAnyPublisher()
     }
     
-    public var connetedPeripheralChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
-        centralManagerDelegate.connetedPeripheralSubject
-            .share()
+    public var connectedPeripheralChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
+        centralManagerDelegate.connectedPeripheralSubject
             .eraseToAnyPublisher()
     }
     
     public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
         centralManagerDelegate.disconnectedPeripheralsSubject
-            .share()
             .eraseToAnyPublisher()
     }
 }
@@ -68,15 +127,13 @@ extension CentralManager {
 extension CentralManager {
     public func stopScan() {
         centralManager.stopScan()
-        isScanningChannel.send(false)
     }
     
     public func scanForPeripherals(withServices services: [CBUUID]?) -> AnyPublisher<ScanResult, Error> {
         stopScan()
-        isScanningChannel.send(true)
         
         return centralManagerDelegate.stateSubject
-            .prefix(untilOutputFrom: isScanningChannel.first { !$0 }.share())
+            .prefix(untilOutputFrom: killSwitchSubject)
             .tryFirst { state in
                 guard let determined = state.ready else { return false }
 
@@ -85,7 +142,6 @@ extension CentralManager {
             }
             .flatMap { _ in
                 // TODO: Check for mmemory leaks
-                self.isScanningChannel.send(true)
                 self.centralManager.scanForPeripherals(withServices: services)
                 return self.centralManagerDelegate.scanResultSubject
                     .setFailureType(to: Error.self)

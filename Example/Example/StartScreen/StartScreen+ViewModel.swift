@@ -42,24 +42,29 @@ extension StartScreen {
         
         func stopScan() {
             centralManager.stopScan()
-            isScanning = false
         }
         
         func startScan() {
-            isScanning = true
+            
+            // IS SCANNING
+            centralManager.isScanningChannel
+                .assign(to: &$isScanning)
+            
+            // SCAN RESULTS
             centralManager.scanForPeripherals(withServices: [])
                 .filter { $0.name != nil }
                 .scan([ScanResult]()) { arr, sr in
                     arr.appendedOrReplaced(sr, where: { $0.id == sr.id })
                 }
-                .catch { e in
+                .catch ({ e in
                     self.displayError = ReadableError(error: e, title: "Error")
                     print(e)
                     return Just(self.scanResults)
-                }
+                })
                 .receive(on: DispatchQueue.main)
                 .assign(to: &$scanResults)
             
+            // STATE
             centralManager.stateChannel
                 .map { StartScreen.State(cbState: $0) }
                 .assign(to: &$state)
