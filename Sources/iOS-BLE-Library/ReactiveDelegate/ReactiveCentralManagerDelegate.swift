@@ -47,7 +47,6 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
             rssi: RSSI,
             advertisementData: advertisementData
         )
-        
         scanResultSubject.send(scanResult)
     }
     

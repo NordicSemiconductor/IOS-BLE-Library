@@ -10,15 +10,22 @@ let package = Package(
         .macOS(.v12)
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "iOS-BLE-Library",
             targets: ["iOS-BLE-Library"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/NordicPlayground/IOS-Common-Libraries", branch: "feature/reduce_pckage_version"),
-        .package(url: "https://github.com/NickKibish/swift-async-algorithms.git", branch: "pr/broadcast")
+        .package(
+            url: "https://github.com/NordicPlayground/IOS-Common-Libraries",
+            branch: "feature/reduce_pckage_version"
+        ),
+        .package(
+            url: "https://github.com/NickKibish/IOS-CoreBluetooth-Mock.git",
+            branch: "main"
+//            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
+//            from: "0.16.1"
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -27,7 +34,7 @@ let package = Package(
             name: "iOS-BLE-Library",
             dependencies: [
                 .product(name: "iOSCommonLibraries", package: "iOS-Common-Libraries"),
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")
             ]),
         .testTarget(
             name: "iOS-BLE-LibraryTests",

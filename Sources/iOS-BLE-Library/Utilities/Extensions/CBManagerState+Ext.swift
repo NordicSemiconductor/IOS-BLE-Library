@@ -17,8 +17,6 @@ extension CBManagerState {
             return nil
         case .poweredOff, .unauthorized, .unsupported:
             return false
-        @unknown default:
-            fatalError()
         }
     }
 }

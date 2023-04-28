@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import CoreBluetooth
+import CoreBluetoothMock
+import iOS_BLE_Library
 
 extension StartScreen {
     enum State: String {
@@ -31,12 +32,10 @@ extension StartScreen {
                 self = .poweredOff
             case .poweredOn:
                 self = .poweredOn
-            @unknown default:
-                fatalError()
             }
         }
         
-        init(cbState: CoreBluetooth.CBManagerState) {
+        init(cbState: CBManagerState) {
             switch cbState {
             case .unknown:
                 self = .unknown
@@ -50,8 +49,6 @@ extension StartScreen {
                 self = .poweredOff
             case .poweredOn:
                 self = .poweredOn
-            @unknown default:
-                fatalError()
             }
         }
     }

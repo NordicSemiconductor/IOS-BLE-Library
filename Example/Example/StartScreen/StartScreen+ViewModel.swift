@@ -39,6 +39,9 @@ extension StartScreen {
         private let centralManager: CentralManager
         
         init() {
+            BluetoothEmulation.simulateState()
+            BluetoothEmulation.simulatePeripherals()
+            
             centralManager = CentralManager()
             
             $scanResults

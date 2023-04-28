@@ -16,7 +16,6 @@
 		012D4B5029CB534B00839213 /* StartScreen+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B4F29CB534B00839213 /* StartScreen+Ext.swift */; };
 		012D4B8D29CCA17700839213 /* StartScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B8C29CCA17700839213 /* StartScreen+ViewModel.swift */; };
 		012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012D4B9229CCB48000839213 /* ScanResultView.swift */; };
-		012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */ = {isa = PBXBuildFile; productRef = 012D4B9729CCB67200839213 /* CoreBluetoothMock */; };
 		01500F8D297AA98200504009 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01500F8C297AA98200504009 /* StartScreen.swift */; };
 		016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016ED1C329D4504C00B875FC /* Array+Ext.swift */; };
 		016ED1C929D4859500B875FC /* DeviceDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016ED1C829D4859500B875FC /* DeviceDetailsScreen.swift */; };
@@ -75,7 +74,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				01EFE88329DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database in Frameworks */,
-				012D4B9829CCB67200839213 /* CoreBluetoothMock in Frameworks */,
 				01116E50296C43C6001A693B /* iOS-BLE-Library in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,7 +264,6 @@
 			name = Example;
 			packageProductDependencies = (
 				01116E4F296C43C6001A693B /* iOS-BLE-Library */,
-				012D4B9729CCB67200839213 /* CoreBluetoothMock */,
 				01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */,
 			);
 			productName = Example;
@@ -298,7 +295,6 @@
 			);
 			mainGroup = 01116E32296C41ED001A693B;
 			packageReferences = (
-				012D4B9629CCB67200839213 /* XCRemoteSwiftPackageReference "IOS-CoreBluetooth-Mock" */,
 				01EFE88129DAC30C00BC5AA9 /* XCRemoteSwiftPackageReference "iOS-Bluetooth-Numbers-Database" */,
 			);
 			productRefGroup = 01116E3C296C41ED001A693B /* Products */;
@@ -387,6 +383,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -445,6 +442,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -469,8 +467,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
 				DEVELOPMENT_TEAM = P3R8YQEV4L;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -493,12 +493,14 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "no.nordicsemi.ios-bluetooth-library.Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -511,8 +513,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
 				DEVELOPMENT_TEAM = P3R8YQEV4L;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -535,6 +539,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "no.nordicsemi.ios-bluetooth-library.Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -571,14 +576,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		012D4B9629CCB67200839213 /* XCRemoteSwiftPackageReference "IOS-CoreBluetooth-Mock" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.0;
-			};
-		};
 		01EFE88129DAC30C00BC5AA9 /* XCRemoteSwiftPackageReference "iOS-Bluetooth-Numbers-Database" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NickKibish/iOS-Bluetooth-Numbers-Database.git";
@@ -593,11 +590,6 @@
 		01116E4F296C43C6001A693B /* iOS-BLE-Library */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "iOS-BLE-Library";
-		};
-		012D4B9729CCB67200839213 /* CoreBluetoothMock */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 012D4B9629CCB67200839213 /* XCRemoteSwiftPackageReference "IOS-CoreBluetooth-Mock" */;
-			productName = CoreBluetoothMock;
 		};
 		01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */ = {
 			isa = XCSwiftPackageProductDependency;

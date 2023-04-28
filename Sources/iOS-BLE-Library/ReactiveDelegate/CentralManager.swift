@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreBluetooth
+import CoreBluetoothMock
 import Combine
 
 extension CentralManager {
@@ -20,7 +20,7 @@ extension CentralManager {
 private class Observer: NSObject {
     @objc private weak var cm: CBCentralManager!
     private weak var publisher: CurrentValueSubject<Bool, Never>!
-    private var obserwation: NSKeyValueObservation?
+    private var observation: NSKeyValueObservation?
     
     init(cm: CBCentralManager, publisher: CurrentValueSubject<Bool, Never>) {
         self.cm = cm
@@ -29,7 +29,7 @@ private class Observer: NSObject {
     }
     
     func setup() {
-        obserwation = observe(\.cm?.isScanning,
+        observation = observe(\.cm?.isScanning,
                                options: [.old, .new],
                                changeHandler: { _, change in
             
@@ -52,7 +52,8 @@ public class CentralManager {
     
     public init(centralManagerDelegate: ReactiveCentralManagerDelegate = ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main) {
         self.centralManagerDelegate = centralManagerDelegate
-        self.centralManager = CBCentralManager(delegate: centralManagerDelegate, queue: queue)
+        self.centralManager = CBCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
+//        self.centralManager = CBCentralManager(delegate: centralManagerDelegate, queue: queue)
         observer.setup()
     }
     
