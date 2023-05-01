@@ -10,7 +10,7 @@ import CoreBluetoothMock
 import Combine
 
 extension CentralManager {
-    enum CentralManagerError: Error {
+    enum Error: Swift.Error {
         case wrongManager
         case badState(CBManagerState)
         case unknownError
@@ -59,7 +59,7 @@ public class CentralManager {
     
     public init(centralManager: CBCentralManager) throws {
         guard let reactiveDelegate = centralManager.delegate as? ReactiveCentralManagerDelegate else {
-            throw CentralManagerError.wrongManager
+            throw Error.wrongManager
         }
         
         self.centralManager = centralManager
@@ -85,6 +85,7 @@ extension CentralManager {
             }
         }
         .map { $0.0 }
+        .first()
         .peripheral {
             self.centralManager.connect(peripheral, options: options)
         }
@@ -108,12 +109,12 @@ extension CentralManager {
             .eraseToAnyPublisher()
     }
     
-    public var connectedPeripheralChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
+    public var connectedPeripheralChannel: AnyPublisher<(CBPeripheral, Swift.Error?), Never> {
         centralManagerDelegate.connectedPeripheralSubject
             .eraseToAnyPublisher()
     }
     
-    public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
+    public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Swift.Error?), Never> {
         centralManagerDelegate.disconnectedPeripheralsSubject
             .eraseToAnyPublisher()
     }
@@ -124,22 +125,22 @@ extension CentralManager {
         centralManager.stopScan()
     }
     
-    public func scanForPeripherals(withServices services: [CBUUID]?) -> AnyPublisher<ScanResult, Error> {
+    public func scanForPeripherals(withServices services: [CBUUID]?) -> AnyPublisher<ScanResult, Swift.Error> {
         stopScan()
-        
+        // TODO: Change to BluetoothPublisher
         return centralManagerDelegate.stateSubject
             .prefix(untilOutputFrom: killSwitchSubject)
             .tryFirst { state in
                 guard let determined = state.ready else { return false }
 
-                guard determined else { throw CentralManagerError.badState(state) }
+                guard determined else { throw Error.badState(state) }
                 return true
             }
             .flatMap { _ in
                 // TODO: Check for mmemory leaks
                 self.centralManager.scanForPeripherals(withServices: services)
                 return self.centralManagerDelegate.scanResultSubject
-                    .setFailureType(to: Error.self)
+                    .setFailureType(to: Swift.Error.self)
             }
             .mapError{ [weak self] e in
                 self?.stopScan()
@@ -147,7 +148,4 @@ extension CentralManager {
             }
             .eraseToAnyPublisher()
     }
-    
-    
 }
-
