@@ -6,38 +6,67 @@
 //
 
 import SwiftUI
+import iOS_Common_Libraries
 
 struct DeviceDetailsScreen: View {
     @ObservedObject var viewModel: ViewModel
     
     var body: some View {
-        VStack {
-            VStack {
-                ItemListView(itemList: viewModel.advertisementData.readableFormat)
+        Form {
+            Section("Device") {
+                HeaderView(
+                    name: viewModel.name,
+                    rssi: viewModel.rssi,
+                    connectable: viewModel.isConnectable,
+                    connected: false 
+                )
             }
-            .padding()
-            List {
-                ForEach(viewModel.discoveredServices) { service in
-                    NestedItemView(item: service)
-                    ForEach(service.characteristics) { characteristic in
-                        NestedItemView(item: characteristic)
-                    }
+            
+            Section("Advertisement Data") {
+                AdvertisementDataView(advData: viewModel.advertisementData)
+            }
+            
+            Section {
+                connectionButton(
+                    connectable: viewModel.isConnectable,
+                    connected: false
+                )
+            } footer: {
+                if !viewModel.isConnectable {
+                    Text("The device is not connectable")
                 }
             }
-            Button("Connect") {
-                Task {
-                    await viewModel.connect()
-                }
+        }
+        .navigationTitle("Device")
+    }
+    
+    @ViewBuilder
+    func connectionButton(connectable: Bool, connected: Bool) -> some View {
+        if !connected {
+            Button("CONNECT") {
+                
             }
-            .disabled(!viewModel.isConnectable)
-            Spacer()
+            .disabled(!connectable)
+            .buttonStyle(NordicPrimary())
+        } else {
+            Button("DISCONNECT") {
+                
+            }
+            .buttonStyle(NordicPrimaryDistructive())
         }
     }
 }
 
 struct DeviceDetailsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceDetailsScreen(viewModel: DeviceDetailsScreen.PreviewViewModel(deviceId: UUID().uuidString))
+        NavigationView {
+            DeviceDetailsScreen(
+                viewModel: DeviceDetailsScreen.PreviewViewModel(
+                    name: "Device",
+                    connectable: false
+                )
+            )
+        }
     }
 }
 

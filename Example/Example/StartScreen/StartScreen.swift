@@ -82,19 +82,10 @@ struct StartScreen: View {
         List {
             Section {
                 ForEach(viewModel.displayResults) { sr in
-//                    DisplayLink(displayData: sr)
-                    Button {
-                        viewModel.connect(uuid: sr.id)
+                    NavigationLink {
+                        DeviceDetailsScreen(viewModel: viewModel.deviceViewModel(with: sr))
                     } label: {
-                        if viewModel.connetedDevices.contains(sr.id) {
-                            HStack {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                ScanResultView(scanResult: sr)
-                            }
-                        } else {
-                            ScanResultView(scanResult: sr)
-                        }
+                        StartScreen.ScanResultView(scanResult: sr)
                     }
 
                 }

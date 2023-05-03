@@ -24,7 +24,7 @@ struct ItemListView<K: Hashable>: View {
 struct ItemListView_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            ItemListView(itemList: AdvertisementData.fullMock.readableFormat)
+            ItemListView(itemList: AdvertisementData.mock.readableFormat)
         }
         .padding()
         .previewLayout(.sizeThatFits)

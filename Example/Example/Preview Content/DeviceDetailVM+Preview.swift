@@ -10,21 +10,12 @@ import iOS_BLE_Library
 
 extension DeviceDetailsScreen {
     class PreviewViewModel: ViewModel {
-        override init(deviceId: String) {
-            super.init(deviceId: deviceId)
-            
-            self.name = "New Device"
-            self.advertisementData = .fullMock
-            self.isConnectable = true
-        }
-        
-        override init(deviceId: CBUUID) {
-            super.init(deviceId: deviceId)
-            
-            self.name = "New Device"
-            self.advertisementData = .fullMock
-            self.isConnectable = true
-            
+        init(name: String = "New Device", connectable: Bool = true, rssi: RSSI = .good, advData: AdvertisementData = .mock) {
+            super.init()
+            self.name = name
+            self.isConnectable = connectable
+            self.rssi = rssi
+            self.advertisementData = advData
         }
         
         override func discoverDevice() { }

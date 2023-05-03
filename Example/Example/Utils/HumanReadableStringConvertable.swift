@@ -39,11 +39,7 @@ extension CBUUID: HumanReadableStringConvertable {
 
 extension Data: HumanReadableStringConvertable {
     var humanReadableString: String {
-        if let str = String(data: self, encoding: .utf8) {
-            return str
-        } else {
-            return "\(self.count) bytes"
-        }
+        return "\(self.count) bytes"
     }
 }
 
@@ -58,6 +54,19 @@ extension Optional: HumanReadableStringConvertable where Wrapped: HumanReadableS
     }
 }
 
+extension Array: HumanReadableStringConvertable {
+    var humanReadableString: String {
+        "\(count) values"
+    }
+}
+
+extension Dictionary: HumanReadableStringConvertable {
+    var humanReadableString: String {
+        "\(count) value"
+    }
+}
+
+/*
 extension Array: HumanReadableStringConvertable where Element: HumanReadableStringConvertable {
     var humanReadableString: String {
         let arrayString = self
@@ -66,7 +75,9 @@ extension Array: HumanReadableStringConvertable where Element: HumanReadableStri
         return "[\(arrayString)]"
     }
 }
+*/
 
+/*
 extension Dictionary: HumanReadableStringConvertable where Key: HumanReadableStringConvertable, Value: HumanReadableStringConvertable {
     var humanReadableString: String {
         let str = self.enumerated().map {
@@ -81,3 +92,4 @@ extension Dictionary: HumanReadableStringConvertable where Key: HumanReadableStr
 """
     }
 }
+*/

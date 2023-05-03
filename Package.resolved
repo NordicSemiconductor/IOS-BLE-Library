@@ -8,6 +8,15 @@
         "branch" : "feature/reduce_pckage_version",
         "revision" : "5a5023a3ef91f0d7842bf5dd64e6523ad4406052"
       }
+    },
+    {
+      "identity" : "ios-corebluetooth-mock",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NickKibish/IOS-CoreBluetooth-Mock.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8fa3cc56569372f5e34288e16903bff986692ec6"
+      }
     }
   ],
   "version" : 2

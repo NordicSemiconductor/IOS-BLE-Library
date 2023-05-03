@@ -116,9 +116,7 @@ extension StartScreen {
                 return vm
             }
             else {
-                let vm = DeviceDetailsScreen.ViewModel(
-                    deviceId: scanData.peripheral.identifier.uuidString
-                )
+                let vm = DeviceDetailsScreen.ViewModel(scanResult: scanData, centralManager: centralManager)
                 deviceViewModels[scanData.peripheral.identifier] = vm
                 return vm
             }

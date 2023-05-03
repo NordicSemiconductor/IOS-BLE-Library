@@ -9,8 +9,8 @@ import Foundation
 import iOS_BLE_Library
 import iOS_Bluetooth_Numbers_Database
 
-extension AdvertisementData {
-    static var fullMock: AdvertisementData {
+extension AdvertisementData: Mock {
+    static var mock: AdvertisementData {
         let service = Service.Nordicsemi.ThingyUi.thingyUiService.uuid
         
         let mockDict = [CBAdvertisementDataLocalNameKey: "MockName",

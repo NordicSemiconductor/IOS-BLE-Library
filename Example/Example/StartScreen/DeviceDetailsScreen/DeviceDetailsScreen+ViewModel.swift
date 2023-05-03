@@ -13,26 +13,48 @@ import Combine
 extension DeviceDetailsScreen {
     @MainActor
     class ViewModel: ObservableObject {
-        let deviceId: CBUUID
+        let centralManager: CentralManager
         
         private var cancelable = Set<AnyCancellable>()
         private var peripheral: CBPeripheral?
         
+        // MARK: Published
         @Published var name: String = ""
-        @Published var advertisementData: AdvertisementData = AdvertisementData([:])
+        @Published var rssi: RSSI = .outOfRange
         @Published var isConnectable: Bool = false
+        
+        @Published var advertisementData: AdvertisementData = AdvertisementData([:])
         
         @Published var discoveredServices: [Service] = []
         
-        init(deviceId: CBUUID) {
-            self.deviceId = deviceId
+        init(peripheral: CBPeripheral, rssi: RSSI, centralManager: CentralManager, advertisementData: AdvertisementData) {
+            self.peripheral = peripheral
+            self.centralManager = centralManager
+            self.rssi = rssi
+            self.advertisementData = advertisementData
+            
+            setupDisplayValues()
         }
         
-        
-        init(deviceId: String) {
-            let id = CBUUID(string: deviceId)
-            self.deviceId = id
+        init(scanResult: ScanResult, centralManager: CentralManager) {
+            self.centralManager = centralManager
+            self.peripheral = scanResult.peripheral
+            self.rssi = scanResult.rssi
+            self.advertisementData = scanResult.advertisementData
+            
+            setupDisplayValues()
         }
+        
+        private func setupDisplayValues() {
+            self.name = peripheral?.name ?? "n/a"
+            self.isConnectable = advertisementData.isConnectable ?? false
+        }
+        
+        #if DEBUG
+        init() {
+            self.centralManager = CentralManager()
+        }
+        #endif
         
         func discoverDevice() {
         }
@@ -77,36 +99,10 @@ extension Sequence {
 
 extension DeviceDetailsScreen.ViewModel {
     func connect() async {
-//        guard let peripheral = self.peripheral else { return }
-//        
-//        do {
-//            try await bluetooth.connect(to: peripheral)
-//            
-//            let services = try await bluetooth.discoverServices(of: peripheral)
-//                .map {
-//                    iOS_Bluetooth_Numbers_Database.Service.find(by: $0.uuid) ??
-//                    iOS_Bluetooth_Numbers_Database.Service(name: "Unknown Service", identifier: "", uuidString: $0.uuid.uuidString, source: "")
-//                }
-//                .map {
-//                    Service(name: $0.name, id: $0.uuidString)
-//                }
-//                .asyncMap { s in
-//                    var service = s
-//                    service.characteristics = (try await bluetooth.discoverCharacteristics(ofService: s.id, ofDeviceWithUUID: peripheral.identifier.uuidString) ?? [])
-//                        .map {
-//                            iOS_Bluetooth_Numbers_Database.Characteristic.find(by: $0.uuid) ??
-//                            iOS_Bluetooth_Numbers_Database.Characteristic(name: "Unknown Characteristic", identifier: $0.uuid.uuidString, uuidString: "", source: "")
-//                        }
-//                        .map {
-//                            Characteristic(name: $0.name, id: $0.uuidString)
-//                        }
-//                    
-//                    return service
-//                }
-//            
-//            self.discoveredServices = services
-//        } catch let e {
-//            print(e.localizedDescription)
+//        guard let peripheral else {
+//            fatalError()
 //        }
+//        
+        
     }
 }

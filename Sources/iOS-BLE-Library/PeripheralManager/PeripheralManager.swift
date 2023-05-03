@@ -14,19 +14,10 @@ public class PeripheralManager {
         case badDelegate
     }
     
-    let peripheral: CBPeripheral
-    let peripheralDelegate: ReactivePeripheralDelegate
+    public let peripheral: CBPeripheral
+    public let peripheralDelegate: ReactivePeripheralDelegate
     
-    init(peripheral: CBPeripheral) throws {
-        self.peripheral = peripheral
-        
-        guard let delegate = peripheral.delegate as? ReactivePeripheralDelegate else {
-            throw Error.badDelegate
-        }
-        self.peripheralDelegate = delegate
-    }
-    
-    init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
+    public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
         self.peripheral = peripheral
         self.peripheralDelegate = delegate
         peripheral.delegate = delegate
@@ -34,8 +25,21 @@ public class PeripheralManager {
 }
 
 extension PeripheralManager {
-    public func discoverServices() {
-        peripheral.discoverServices(nil)
+    public func discoverServices() -> Publishers.BluetoothPublisher<CBService> {
+        return peripheralDelegate.discoveredServicesSubject
+            .tryCompactMap { result throws -> [CBService]? in
+                if let e = result.1 {
+                    throw e
+                } else {
+                    return result.0
+                }
+            }
+            .flatMap { services in
+                Publishers.Sequence(sequence: services)
+            }
+            .btPublisher {
+                self.peripheral.discoverServices(nil)
+            }
     }
     
     public func discoverServices(serviceUUIDs: [CBMUUID]) -> Publishers.BluetoothPublisher<CBService> {

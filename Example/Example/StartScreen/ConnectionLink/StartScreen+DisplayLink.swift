@@ -8,31 +8,32 @@
 import SwiftUI
 
 extension StartScreen {
-    struct DisplayLink: View {
+    struct DisplayLink<Content: View>: View {
         let displayData: DisplayResult
+        let content: () -> Content
         
         var body: some View {
-            NavigationLink {
-                Text("")
-            } label: {
+            NavigationLink(destination: content()) {
                 StartScreen.ScanResultView(scanResult: displayData)
             }
-
         }
     }
 }
 
 struct StartScreen_DisplayLink_Previews: PreviewProvider {
-    static let displayResults: [StartScreen.DisplayResult] = [
-        StartScreen.DisplayResult(name: "EdgeImpulse", connectable: true, id: UUID()),
-        StartScreen.DisplayResult(name: "Weather Station", connectable: false, id: UUID()),
-        StartScreen.DisplayResult(name: "Blinky", connectable: true, id: UUID())
+    typealias DisplayLink = StartScreen.DisplayLink
+    typealias DisplayResult = StartScreen.DisplayResult
+    
+    static let displayResults: [DisplayResult] = [
+        DisplayResult(name: "EdgeImpulse", connectable: true, id: UUID()),
+        DisplayResult(name: "Weather Station", connectable: false, id: UUID()),
+        DisplayResult(name: "Blinky", connectable: true, id: UUID())
     ]
     
     static var previews: some View {
         List {
             ForEach(displayResults) {
-                StartScreen.DisplayLink(displayData: $0)
+                DisplayLink(displayData: $0, content: { Text("") })
             }
         }
     }
