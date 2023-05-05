@@ -13,7 +13,7 @@ extension DeviceDetailsScreen {
         let name: String
         let rssi: RSSI
         let connectable: Bool
-        let connected: Bool
+        let state: CBPeripheralState
         
         var body: some View {
             HStack() {
@@ -23,12 +23,18 @@ extension DeviceDetailsScreen {
                     .font(.headline)
                 Spacer()
                 if connectable {
-                    if connected {
-                        Image(systemName: "link.circle.fill")
-                            .foregroundColor(.green)
-                    } else {
+                    switch state {
+                    case .disconnected:
                         Image(systemName: "link.circle")
                             .foregroundColor(.gray)
+                    case .connecting, .disconnecting:
+                        Image(systemName: "link.circle")
+                            .foregroundColor(.yellow)
+                    case .connected:
+                        Image(systemName: "link.circle.fill")
+                            .foregroundColor(.green)
+                    @unknown default:
+                        fatalError()
                     }
                 }
             }
@@ -42,11 +48,11 @@ struct DeviceDetailsScreen_HeaderView_Previews: PreviewProvider {
     static var previews: some View {
         Form {
             Section("Devices") {
-                HeaderView(name: "Device 1", rssi: .good, connectable: true, connected: true)
-                HeaderView(name: "Device 2", rssi: .ok, connectable: false, connected: false)
-                HeaderView(name: "Device 3", rssi: .bad, connectable: true, connected: false)
-                HeaderView(name: "Device 4", rssi: .practicalWorst, connectable: false, connected: false)
-                HeaderView(name: "Device 5", rssi: .outOfRange, connectable: false, connected: false)
+                HeaderView(name: "Device 1", rssi: .good, connectable: true, state: .disconnected)
+                HeaderView(name: "Device 2", rssi: .ok, connectable: false, state: .disconnected)
+                HeaderView(name: "Device 3", rssi: .bad, connectable: true, state: .connected)
+                HeaderView(name: "Device 4", rssi: .practicalWorst, connectable: false, state: .disconnected)
+                HeaderView(name: "Device 5", rssi: .outOfRange, connectable: true, state: .disconnecting)
             }
         }
     }

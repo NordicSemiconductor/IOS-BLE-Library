@@ -14,6 +14,14 @@ extension Publisher where Failure == Never {
     }
 }
 
+extension Publishers.Autoconnect where Upstream == Publishers.Peripheral {
+    public var value: Output {
+        get async throws {
+            try await ContinuationSubscriber<Self>.withCheckedContinuation(self)
+        }
+    }
+}
+
 public struct AsyncPublisher<Upstream: Publisher>: AsyncSequence where Upstream.Failure == Never {
     public typealias Element = Upstream.Output
     

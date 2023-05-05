@@ -16,12 +16,14 @@ extension DeviceDetailsScreen {
         let centralManager: CentralManager
         
         private var cancelable = Set<AnyCancellable>()
-        private var peripheral: CBPeripheral?
+        private var peripheral: CBPeripheral!
+        private lazy var peripheralManager = PeripheralManager(peripheral: peripheral, delegate: ReactivePeripheralDelegate())
         
         // MARK: Published
         @Published var name: String = ""
         @Published var rssi: RSSI = .outOfRange
         @Published var isConnectable: Bool = false
+        @Published var connectionState: CBPeripheralState = .disconnected
         
         @Published var advertisementData: AdvertisementData = AdvertisementData([:])
         
@@ -46,8 +48,11 @@ extension DeviceDetailsScreen {
         }
         
         private func setupDisplayValues() {
-            self.name = peripheral?.name ?? "n/a"
-            self.isConnectable = advertisementData.isConnectable ?? false
+            name = peripheral?.name ?? "n/a"
+            isConnectable = advertisementData.isConnectable ?? false
+            
+            peripheralManager.peripheralStateChannel
+                .assign(to: &$connectionState)
         }
         
         #if DEBUG
@@ -99,10 +104,16 @@ extension Sequence {
 
 extension DeviceDetailsScreen.ViewModel {
     func connect() async {
-//        guard let peripheral else {
-//            fatalError()
-//        }
-//        
+        guard let peripheral else {
+            fatalError()
+        }
         
+        do {
+            _ = try await centralManager.connect(peripheral).autoconnect().value
+            
+        } catch let e {
+            #warning("Handle Error")
+            return
+        }
     }
 }

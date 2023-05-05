@@ -117,16 +117,16 @@ let blinky = CBMPeripheralSpec
         delay: 5.0,
         alsoWhenConnected: false
     )
-    .advertising(
-        advertisementData: [
-            CBAdvertisementDataIsConnectable : false as NSNumber,
-            CBAdvertisementDataLocalNameKey : "iBeacon",
-            //CBAdvertisementDataManufacturerDataKey:
-        ],
-        withInterval: 4.0,
-        delay: 2.0,
-        alsoWhenConnected: false
-    )
+//    .advertising(
+//        advertisementData: [
+//            CBAdvertisementDataIsConnectable : false as NSNumber,
+//            CBAdvertisementDataLocalNameKey : "iBeacon",
+//            //CBAdvertisementDataManufacturerDataKey:
+//        ],
+//        withInterval: 4.0,
+//        delay: 2.0,
+//        alsoWhenConnected: false
+//    )
     .connectable(
         name: "nRF Blinky",
         services: [.blinkyService],

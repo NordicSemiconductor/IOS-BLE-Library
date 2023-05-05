@@ -18,7 +18,7 @@ struct DeviceDetailsScreen: View {
                     name: viewModel.name,
                     rssi: viewModel.rssi,
                     connectable: viewModel.isConnectable,
-                    connected: false 
+                    state: viewModel.connectionState
                 )
             }
             
@@ -44,7 +44,9 @@ struct DeviceDetailsScreen: View {
     func connectionButton(connectable: Bool, connected: Bool) -> some View {
         if !connected {
             Button("CONNECT") {
-                
+                Task {
+                    await viewModel.connect()
+                }
             }
             .disabled(!connectable)
             .buttonStyle(NordicPrimary())

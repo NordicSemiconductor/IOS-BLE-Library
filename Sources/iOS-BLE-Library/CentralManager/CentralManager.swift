@@ -18,7 +18,7 @@ extension CentralManager {
 }
 
 private class Observer: NSObject {
-    @objc private weak var cm: CBCentralManager!
+    @objc dynamic private weak var cm: CBCentralManager!
     private weak var publisher: CurrentValueSubject<Bool, Never>!
     private var observation: NSKeyValueObservation?
     
@@ -48,12 +48,9 @@ public class CentralManager {
     public let centralManager: CBCentralManager
     public let centralManagerDelegate: ReactiveCentralManagerDelegate
     
-    var observation: NSKeyValueObservation?
-    
     public init(centralManagerDelegate: ReactiveCentralManagerDelegate = ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main) {
         self.centralManagerDelegate = centralManagerDelegate
         self.centralManager = CBCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
-//        self.centralManager = CBCentralManager(delegate: centralManagerDelegate, queue: queue)
         observer.setup()
     }
     
