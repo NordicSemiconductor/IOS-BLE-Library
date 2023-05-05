@@ -27,10 +27,7 @@ struct DeviceDetailsScreen: View {
             }
             
             Section {
-                connectionButton(
-                    connectable: viewModel.isConnectable,
-                    connected: false
-                )
+                connectionButton(state: viewModel.connectionState)
             } footer: {
                 if !viewModel.isConnectable {
                     Text("The device is not connectable")
@@ -41,20 +38,21 @@ struct DeviceDetailsScreen: View {
     }
     
     @ViewBuilder
-    func connectionButton(connectable: Bool, connected: Bool) -> some View {
-        if !connected {
+    func connectionButton(state: CBPeripheralState) -> some View {
+        if state == .disconnected || state == .connecting {
             Button("CONNECT") {
                 Task {
                     await viewModel.connect()
                 }
             }
-            .disabled(!connectable)
+            .disabled(state == .connecting)
             .buttonStyle(NordicPrimary())
         } else {
             Button("DISCONNECT") {
                 
             }
             .buttonStyle(NordicPrimaryDistructive())
+            .disabled(state == .disconnecting)
         }
     }
 }

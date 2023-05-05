@@ -11,6 +11,10 @@ import CoreBluetooth
 import Combine
 
 private class Observer: NSObject {
+    func setup() { }
+}
+
+private class NativeObserver: Observer {
     @objc private var peripheral: CoreBluetooth.CBPeripheral
     
     private weak var publisher: CurrentValueSubject<CBPeripheralState, Never>!
@@ -22,7 +26,31 @@ private class Observer: NSObject {
         super.init()
     }
     
-    func setup() {
+    override func setup() {
+        observation = peripheral.observe(\.state, options: [.new]) { [weak self] _, change in
+            #warning("queue can be not only main")
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.publisher.send(self.peripheral.state)
+            }
+        }
+    }
+}
+
+// TODO: Generate this code
+private class MockObserver: Observer {
+    @objc private var peripheral: CBMPeripheralMock
+    
+    private weak var publisher: CurrentValueSubject<CBPeripheralState, Never>!
+    private var observation: NSKeyValueObservation?
+    
+    init(peripheral: CBMPeripheralMock, publisher: CurrentValueSubject<CBPeripheralState, Never>) {
+        self.peripheral = peripheral
+        self.publisher = publisher
+        super.init()
+    }
+    
+    override func setup() {
         observation = peripheral.observe(\.state, options: [.new]) { [weak self] _, change in
             #warning("queue can be not only main")
             DispatchQueue.main.async {
@@ -51,10 +79,11 @@ public class PeripheralManager {
         peripheral.delegate = delegate
         
         if let p = peripheral as? CBMPeripheralNative {
-            observer = Observer(peripheral: p.peripheral, publisher: stateSubject)
+            observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
             observer.setup()
-        } else {
-            print(peripheral)
+        } else if let p = peripheral as? CBMPeripheralMock {
+            observer = MockObserver(peripheral: p, publisher: stateSubject)
+            observer.setup()
         }
         
     }
