@@ -97,8 +97,9 @@ extension PeripheralManager {
 }
 
 extension PeripheralManager {
-    public func discoverServices() -> Publishers.BluetoothPublisher<CBService, Swift.Error> {
-        return peripheralDelegate.discoveredServicesSubject
+    // TODO: Extract repeated code
+    public func discoverServices(serviceUUIDs: [CBMUUID]?) -> Publishers.BluetoothPublisher<CBService, Swift.Error> {
+        let allServices = peripheralDelegate.discoveredServicesSubject
             .tryCompactMap { result throws -> [CBService]? in
                 if let e = result.1 {
                     throw e
@@ -109,26 +110,64 @@ extension PeripheralManager {
             .flatMap { services in
                 Publishers.Sequence(sequence: services)
             }
-            .bluetooth {
-                self.peripheral.discoverServices(nil)
-            }
+        
+        let filtered: AnyPublisher<CBService, Swift.Error>
+        
+        if let serviceList = serviceUUIDs {
+            filtered = allServices.guestList(serviceList, keypath: \.uuid).eraseToAnyPublisher()
+        } else {
+            filtered = allServices.eraseToAnyPublisher()
+        }
+        
+        return filtered.bluetooth {
+            self.peripheral.discoverServices(serviceUUIDs)
+        }
     }
     
-    public func discoverServices(serviceUUIDs: [CBMUUID]) -> Publishers.BluetoothPublisher<CBService, Swift.Error> {
-        return peripheralDelegate.discoveredServicesSubject
-            .tryCompactMap { result throws -> [CBService]? in
-                if let e = result.1 {
+    public func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService) -> Publishers.BluetoothPublisher<CBCharacteristic, Swift.Error> {
+        let allCharacteristics = peripheralDelegate.discoveredCharacteristicsSubject
+            .filter {
+                $0.0.uuid == service.uuid
+            }
+            .tryCompactMap { result throws -> [CBCharacteristic]? in
+                if let e = result.2 {
                     throw e
                 } else {
-                    return result.0
+                    return result.1
                 }
             }
-            .flatMap { services in
-                Publishers.Sequence(sequence: services)
+            .flatMap { Publishers.Sequence(sequence: $0) }
+        
+        let filtered: AnyPublisher<CBCharacteristic, Swift.Error>
+            
+        if let list = characteristicUUIDs {
+            filtered = allCharacteristics
+                .guestList(list, keypath: \.uuid)
+                .eraseToAnyPublisher()
+        } else {
+            filtered = allCharacteristics.eraseToAnyPublisher()
+        }
+        
+        return filtered.bluetooth {
+            self.peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
+        }
+    }
+    
+    public func discoverDescriptors(for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<CBDescriptor, Swift.Error> {
+        return peripheralDelegate.discoveredDescriptorsSubject
+            .filter {
+                $0.0.uuid == characteristic.uuid
             }
-            .guestList(serviceUUIDs, keypath: \.uuid)
+            .tryCompactMap { result throws -> [CBDescriptor]? in
+                if let e = result.2 {
+                    throw e
+                } else {
+                    return result.1
+                }
+            }
+            .flatMap { Publishers.Sequence(sequence: $0) }
             .bluetooth {
-                self.peripheral.discoverServices(serviceUUIDs)
+                self.peripheral.discoverDescriptors(for: characteristic)
             }
     }
 }

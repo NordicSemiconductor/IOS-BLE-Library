@@ -26,6 +26,10 @@ struct DeviceDetailsScreen: View {
                 AdvertisementDataView(advData: viewModel.advertisementData)
             }
             
+            if !viewModel.discoveredServices.isEmpty {
+                serviceSection(services: viewModel.discoveredServices)
+            }
+            
             Section {
                 connectionButton(state: viewModel.connectionState)
             } footer: {
@@ -55,6 +59,18 @@ struct DeviceDetailsScreen: View {
             }
             .buttonStyle(NordicPrimaryDistructive())
             .disabled(state == .disconnecting)
+        }
+    }
+    
+    @ViewBuilder
+    func serviceSection(services: [ViewModel.Service]) -> some View {
+        Section("Services and Characteristics") {
+            ForEach(viewModel.discoveredServices) { s in
+                NestedItemView(item: s)
+                ForEach(s.characteristics) {
+                    NestedItemView(item: $0)
+                }
+            }
         }
     }
 }

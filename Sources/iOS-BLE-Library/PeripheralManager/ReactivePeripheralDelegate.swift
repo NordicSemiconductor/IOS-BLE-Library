@@ -21,6 +21,7 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
     // MARK: Discovering Services
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print(#function)
         discoveredServicesSubject.send((peripheral.services, error))
     }
     
