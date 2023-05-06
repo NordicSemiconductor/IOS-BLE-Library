@@ -49,7 +49,9 @@ struct DeviceDetailsScreen: View {
             .buttonStyle(NordicPrimary())
         } else {
             Button("DISCONNECT") {
-                
+                Task {
+                    await viewModel.disconnect()
+                }
             }
             .buttonStyle(NordicPrimaryDistructive())
             .disabled(state == .disconnecting)

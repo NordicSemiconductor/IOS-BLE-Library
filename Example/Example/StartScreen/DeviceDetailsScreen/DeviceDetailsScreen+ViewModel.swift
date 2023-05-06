@@ -29,6 +29,13 @@ extension DeviceDetailsScreen {
         
         @Published var discoveredServices: [Service] = []
         
+        @Published var showError: Bool = false
+        @Published var displayError: ReadableError? = nil {
+            didSet {
+                showError = displayError != nil
+            }
+        }
+        
         init(peripheral: CBPeripheral, rssi: RSSI, centralManager: CentralManager, advertisementData: AdvertisementData) {
             self.peripheral = peripheral
             self.centralManager = centralManager
@@ -112,8 +119,18 @@ extension DeviceDetailsScreen.ViewModel {
             _ = try await centralManager.connect(peripheral).autoconnect().value
             
         } catch let e {
-            #warning("Handle Error")
+            displayError = ReadableError(error: e, title: "Can't connect")
             return
+        }
+    }
+    
+    func disconnect() async {
+        do {
+            _ = try await centralManager.cancelPeripheralConnection(peripheral)
+                .autoconnect()
+                .value
+        } catch let e {
+            displayError = ReadableError(error: e, title: "Error!")
         }
     }
 }

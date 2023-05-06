@@ -87,6 +87,26 @@ extension CentralManager {
             self.centralManager.connect(peripheral, options: options)
         }
     }
+    
+    public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.Peripheral {
+        return self.disconnectedPeripheralsChannel
+            .tryFilter { r in
+                guard r.0.identifier == peripheral.identifier else {
+                    return false
+                }
+                
+                if let e = r.1 {
+                    throw e
+                } else {
+                    return true
+                }
+            }
+            .map { $0.0 }
+            .first()
+            .peripheral {
+                self.centralManager.cancelPeripheralConnection(peripheral)
+            }
+    }
 }
 
 // MARK: Channels
@@ -145,4 +165,6 @@ extension CentralManager {
             }
             .eraseToAnyPublisher()
     }
+    
+    
 }
