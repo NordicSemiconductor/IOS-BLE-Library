@@ -12,24 +12,26 @@ struct DeviceDetailsScreen: View {
     @ObservedObject var viewModel: ViewModel
     
     var body: some View {
-        Form {
-            Section("Device") {
-                HeaderView(
-                    name: viewModel.name,
-                    rssi: viewModel.rssi,
-                    connectable: viewModel.isConnectable,
-                    state: viewModel.connectionState
-                )
+        VStack {
+            Form {
+                Section("Device") {
+                    HeaderView(
+                        name: viewModel.name,
+                        rssi: viewModel.rssi,
+                        connectable: viewModel.isConnectable,
+                        state: viewModel.connectionState
+                    )
+                }
+                
+                Section("Advertisement Data") {
+                    AdvertisementDataView(advData: viewModel.advertisementData)
+                }
+                
+                if !viewModel.discoveredServices.isEmpty {
+                    serviceSection(services: viewModel.discoveredServices)
+                }
+                
             }
-            
-            Section("Advertisement Data") {
-                AdvertisementDataView(advData: viewModel.advertisementData)
-            }
-            
-            if !viewModel.discoveredServices.isEmpty {
-                serviceSection(services: viewModel.discoveredServices)
-            }
-            
             Section {
                 connectionButton(state: viewModel.connectionState)
             } footer: {
@@ -37,6 +39,7 @@ struct DeviceDetailsScreen: View {
                     Text("The device is not connectable")
                 }
             }
+            .padding()
         }
         .navigationTitle("Device")
     }
@@ -63,12 +66,15 @@ struct DeviceDetailsScreen: View {
     }
     
     @ViewBuilder
-    func serviceSection(services: [ViewModel.Service]) -> some View {
+    func serviceSection(services: [ViewModel.Attributes]) -> some View {
         Section("Services and Characteristics") {
-            ForEach(viewModel.discoveredServices) { s in
+            ForEach(services) { s in
                 NestedItemView(item: s)
-                ForEach(s.characteristics) {
-                    NestedItemView(item: $0)
+                ForEach(s.inner) { c in
+                    NestedItemView(item: c)
+                    ForEach(c.inner) { d in 
+                        NestedItemView(item: d)
+                    }
                 }
             }
         }

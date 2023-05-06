@@ -185,11 +185,8 @@ extension DeviceDetailsScreen.ViewModel {
                     self.displayError = ReadableError(error: e, title: "Error")
                 }
             } receiveValue: { characteristic in
-                if let serviceIndex = self.discoveredServices.firstIndex(where: { $0.id == characteristic.service?.uuid.uuidString }) {
-                    self.discoveredServices[serviceIndex].inner.append(Attributes(characteristic: characteristic))
-                } else if let service = characteristic.service {
-                    self.discoveredServices.append(Attributes(service: service, characteristics: [characteristic]))
-                }
+                let serviceIndex = self.discoveredServices.firstIndex(where: { $0.id == characteristic.service?.uuid.uuidString })!
+                self.discoveredServices[serviceIndex].inner.append(Attributes(characteristic: characteristic))
             }
             .store(in: &cancelable)
         
@@ -199,32 +196,27 @@ extension DeviceDetailsScreen.ViewModel {
                     self.displayError = ReadableError(error: e, title: "Error")
                 }
             } receiveValue: { descriptor in
-                if let serviceIndex = self.discoveredServices.firstIndex(where: { $0.id == descriptor.characteristic?.service?.uuid.uuidString }) {
-                    if let characteristicIndex = self.discoveredServices[serviceIndex].inner.firstIndex(where: { $0.id == descriptor.characteristic?.uuid.uuidString }) {
-                        self.discoveredServices[serviceIndex].inner[characteristicIndex].inner.append(Attributes(descriptor: descriptor))
-                    } else if let ch = descriptor.characteristic {
-                        self.discoveredServices[serviceIndex].inner.append(Attributes(characteristic: ch, descriptors: [descriptor]))
-                    }
-                } else if let service = descriptor.characteristic?.service, let characteristic = descriptor.characteristic {
-                    self.discoveredServices.append(<#T##newElement: Attributes##Attributes#>)
-                }
-            }
-
-
-        
-        
-        peripheralManager.discoverServices(serviceUUIDs: nil)
-            .autoconnect()
-            .flatMap { self.peripheralManager.discoverCharacteristics(nil, for: $0).autoconnect() }
-            .receive(on: RunLoop.main)
-            .sink { completion in
-                if case .failure(let e) = completion {
-                    self.displayError = ReadableError(error: e, title: "Error")
-                }
-            } receiveValue: { ch in
-                self.characteristics.append(ch)
+                let serviceIndex = self.discoveredServices.firstIndex(where: { $0.id == descriptor.characteristic?.service?.uuid.uuidString })!
+                let characteristicIndex = self.discoveredServices[serviceIndex].inner.firstIndex(where: { $0.id == descriptor.characteristic?.uuid.uuidString })!
+                self.discoveredServices[serviceIndex].inner[characteristicIndex].inner.append(Attributes(descriptor: descriptor))
             }
             .store(in: &cancelable)
+
+
+        
+        
+//        peripheralManager.discoverServices(serviceUUIDs: nil)
+//            .autoconnect()
+//            .flatMap { self.peripheralManager.discoverCharacteristics(nil, for: $0).autoconnect() }
+//            .receive(on: RunLoop.main)
+//            .sink { completion in
+//                if case .failure(let e) = completion {
+//                    self.displayError = ReadableError(error: e, title: "Error")
+//                }
+//            } receiveValue: { ch in
+//                self.characteristics.append(ch)
+//            }
+//            .store(in: &cancelable)
     }
     
     func disconnect() async {
