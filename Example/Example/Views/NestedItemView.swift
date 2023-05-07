@@ -25,12 +25,15 @@ struct NestedItemView<Content: View>: View {
     
     var body: some View {
         HStack {
-            ForEach(0..<level, id: \.self) { lv in
-                RoundedRectangle(cornerRadius: 3)
-                    .frame(width: 6)
-                    .foregroundColor(.accentColor.opacity(1 - Double(lv) * 0.3))
+            HStack {
+                ForEach(0..<level, id: \.self) { lv in
+                    RoundedRectangle(cornerRadius: 3)
+                        .frame(width: 6)
+                        .foregroundColor(.accentColor.opacity(1 - Double(lv) * 0.3))
+                }
+                Spacer()
             }
-            Spacer()
+            .frame(width: 48)
             content()
         }
     }

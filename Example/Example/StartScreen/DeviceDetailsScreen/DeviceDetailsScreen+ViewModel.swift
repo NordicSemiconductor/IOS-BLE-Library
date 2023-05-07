@@ -47,6 +47,8 @@ extension DeviceDetailsScreen {
             }
         }
         
+        private var ledCharacteristic: CBCharacteristic?
+        
         init(peripheral: CBPeripheral, rssi: RSSI, centralManager: CentralManager, advertisementData: AdvertisementData) {
             self.peripheral = peripheral
             self.centralManager = centralManager
@@ -90,13 +92,15 @@ extension DeviceDetailsScreen.ViewModel {
         var id: String
         var level: UInt
         let name: String
+        let captions: String?
         var inner: [Attributes]
         
-        init(id: String, level: UInt, name: String, inner: [Attributes]) {
+        init(id: String, level: UInt, name: String, captions: String? = nil, inner: [Attributes]) {
             self.id = id
             self.level = level
             self.name = name
             self.inner = inner
+            self.captions = captions
         }
         
         init(service: CBService, characteristics: [CBCharacteristic] = []) {
@@ -104,6 +108,7 @@ extension DeviceDetailsScreen.ViewModel {
             self.level = 1
             self.name = iOS_Bluetooth_Numbers_Database.Service.find(by: service.uuid)?.name ?? "New Service"
             self.inner = characteristics.map { Attributes(characteristic: $0) }
+            self.captions = nil
         }
         
         init(characteristic: CBCharacteristic, descriptors: [CBDescriptor] = []) {
@@ -111,6 +116,7 @@ extension DeviceDetailsScreen.ViewModel {
             self.level = 2
             self.name = iOS_Bluetooth_Numbers_Database.Characteristic.find(by: characteristic.uuid)?.name ?? "New Characteristic"
             self.inner = descriptors.map { Attributes(descriptor: $0) }
+            self.captions = characteristic.properties.description.nilOnEmpty()
         }
         
         init(descriptor: CBDescriptor) {
@@ -118,6 +124,7 @@ extension DeviceDetailsScreen.ViewModel {
             self.level = 3
             self.name = iOS_Bluetooth_Numbers_Database.Descriptor.find(by: descriptor.uuid)?.name ?? "New Descriptor"
             self.inner = []
+            self.captions = nil
         }
     }
 }
@@ -203,7 +210,15 @@ extension DeviceDetailsScreen.ViewModel {
             .store(in: &cancelable)
 
 
-        
+        characteristicsPublisher
+            .first(where: { $0.uuid == CBUUID(string: "00001525-1212-EFDE-1523-785FEABCD123") })
+            .sink { _ in
+                
+            } receiveValue: { ch in
+                self.ledCharacteristic = ch
+            }
+            .store(in: &cancelable)
+
         
 //        peripheralManager.discoverServices(serviceUUIDs: nil)
 //            .autoconnect()
@@ -234,5 +249,18 @@ extension DeviceDetailsScreen.ViewModel {
         
         cancelable.removeAll()
         self.characteristics = []
+    }
+}
+
+extension DeviceDetailsScreen.ViewModel {
+    func write() {
+        peripheralManager.writeValueWithResponse(Data([01]), for: ledCharacteristic!)
+            .print()
+            .sink { _ in
+                
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &cancelable)
     }
 }

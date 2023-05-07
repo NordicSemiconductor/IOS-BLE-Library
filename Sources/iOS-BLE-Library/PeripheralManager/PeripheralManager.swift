@@ -72,6 +72,10 @@ public class PeripheralManager {
     
     private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
     private var observer: Observer!
+    private lazy var writer = Writer(
+        writtenEventsPublisher: self.peripheralDelegate.writtenValuesSubject.eraseToAnyPublisher(),
+        peripheral: self.peripheral
+    )
     
     public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
         self.peripheral = peripheral
@@ -169,5 +173,20 @@ extension PeripheralManager {
             .bluetooth {
                 self.peripheral.discoverDescriptors(for: characteristic)
             }
+    }
+}
+
+// MARK: - Writing Characteristic and Descriptor Values
+extension PeripheralManager {
+    public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Future<Void, Swift.Error> {
+        return writer.write(data, to: characteristic)
+    }
+    
+    public func writeValueWithoutResponse(_ data: Data, for characteristic: CBMCharacteristic) {
+        peripheral.writeValue(data, for: characteristic, type: .withoutResponse)
+    }
+    
+    public func writeValue(_ value: Data, for descriptor: CBDescriptor) {
+        
     }
 }

@@ -71,7 +71,9 @@ struct DeviceDetailsScreen: View {
             ForEach(services) { s in
                 NestedItemView(item: s)
                 ForEach(s.inner) { c in
-                    NestedItemView(item: c)
+                    CharacteristicItem(characterstic: c) {
+                        viewModel.write()
+                    }
                     ForEach(c.inner) { d in 
                         NestedItemView(item: d)
                     }

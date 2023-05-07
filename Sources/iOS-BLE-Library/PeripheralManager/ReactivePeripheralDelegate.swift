@@ -15,6 +15,7 @@ public class ReactivePeripheralDelegate: NSObject {
     public let discoveredIncludedServicesSubject = PassthroughSubject<(CBService, [CBService]?, Error?), Never>()
     public let discoveredCharacteristicsSubject = PassthroughSubject<(CBService, [CBCharacteristic]?, Error?), Never>()
     public let discoveredDescriptorsSubject = PassthroughSubject<(CBCharacteristic, [CBDescriptor]?, Error?), Never>()
+    public let writtenValuesSubject = PassthroughSubject<(CBCharacteristic, Error?), Never>()
 }
 
 extension ReactivePeripheralDelegate: CBPeripheralDelegate {
@@ -52,7 +53,7 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
     // MARK: Writing Characteristic and Descriptor Values
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        
+        writtenValuesSubject.send((characteristic, error))
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Error?) {

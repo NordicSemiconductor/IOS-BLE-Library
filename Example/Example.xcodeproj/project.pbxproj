@@ -32,6 +32,9 @@
 		01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */; };
 		01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */; };
 		01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B61129DD92FD0048DFCE /* NestedItemView.swift */; };
+		01D884D82A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */; };
+		01D884DA2A07DB17006F916D /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884D92A07DB17006F916D /* String+Ext.swift */; };
+		01D884DC2A07E69A006F916D /* CharacteristicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884DB2A07E69A006F916D /* CharacteristicItem.swift */; };
 		01EFE87C29D57FE300BC5AA9 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */; };
 		01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */; };
 		01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */; };
@@ -87,6 +90,9 @@
 		01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
 		01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemModel.swift; sourceTree = "<group>"; };
 		01A6B61129DD92FD0048DFCE /* NestedItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemView.swift; sourceTree = "<group>"; };
+		01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CBCharacteristicProperties+Ext.swift"; sourceTree = "<group>"; };
+		01D884D92A07DB17006F916D /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
+		01D884DB2A07E69A006F916D /* CharacteristicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicItem.swift; sourceTree = "<group>"; };
 		01EFE87B29D57FE300BC5AA9 /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		01EFE87D29D593A600BC5AA9 /* HumanReadableStringConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanReadableStringConvertable.swift; sourceTree = "<group>"; };
 		01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Ext.swift"; sourceTree = "<group>"; };
@@ -242,6 +248,8 @@
 				016ED1C329D4504C00B875FC /* Array+Ext.swift */,
 				01EFE87F29D5983900BC5AA9 /* AdvertisementData+Ext.swift */,
 				01F95E5C2A0254E9004C126A /* RSSI+Color.swift */,
+				01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */,
+				01D884D92A07DB17006F916D /* String+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -281,6 +289,7 @@
 			children = (
 				013D3AA42A012DB3004F9FD5 /* DeviceDetailsScreen+HeaderView.swift */,
 				013D3AA62A0130C0004F9FD5 /* DeviceDetailsScreen+AdvertisementDataView.swift */,
+				01D884DB2A07E69A006F916D /* CharacteristicItem.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -419,6 +428,7 @@
 				01A6B60629DD643B0048DFCE /* AdvertisementData+Mock.swift in Sources */,
 				01EFE88029D5983900BC5AA9 /* AdvertisementData+Ext.swift in Sources */,
 				01EFE87C29D57FE300BC5AA9 /* ItemListView.swift in Sources */,
+				01D884DA2A07DB17006F916D /* String+Ext.swift in Sources */,
 				01A6B60329DCBBC30048DFCE /* ItemView.swift in Sources */,
 				013D3AA52A012DB3004F9FD5 /* DeviceDetailsScreen+HeaderView.swift in Sources */,
 				013D3AA12A012430004F9FD5 /* RSSIView.swift in Sources */,
@@ -430,7 +440,9 @@
 				012BFD9629CB50980050F23F /* ReadableError.swift in Sources */,
 				016ED1C929D4859500B875FC /* DeviceDetailsScreen.swift in Sources */,
 				01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */,
+				01D884D82A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift in Sources */,
 				013D3A9F2A01231F004F9FD5 /* Mock.swift in Sources */,
+				01D884DC2A07E69A006F916D /* CharacteristicItem.swift in Sources */,
 				016ED1CB29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift in Sources */,
 				01A6B60A29DD7F870048DFCE /* ItemModel.swift in Sources */,
 				01F95E832A03FF69004C126A /* Publisher+AsyncFirst.swift in Sources */,
