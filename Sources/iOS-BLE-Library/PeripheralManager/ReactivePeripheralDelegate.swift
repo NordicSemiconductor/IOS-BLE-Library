@@ -15,7 +15,13 @@ public class ReactivePeripheralDelegate: NSObject {
     public let discoveredIncludedServicesSubject = PassthroughSubject<(CBService, [CBService]?, Error?), Never>()
     public let discoveredCharacteristicsSubject = PassthroughSubject<(CBService, [CBCharacteristic]?, Error?), Never>()
     public let discoveredDescriptorsSubject = PassthroughSubject<(CBCharacteristic, [CBDescriptor]?, Error?), Never>()
-    public let writtenValuesSubject = PassthroughSubject<(CBCharacteristic, Error?), Never>()
+    
+    // MARK: Retrieving Characteristic and Descriptor Values
+    public let updatedCharacteristicValuesSubject = PassthroughSubject<(CBCharacteristic, Error?), Never>()
+    public let updatedDescriptorValuesSubject = PassthroughSubject<(CBDescriptor, Error?), Never>()
+    
+    public let writtenCharacteristicValuesSubject = PassthroughSubject<(CBCharacteristic, Error?), Never>()
+    public let writtenDescriptorValuesSubject = PassthroughSubject<(CBDescriptor, Error?), Never>()
 }
 
 extension ReactivePeripheralDelegate: CBPeripheralDelegate {
@@ -43,21 +49,21 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
     // MARK: Retrieving Characteristic and Descriptor Values
     
     public func peripheral(_ peripheral: CBMPeripheral, didUpdateValueFor characteristic: CBMCharacteristic, error: Error?) {
-        
+        updatedCharacteristicValuesSubject.send((characteristic, error))
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
-        
+        updatedDescriptorValuesSubject.send((descriptor, error))
     }
     
     // MARK: Writing Characteristic and Descriptor Values
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        writtenValuesSubject.send((characteristic, error))
+        writtenCharacteristicValuesSubject.send((characteristic, error))
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Error?) {
-        
+        writtenDescriptorValuesSubject.send((descriptor, error))
     }
     
     public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {

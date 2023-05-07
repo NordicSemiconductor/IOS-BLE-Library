@@ -10,24 +10,38 @@ import Combine
 import CoreBluetoothMock
 
 extension PeripheralManager {
-    class Writer {
-        let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+    class OperationQueue {
+        let queue = Foundation.OperationQueue()
         let peripheral: CBPeripheral
-        
-        let queue = OperationQueue()
+
+        init(peripheral: CBPeripheral) {
+            self.peripheral = peripheral
+            queue.maxConcurrentOperationCount = 1
+        }
+    }
+    
+    class CharacteristicWriter: OperationQueue {
+        let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
         
         init(writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, peripheral: CBPeripheral) {
             self.writtenEventsPublisher = writtenEventsPublisher
-            self.peripheral = peripheral
-            
-            queue.maxConcurrentOperationCount = 1
+            super.init(peripheral: peripheral)
+        }
+    }
+    
+    class CharacteristicReader: OperationQueue {
+        let updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+        
+        init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, peripheral: CBPeripheral) {
+            self.updateEventPublisher = updateEventPublisher
+            super.init(peripheral: peripheral)
         }
     }
 }
 
-extension PeripheralManager.Writer {
+extension PeripheralManager.CharacteristicWriter {
     func write(_ value: Data, to characteristic: CBCharacteristic) -> Future<Void, Swift.Error> {
-        let operation = WriteOperation(data: value,
+        let operation = WriteCharacteristicOperation(data: value,
                                        writtenEventsPublisher: writtenEventsPublisher,
                                        characteristic: characteristic,
                                        peripheral: peripheral)
@@ -38,9 +52,27 @@ extension PeripheralManager.Writer {
     }
 }
 
-private class WriteOperation: Operation {
+extension PeripheralManager.CharacteristicReader {
+    func readValue(from characteristc: CBCharacteristic) -> Future<Data?, Swift.Error> {
+        let operation = ReadCharacteristicOperation(
+            updateEventPublisher: updateEventPublisher,
+            characteristic: characteristc,
+            peripheral: peripheral
+        )
+        
+        queue.addOperation(operation)
+        
+        return operation.future
+    }
+}
+
+private class BasicOperation<T>: Operation {
+    let peripheral: CBPeripheral
+    var cancelable: AnyCancellable?
     
-    private enum State: String {
+    private(set) var promise: ((Result<T, Swift.Error>) -> Void)?
+    
+    enum State: String {
         case ready, executing, finished
         
         var keyPath: String {
@@ -48,15 +80,15 @@ private class WriteOperation: Operation {
         }
     }
     
+    init(peripheral: CBPeripheral) {
+        self.peripheral = peripheral
+    }
     
-    let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
-    let characteristic: CBCharacteristic
-    let peripheral: CBPeripheral
-    let data: Data
+    lazy private(set) var future: Future<T, Swift.Error> = Future { [unowned self] promise in
+        self.promise = promise
+    }
     
-    private var cancelable: AnyCancellable?
-    private var promise: ((Result<Void, Swift.Error>) -> Void)!
-    private var state: State = .ready {
+    var state: State = .ready {
         willSet {
             willChangeValue(forKey: state.keyPath)
             willChangeValue(forKey: newValue.keyPath)
@@ -67,13 +99,6 @@ private class WriteOperation: Operation {
         }
     }
     
-    init(data: Data, writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
-        self.data = data
-        self.writtenEventsPublisher = writtenEventsPublisher
-        self.characteristic = characteristic
-        self.peripheral = peripheral
-    }
-    
     override var isExecuting: Bool {
         state == .executing
     }
@@ -82,10 +107,27 @@ private class WriteOperation: Operation {
         state == .finished
     }
     
-    var future: Future<Void, Swift.Error> {
-        Future { [unowned self] promise in
-            self.promise = promise
-        }
+    override func cancel() {
+        cancelable?.cancel()
+    }
+    
+    override var isAsynchronous: Bool {
+        true
+    }
+}
+
+private class WriteCharacteristicOperation: BasicOperation<Void> {
+    
+    let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+    let characteristic: CBCharacteristic
+    
+    let data: Data
+    
+    init(data: Data, writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
+        self.data = data
+        self.writtenEventsPublisher = writtenEventsPublisher
+        self.characteristic = characteristic
+        super.init(peripheral: peripheral)
     }
     
     override func main() {
@@ -101,12 +143,19 @@ private class WriteOperation: Operation {
         self.cancelable = writtenEventsPublisher.share()
             .filter { $0.0.uuid == self.characteristic.uuid }
             .first()
+            .tryMap { v in
+                if let e = v.1 {
+                    throw e
+                } else {
+                    return v.0
+                }
+            }
             .sink { [unowned self] completion in
                 switch completion {
                 case .finished:
-                    self.promise(.success(()))
+                    self.promise?(.success(()))
                 case .failure(let e):
-                    self.promise(.failure(e))
+                    self.promise?(.failure(e))
                 }
                 self.state = .finished
             } receiveValue: { _ in
@@ -116,12 +165,49 @@ private class WriteOperation: Operation {
         state = .executing
         main()
     }
+}
+
+private class ReadCharacteristicOperation: BasicOperation<Data?> {
+    let updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+    let characteristic: CBCharacteristic
     
-    override func cancel() {
-        cancelable?.cancel()
+    init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
+        self.updateEventPublisher = updateEventPublisher
+        self.characteristic = characteristic
+        super.init(peripheral: peripheral)
     }
     
-    override var isAsynchronous: Bool {
-        true
+    override func main() {
+        peripheral.readValue(for: characteristic)
     }
+    
+    override func start() {
+        if isCancelled {
+            state = .finished
+            return
+        }
+        
+        self.cancelable = updateEventPublisher.share()
+            .filter { $0.0.uuid == self.characteristic.uuid }
+            .first()
+            .tryMap { v in
+                if let e = v.1 {
+                    throw e
+                } else {
+                    return v.0.value
+                }
+            }
+            .sink { [unowned self] completion in
+                if case .failure(let e) = completion {
+                    self.promise?(.failure(e))
+                }
+                self.state = .finished
+            } receiveValue: { v in
+                self.promise?(.success(v))
+            }
+        
+        state = .executing
+        main()
+    }
+    
 }

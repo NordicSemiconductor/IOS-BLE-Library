@@ -72,9 +72,14 @@ public class PeripheralManager {
     
     private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
     private var observer: Observer!
-    private lazy var writer = Writer(
-        writtenEventsPublisher: self.peripheralDelegate.writtenValuesSubject.eraseToAnyPublisher(),
+    private lazy var writer = CharacteristicWriter(
+        writtenEventsPublisher: self.peripheralDelegate.writtenCharacteristicValuesSubject.eraseToAnyPublisher(),
         peripheral: self.peripheral
+    )
+    
+    private lazy var reader = CharacteristicReader(
+        updateEventPublisher: self.peripheralDelegate.updatedCharacteristicValuesSubject.eraseToAnyPublisher(),
+        peripheral: peripheral
     )
     
     public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
@@ -187,6 +192,18 @@ extension PeripheralManager {
     }
     
     public func writeValue(_ value: Data, for descriptor: CBDescriptor) {
-        
+        fatalError()
     }
+}
+
+// MARK: - Reading Characteristic and Descriptor Values
+extension PeripheralManager {
+    public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Swift.Error> {
+        return reader.readValue(from: characteristic)
+    }
+    
+    public func readValue(for descriptor: CBDescriptor) -> Future<Data, Swift.Error> {
+        fatalError()
+    }
+
 }

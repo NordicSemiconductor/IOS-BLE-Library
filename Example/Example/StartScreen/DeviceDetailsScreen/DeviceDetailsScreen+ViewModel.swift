@@ -218,20 +218,6 @@ extension DeviceDetailsScreen.ViewModel {
                 self.ledCharacteristic = ch
             }
             .store(in: &cancelable)
-
-        
-//        peripheralManager.discoverServices(serviceUUIDs: nil)
-//            .autoconnect()
-//            .flatMap { self.peripheralManager.discoverCharacteristics(nil, for: $0).autoconnect() }
-//            .receive(on: RunLoop.main)
-//            .sink { completion in
-//                if case .failure(let e) = completion {
-//                    self.displayError = ReadableError(error: e, title: "Error")
-//                }
-//            } receiveValue: { ch in
-//                self.characteristics.append(ch)
-//            }
-//            .store(in: &cancelable)
     }
     
     func disconnect() async {
@@ -254,13 +240,24 @@ extension DeviceDetailsScreen.ViewModel {
 
 extension DeviceDetailsScreen.ViewModel {
     func write() {
-        peripheralManager.writeValueWithResponse(Data([01]), for: ledCharacteristic!)
+        peripheralManager.readValue(for: ledCharacteristic!)
             .print()
             .sink { _ in
-                
+
             } receiveValue: { _ in
-                
+
             }
             .store(in: &cancelable)
+
+            
+        
+//        peripheralManager.writeValueWithResponse(Data([01]), for: ledCharacteristic!)
+//            .print()
+//            .sink { _ in
+//
+//            } receiveValue: { _ in
+//
+//            }
+//            .store(in: &cancelable)
     }
 }
