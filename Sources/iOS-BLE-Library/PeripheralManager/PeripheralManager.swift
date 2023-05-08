@@ -116,7 +116,7 @@ extension PeripheralManager {
                     return result.0
                 }
             }
-            .flatMap { services in
+            .flatMap { services -> Publishers.Sequence<[CBService], Swift.Error> in
                 Publishers.Sequence(sequence: services)
             }
         
@@ -145,7 +145,9 @@ extension PeripheralManager {
                     return result.1
                 }
             }
-            .flatMap { Publishers.Sequence(sequence: $0) }
+            .flatMap { characteristics -> Publishers.Sequence<[CBCharacteristic], Swift.Error> in
+                Publishers.Sequence(sequence: characteristics)
+            }
         
         let filtered: AnyPublisher<CBCharacteristic, Swift.Error>
             
@@ -174,7 +176,9 @@ extension PeripheralManager {
                     return result.1
                 }
             }
-            .flatMap { Publishers.Sequence(sequence: $0) }
+            .flatMap { descriptors -> Publishers.Sequence<[CBDescriptor], Swift.Error> in
+                Publishers.Sequence(sequence: descriptors)
+            }
             .bluetooth {
                 self.peripheral.discoverDescriptors(for: characteristic)
             }
