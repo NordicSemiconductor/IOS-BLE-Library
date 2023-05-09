@@ -32,6 +32,8 @@
 		01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */; };
 		01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */; };
 		01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B61129DD92FD0048DFCE /* NestedItemView.swift */; };
+		01C8A3D52A09236400391ECC /* protocol.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C8A3D42A09236400391ECC /* protocol.pb.swift */; };
+		01C8A3D82A09239400391ECC /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 01C8A3D72A09239400391ECC /* SwiftProtobuf */; };
 		01D884D82A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */; };
 		01D884DA2A07DB17006F916D /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884D92A07DB17006F916D /* String+Ext.swift */; };
 		01D884DC2A07E69A006F916D /* CharacteristicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884DB2A07E69A006F916D /* CharacteristicItem.swift */; };
@@ -90,6 +92,7 @@
 		01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
 		01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemModel.swift; sourceTree = "<group>"; };
 		01A6B61129DD92FD0048DFCE /* NestedItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemView.swift; sourceTree = "<group>"; };
+		01C8A3D42A09236400391ECC /* protocol.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = protocol.pb.swift; path = ../../../../../Magathon/hackathon/SupremeTeam/SupremeTeam/Model/proto/spec/protocol.pb.swift; sourceTree = "<group>"; };
 		01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CBCharacteristicProperties+Ext.swift"; sourceTree = "<group>"; };
 		01D884D92A07DB17006F916D /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		01D884DB2A07E69A006F916D /* CharacteristicItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicItem.swift; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 			files = (
 				01EFE88329DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database in Frameworks */,
 				01116E50296C43C6001A693B /* iOS-BLE-Library in Frameworks */,
+				01C8A3D82A09239400391ECC /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,10 +282,19 @@
 		01A6B60829DD7E770048DFCE /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				01C8A3D32A09235A00391ECC /* proto */,
 				01A6B60929DD7F870048DFCE /* ItemModel.swift */,
 				01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		01C8A3D32A09235A00391ECC /* proto */ = {
+			isa = PBXGroup;
+			children = (
+				01C8A3D42A09236400391ECC /* protocol.pb.swift */,
+			);
+			path = proto;
 			sourceTree = "<group>";
 		};
 		01EFE87A29D57FD100BC5AA9 /* SubViews */ = {
@@ -337,6 +350,7 @@
 			packageProductDependencies = (
 				01116E4F296C43C6001A693B /* iOS-BLE-Library */,
 				01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */,
+				01C8A3D72A09239400391ECC /* SwiftProtobuf */,
 			);
 			productName = Example;
 			productReference = 01116E3B296C41ED001A693B /* Example.app */;
@@ -390,6 +404,7 @@
 			mainGroup = 01116E32296C41ED001A693B;
 			packageReferences = (
 				01EFE88129DAC30C00BC5AA9 /* XCRemoteSwiftPackageReference "iOS-Bluetooth-Numbers-Database" */,
+				01C8A3D62A09239400391ECC /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 			);
 			productRefGroup = 01116E3C296C41ED001A693B /* Products */;
 			projectDirPath = "";
@@ -442,6 +457,7 @@
 				01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */,
 				01D884D82A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift in Sources */,
 				013D3A9F2A01231F004F9FD5 /* Mock.swift in Sources */,
+				01C8A3D52A09236400391ECC /* protocol.pb.swift in Sources */,
 				01D884DC2A07E69A006F916D /* CharacteristicItem.swift in Sources */,
 				016ED1CB29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift in Sources */,
 				01A6B60A29DD7F870048DFCE /* ItemModel.swift in Sources */,
@@ -756,6 +772,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		01C8A3D62A09239400391ECC /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-protobuf.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		01EFE88129DAC30C00BC5AA9 /* XCRemoteSwiftPackageReference "iOS-Bluetooth-Numbers-Database" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NickKibish/iOS-Bluetooth-Numbers-Database.git";
@@ -770,6 +794,11 @@
 		01116E4F296C43C6001A693B /* iOS-BLE-Library */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "iOS-BLE-Library";
+		};
+		01C8A3D72A09239400391ECC /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01C8A3D62A09239400391ECC /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
 		};
 		01EFE88229DAC30C00BC5AA9 /* iOS-Bluetooth-Numbers-Database */ = {
 			isa = XCSwiftPackageProductDependency;

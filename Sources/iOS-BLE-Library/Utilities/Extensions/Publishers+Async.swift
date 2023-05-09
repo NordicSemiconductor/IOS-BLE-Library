@@ -9,7 +9,8 @@ import Foundation
 import Combine
 
 extension Publisher where Failure == Never {
-    public var values: AsyncPublisher<Self> {
+    
+    var values: AsyncPublisher<Self> {
         return .init(self)
     }
 }
@@ -145,7 +146,7 @@ private extension AsyncPublisher.Iterator {
 }
 
 extension Publisher {
-    public var values: AsyncThrowingPublisher<Self> {
+    var values: AsyncThrowingPublisher<Self> {
         return .init(self)
     }
 }
