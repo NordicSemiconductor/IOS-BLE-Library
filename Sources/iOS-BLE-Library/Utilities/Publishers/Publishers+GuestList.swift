@@ -65,7 +65,9 @@ extension Publishers.GuestList {
             for guest in list.enumerated() {
                 if check(guest.element, input) {
                     list.remove(at: guest.offset)
-                    _ = downstream.receive(input)
+                    #warning("it was like this before")
+                    // _ = downstream.receive(input)
+                    return downstream.receive(input)
                     break
                 }
             }
