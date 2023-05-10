@@ -49,7 +49,9 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
     // MARK: Retrieving Characteristic and Descriptor Values
     
     public func peripheral(_ peripheral: CBMPeripheral, didUpdateValueFor characteristic: CBMCharacteristic, error: Error?) {
-        print("updated value:")
+        if let v = characteristic.value {
+            print("updated value: \(String(data: v, encoding: .utf8)), \(Date())")
+        }
         updatedCharacteristicValuesSubject.send((characteristic, error))
     }
     
