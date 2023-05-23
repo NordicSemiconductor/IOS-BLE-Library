@@ -32,6 +32,7 @@
 		01A6B60C29DD83710048DFCE /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */; };
 		01A6B60E29DD8EBF0048DFCE /* NestedItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */; };
 		01A6B61229DD92FD0048DFCE /* NestedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6B61129DD92FD0048DFCE /* NestedItemView.swift */; };
+		01B4EBB22A1CB1590011A5DF /* ServiceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B4EBB12A1CB1590011A5DF /* ServiceList.swift */; };
 		01C8A3D52A09236400391ECC /* protocol.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C8A3D42A09236400391ECC /* protocol.pb.swift */; };
 		01C8A3D82A09239400391ECC /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 01C8A3D72A09239400391ECC /* SwiftProtobuf */; };
 		01D884D82A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */; };
@@ -92,6 +93,7 @@
 		01A6B60B29DD83710048DFCE /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
 		01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemModel.swift; sourceTree = "<group>"; };
 		01A6B61129DD92FD0048DFCE /* NestedItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItemView.swift; sourceTree = "<group>"; };
+		01B4EBB12A1CB1590011A5DF /* ServiceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceList.swift; sourceTree = "<group>"; };
 		01C8A3D42A09236400391ECC /* protocol.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = protocol.pb.swift; path = ../../../../../Magathon/hackathon/SupremeTeam/SupremeTeam/Model/proto/spec/protocol.pb.swift; sourceTree = "<group>"; };
 		01D884D72A07D9F9006F916D /* CBCharacteristicProperties+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CBCharacteristicProperties+Ext.swift"; sourceTree = "<group>"; };
 		01D884D92A07DB17006F916D /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 		016ED1C529D4856B00B875FC /* DeviceDetailsScreen */ = {
 			isa = PBXGroup;
 			children = (
+				01B4EBB02A1CB14C0011A5DF /* ServiceList */,
 				01EFE87A29D57FD100BC5AA9 /* SubViews */,
 				016ED1C829D4859500B875FC /* DeviceDetailsScreen.swift */,
 				016ED1CA29D4860D00B875FC /* DeviceDetailsScreen+ViewModel.swift */,
@@ -287,6 +290,14 @@
 				01A6B60D29DD8EBF0048DFCE /* NestedItemModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		01B4EBB02A1CB14C0011A5DF /* ServiceList */ = {
+			isa = PBXGroup;
+			children = (
+				01B4EBB12A1CB1590011A5DF /* ServiceList.swift */,
+			);
+			path = ServiceList;
 			sourceTree = "<group>";
 		};
 		01C8A3D32A09235A00391ECC /* proto */ = {
@@ -465,6 +476,7 @@
 				012D4B9329CCB48000839213 /* ScanResultView.swift in Sources */,
 				016ED1C429D4504C00B875FC /* Array+Ext.swift in Sources */,
 				01EFE87E29D593A600BC5AA9 /* HumanReadableStringConvertable.swift in Sources */,
+				01B4EBB22A1CB1590011A5DF /* ServiceList.swift in Sources */,
 				01F3BA1429F946DA009D3886 /* StartScreen+DisplayLink.swift in Sources */,
 				01F3BA1129F93C1A009D3886 /* StartScreen+Model.swift in Sources */,
 				0103093B29F019C200BA46A8 /* ExampleApp.swift in Sources */,

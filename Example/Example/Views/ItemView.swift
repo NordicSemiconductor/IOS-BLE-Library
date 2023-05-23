@@ -16,6 +16,10 @@ struct ItemView: View {
         self.init(image: Image(image), title: title, value: value)
     }
     
+    init(title: String, value: String) {
+        self.init(image: nil, title: title, value: value)
+    }
+    
     init(systemImage: String, title: String, value: String) {
         self.init(image: Image(systemName: systemImage), title: title, value: value)
     }
@@ -39,6 +43,10 @@ struct ItemView: View {
 extension ItemView {
     init<K: Hashable>(image: String, itemModel: ItemModel<K>) {
         self.init(image: image, title: itemModel.title, value: itemModel.value)
+    }
+    
+     init<K: Hashable>(itemModel: ItemModel<K>) {
+        self.init(title: itemModel.title, value: itemModel.value)
     }
     
     init<K: Hashable>(systemImage: String, itemModel: ItemModel<K>) {

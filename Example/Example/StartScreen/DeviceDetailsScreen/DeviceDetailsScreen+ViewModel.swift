@@ -240,14 +240,14 @@ extension DeviceDetailsScreen.ViewModel {
 
 extension DeviceDetailsScreen.ViewModel {
     func write() {
-        peripheralManager.readValue(for: ledCharacteristic!)
-            .print()
-            .sink { _ in
-
-            } receiveValue: { _ in
-
-            }
-            .store(in: &cancelable)
+//        peripheralManager.readValue(for: ledCharacteristic!)
+//            .print()
+//            .sink { _ in
+//
+//            } receiveValue: { _ in
+//
+//            }
+//            .store(in: &cancelable)
 
             
         

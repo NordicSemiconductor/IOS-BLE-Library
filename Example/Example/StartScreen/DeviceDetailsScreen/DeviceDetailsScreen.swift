@@ -13,6 +13,7 @@ struct DeviceDetailsScreen: View {
     
     var body: some View {
         VStack {
+            // MARK: Device Name Secnion
             Form {
                 Section("Device") {
                     HeaderView(
@@ -23,15 +24,27 @@ struct DeviceDetailsScreen: View {
                     )
                 }
                 
+                // MARK: Advertisement Data
                 Section("Advertisement Data") {
+                    if let service = viewModel.advertisementData.serviceUUIDs {
+                        NavigationLink {
+                            ServiceList(cbuuidServices: service)
+                        } label: {
+                            ItemView(title: "Service UUIDs", value: "\(service.count) values")
+                        }
+                    }
+                    
+
                     AdvertisementDataView(advData: viewModel.advertisementData)
                 }
                 
+                // MARK: Service Section
                 if !viewModel.discoveredServices.isEmpty {
                     serviceSection(services: viewModel.discoveredServices)
                 }
                 
             }
+            // MARK: Connection Button
             Section {
                 connectionButton(state: viewModel.connectionState)
             } footer: {

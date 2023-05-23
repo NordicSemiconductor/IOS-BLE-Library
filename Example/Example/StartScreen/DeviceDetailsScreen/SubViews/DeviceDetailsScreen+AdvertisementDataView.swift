@@ -22,7 +22,7 @@ extension DeviceDetailsScreen {
         
         var body: some View {
             ForEach(data, id: \.0) {
-                ItemView(image: "", itemModel: ItemModel(key: $0.0, title: $0.0, value: $0.1))
+                ItemView(itemModel: ItemModel(key: $0.0, title: $0.0, value: $0.1))
             }
         }
     }
