@@ -18,8 +18,8 @@ extension CentralManager {
 }
 
 private class Observer: NSObject {
-    @objc dynamic private weak var cm: CBCentralManager!
-    private weak var publisher: CurrentValueSubject<Bool, Never>!
+    @objc dynamic private weak var cm: CBCentralManager?
+    private weak var publisher: CurrentValueSubject<Bool, Never>?
     private var observation: NSKeyValueObservation?
     
     init(cm: CBCentralManager, publisher: CurrentValueSubject<Bool, Never>) {
@@ -34,7 +34,7 @@ private class Observer: NSObject {
                                changeHandler: { _, change in
             
             change.newValue?.flatMap { [weak self] new in
-                self?.publisher.send(new) }
+                self?.publisher?.send(new) }
             }
         )
     }

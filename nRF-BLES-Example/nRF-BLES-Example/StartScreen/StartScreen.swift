@@ -11,8 +11,30 @@ import CoreBluetooth
 
 struct StartScreen: View {
     @StateObject private var viewModel = ViewModel()
+    enum Filter: String, CaseIterable {
+        case connectable, named
+    }
     
+    @State private var path: [Filter] = []
+    @State private var selectedFilter: Filter?
+    @State private var selectedDevice: DisplayResult?
+
     var body: some View {
+        NavigationSplitView {
+            List(Filter.allCases, id: \.rawValue, selection: $selectedFilter) {
+                NavigationLink($0.rawValue.capitalized, value: $0)
+            }
+        } content: {
+            devicesBlock
+        } detail: {
+            if let vm = viewModel.deviceViewModel(with: selectedDevice) {
+                DeviceDetailsScreen(viewModel: vm)
+            } else {
+                NotSelectedDevice()
+            }
+        }
+
+        /*
         VStack {
             bluetoothState
             devicesBlock
@@ -37,6 +59,7 @@ struct StartScreen: View {
             isPresented: $viewModel.showError) {
                 Button("OK") { }
             }
+         */
     }
     
     @ViewBuilder
@@ -82,11 +105,14 @@ struct StartScreen: View {
         List {
             Section {
                 ForEach(viewModel.displayResults) { sr in
+                    NavigationLink(sr.name, value: sr)
+                    /*
                     NavigationLink {
                         DeviceDetailsScreen(viewModel: viewModel.deviceViewModel(with: sr))
                     } label: {
                         StartScreen.ScanResultView(scanResult: sr)
                     }
+                     */
 
                 }
             } header: {
@@ -100,7 +126,7 @@ struct StartScreen: View {
 struct StartScreen_Previews: PreviewProvider {
     
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             if #available(iOS 14.0, *) {
                 StartScreen()
                     .navigationTitle("Scanner")

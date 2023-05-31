@@ -19,7 +19,7 @@ extension ScanResult: Identifiable {
 extension StartScreen {
     @MainActor
     class ViewModel: ObservableObject {
-        @Published var state: StartScreen.State = .unknown
+        @Published var state: StartScreen.BluetoothState = .unknown
         @Published var isScanning: Bool = false
         @Published var scanResults: [ScanResult] = []
         @Published var displayResults: [DisplayResult] = []
@@ -103,13 +103,16 @@ extension StartScreen {
             
             // STATE
             centralManager.stateChannel
-                .map { StartScreen.State(cbState: $0) }
+                .map { StartScreen.BluetoothState(cbState: $0) }
                 .assign(to: &$state)
         }
         
-        func deviceViewModel(with scanData: DisplayResult) -> DeviceDetailsScreen.ViewModel {
+        func deviceViewModel(with scanData: DisplayResult?) -> DeviceDetailsScreen.ViewModel? {
+            guard let scanData else {
+                return nil 
+            }
             guard let scanData = scanResults.first(where: { $0.id == scanData.id }) else {
-                fatalError()
+                return nil
             }
             
             if let vm = deviceViewModels[scanData.peripheral.identifier] {

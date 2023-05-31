@@ -10,8 +10,8 @@
 		01040B412A2753C5007B7955 /* AdvertisementData+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B3E2A2753C5007B7955 /* AdvertisementData+Mock.swift */; };
 		01040B422A2753C5007B7955 /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B3F2A2753C5007B7955 /* DeviceDetailVM+Preview.swift */; };
 		01040B432A2753C5007B7955 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B402A2753C5007B7955 /* Mock.swift */; };
+		01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B462A27B34E007B7955 /* NotSelectedDevice.swift */; };
 		01C68DBA2A27460E00635032 /* nRF_BLES_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */; };
-		01C68DBC2A27460E00635032 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68DBB2A27460E00635032 /* ContentView.swift */; };
 		01C68DBE2A27460F00635032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DBD2A27460F00635032 /* Assets.xcassets */; };
 		01C68DC22A27460F00635032 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DC12A27460F00635032 /* Preview Assets.xcassets */; };
 		01C68DCC2A27460F00635032 /* nRF_BLES_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68DCB2A27460F00635032 /* nRF_BLES_ExampleTests.swift */; };
@@ -69,9 +69,9 @@
 		01040B3E2A2753C5007B7955 /* AdvertisementData+Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Mock.swift"; sourceTree = "<group>"; };
 		01040B3F2A2753C5007B7955 /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
 		01040B402A2753C5007B7955 /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
+		01040B462A27B34E007B7955 /* NotSelectedDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotSelectedDevice.swift; sourceTree = "<group>"; };
 		01C68DB62A27460E00635032 /* nRF-BLES-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nRF-BLES-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRF_BLES_ExampleApp.swift; sourceTree = "<group>"; };
-		01C68DBB2A27460E00635032 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		01C68DBD2A27460F00635032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01C68DBF2A27460F00635032 /* nRF_BLES_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = nRF_BLES_Example.entitlements; sourceTree = "<group>"; };
 		01C68DC12A27460F00635032 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -166,7 +166,6 @@
 				01C68DEC2A27498D00635032 /* Utils */,
 				01C68E0B2A27498E00635032 /* Views */,
 				01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */,
-				01C68DBB2A27460E00635032 /* ContentView.swift */,
 				01C68DBD2A27460F00635032 /* Assets.xcassets */,
 				01C68DBF2A27460F00635032 /* nRF_BLES_Example.entitlements */,
 				01C68DC02A27460F00635032 /* Preview Content */,
@@ -269,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				01C68DFB2A27498D00635032 /* DeviceDetailsScreen.swift */,
+				01040B462A27B34E007B7955 /* NotSelectedDevice.swift */,
 				01C68DFC2A27498D00635032 /* SubViews */,
 				01C68E002A27498D00635032 /* ServiceList */,
 				01C68E022A27498D00635032 /* DeviceDetailsScreen+ViewModel.swift */,
@@ -475,7 +475,6 @@
 				01C68E192A27498E00635032 /* RSSI+Color.swift in Sources */,
 				01C68E182A27498E00635032 /* AdvertisementData+Ext.swift in Sources */,
 				01040B422A2753C5007B7955 /* DeviceDetailVM+Preview.swift in Sources */,
-				01C68DBC2A27460E00635032 /* ContentView.swift in Sources */,
 				01C68E232A27498E00635032 /* DeviceDetailsScreen+HeaderView.swift in Sources */,
 				01C68E172A27498E00635032 /* Aliases.swift.swift in Sources */,
 				01C68E2C2A27498E00635032 /* ItemView.swift in Sources */,
@@ -496,6 +495,7 @@
 				01C68E1F2A27498E00635032 /* ReadableError.swift in Sources */,
 				01040B412A2753C5007B7955 /* AdvertisementData+Mock.swift in Sources */,
 				01C68E1D2A27498E00635032 /* Publisher+AsyncFirst.swift in Sources */,
+				01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */,
 				01C68E212A27498E00635032 /* DeviceDetailsScreen.swift in Sources */,
 				01C68E202A27498E00635032 /* StartScreen+ViewModel.swift in Sources */,
 				01C68E242A27498E00635032 /* DeviceDetailsScreen+AdvertisementDataView.swift in Sources */,

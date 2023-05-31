@@ -10,7 +10,7 @@ import CoreBluetoothMock
 import iOS_BLE_Library
 
 extension StartScreen {
-    enum State: String {
+    enum BluetoothState: String {
         case unknown = "Bluetooth State is unknownn"
         case resetting = "Resetting..."
         case unsupported = "Bluetooth is unsupported on this device"
