@@ -42,11 +42,10 @@
 		01C68E2D2A27498E00635032 /* RSSIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E0D2A27498E00635032 /* RSSIView.swift */; };
 		01C68E2E2A27498E00635032 /* NestedItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E0E2A27498E00635032 /* NestedItemView.swift */; };
 		01C68E2F2A27498E00635032 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E0F2A27498E00635032 /* ItemListView.swift */; };
-		01C68E302A27498E00635032 /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E112A27498E00635032 /* DeviceDetailVM+Preview.swift */; };
-		01C68E312A27498E00635032 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E122A27498E00635032 /* Mock.swift */; };
-		01C68E322A27498E00635032 /* AdvertisementData+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E132A27498E00635032 /* AdvertisementData+Mock.swift */; };
-		01C68E332A27498E00635032 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68E142A27498E00635032 /* Preview Assets.xcassets */; };
 		01C68E362A274A8E00635032 /* iOS-Bluetooth-Numbers-Database in Frameworks */ = {isa = PBXBuildFile; productRef = 01C68E352A274A8E00635032 /* iOS-Bluetooth-Numbers-Database */; };
+		01C68E3A2A27511D00635032 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E372A27511D00635032 /* Mock.swift */; };
+		01C68E3B2A27511D00635032 /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E382A27511D00635032 /* DeviceDetailVM+Preview.swift */; };
+		01C68E3C2A27511D00635032 /* AdvertisementData+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E392A27511D00635032 /* AdvertisementData+Mock.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,7 +77,6 @@
 		01C68DD12A27460F00635032 /* nRF-BLES-ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "nRF-BLES-ExampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01C68DD52A27460F00635032 /* nRF_BLES_ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRF_BLES_ExampleUITests.swift; sourceTree = "<group>"; };
 		01C68DD72A27460F00635032 /* nRF_BLES_ExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRF_BLES_ExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		01C68DE72A2748A900635032 /* IOS-BLE-Library */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "IOS-BLE-Library"; path = "../../Nordic/IOS-BLE-Library"; sourceTree = "<group>"; };
 		01C68DEA2A27498D00635032 /* NestedItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedItemModel.swift; sourceTree = "<group>"; };
 		01C68DEB2A27498D00635032 /* ItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
 		01C68DED2A27498D00635032 /* Aliases.swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Aliases.swift.swift; sourceTree = "<group>"; };
@@ -106,10 +104,10 @@
 		01C68E0D2A27498E00635032 /* RSSIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSIView.swift; sourceTree = "<group>"; };
 		01C68E0E2A27498E00635032 /* NestedItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedItemView.swift; sourceTree = "<group>"; };
 		01C68E0F2A27498E00635032 /* ItemListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
-		01C68E112A27498E00635032 /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
-		01C68E122A27498E00635032 /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
-		01C68E132A27498E00635032 /* AdvertisementData+Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AdvertisementData+Mock.swift"; sourceTree = "<group>"; };
-		01C68E142A27498E00635032 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		01C68E372A27511D00635032 /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Mock.swift; path = "../../../Example/Example/Preview Content/Mock.swift"; sourceTree = "<group>"; };
+		01C68E382A27511D00635032 /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DeviceDetailVM+Preview.swift"; path = "../../../Example/Example/Preview Content/DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
+		01C68E392A27511D00635032 /* AdvertisementData+Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "AdvertisementData+Mock.swift"; path = "../../../Example/Example/Preview Content/AdvertisementData+Mock.swift"; sourceTree = "<group>"; };
+		01C68E3D2A27512600635032 /* IOS-BLE-Library */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "IOS-BLE-Library"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,7 +140,7 @@
 		01C68DAD2A27460E00635032 = {
 			isa = PBXGroup;
 			children = (
-				01C68DE72A2748A900635032 /* IOS-BLE-Library */,
+				01C68E3D2A27512600635032 /* IOS-BLE-Library */,
 				01C68DB82A27460E00635032 /* nRF-BLES-Example */,
 				01C68DCA2A27460F00635032 /* nRF-BLES-ExampleTests */,
 				01C68DD42A27460F00635032 /* nRF-BLES-ExampleUITests */,
@@ -164,7 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				01C68DE82A27498D00635032 /* Models */,
-				01C68E102A27498E00635032 /* Preview Content */,
 				01C68DF82A27498D00635032 /* StartScreen */,
 				01C68DEC2A27498D00635032 /* Utils */,
 				01C68E0B2A27498E00635032 /* Views */,
@@ -180,6 +177,9 @@
 		01C68DC02A27460F00635032 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				01C68E392A27511D00635032 /* AdvertisementData+Mock.swift */,
+				01C68E382A27511D00635032 /* DeviceDetailVM+Preview.swift */,
+				01C68E372A27511D00635032 /* Mock.swift */,
 				01C68DC12A27460F00635032 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -329,18 +329,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		01C68E102A27498E00635032 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				01C68E112A27498E00635032 /* DeviceDetailVM+Preview.swift */,
-				01C68E122A27498E00635032 /* Mock.swift */,
-				01C68E132A27498E00635032 /* AdvertisementData+Mock.swift */,
-				01C68E142A27498E00635032 /* Preview Assets.xcassets */,
-			);
-			name = "Preview Content";
-			path = "../../../Nordic/IOS-BLE-Library/Example/Example/Preview Content";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -454,7 +442,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				01C68DC22A27460F00635032 /* Preview Assets.xcassets in Resources */,
-				01C68E332A27498E00635032 /* Preview Assets.xcassets in Resources */,
 				01C68DBE2A27460F00635032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -481,21 +468,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				01C68E1B2A27498E00635032 /* CBCharacteristicProperties+Ext.swift in Sources */,
-				01C68E322A27498E00635032 /* AdvertisementData+Mock.swift in Sources */,
+				01C68E3C2A27511D00635032 /* AdvertisementData+Mock.swift in Sources */,
 				01C68E2D2A27498E00635032 /* RSSIView.swift in Sources */,
 				01C68E292A27498E00635032 /* StartScreen+DisplayLink.swift in Sources */,
 				01C68E272A27498E00635032 /* ScanResultView.swift in Sources */,
 				01C68E152A27498E00635032 /* NestedItemModel.swift in Sources */,
 				01C68E192A27498E00635032 /* RSSI+Color.swift in Sources */,
 				01C68E182A27498E00635032 /* AdvertisementData+Ext.swift in Sources */,
+				01C68E3B2A27511D00635032 /* DeviceDetailVM+Preview.swift in Sources */,
 				01C68DBC2A27460E00635032 /* ContentView.swift in Sources */,
 				01C68E232A27498E00635032 /* DeviceDetailsScreen+HeaderView.swift in Sources */,
 				01C68E172A27498E00635032 /* Aliases.swift.swift in Sources */,
 				01C68E2C2A27498E00635032 /* ItemView.swift in Sources */,
+				01C68E3A2A27511D00635032 /* Mock.swift in Sources */,
 				01C68E252A27498E00635032 /* ServiceList.swift in Sources */,
 				01C68E2E2A27498E00635032 /* NestedItemView.swift in Sources */,
 				01C68E162A27498E00635032 /* ItemModel.swift in Sources */,
-				01C68E312A27498E00635032 /* Mock.swift in Sources */,
 				01C68E282A27498E00635032 /* StartScreen+Model.swift in Sources */,
 				01C68E1C2A27498E00635032 /* Array+Ext.swift in Sources */,
 				01C68E1E2A27498E00635032 /* HumanReadableStringConvertable.swift in Sources */,
@@ -510,7 +498,6 @@
 				01C68E1D2A27498E00635032 /* Publisher+AsyncFirst.swift in Sources */,
 				01C68E212A27498E00635032 /* DeviceDetailsScreen.swift in Sources */,
 				01C68E202A27498E00635032 /* StartScreen+ViewModel.swift in Sources */,
-				01C68E302A27498E00635032 /* DeviceDetailVM+Preview.swift in Sources */,
 				01C68E242A27498E00635032 /* DeviceDetailsScreen+AdvertisementDataView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
