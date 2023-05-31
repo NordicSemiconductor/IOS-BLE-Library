@@ -6,10 +6,14 @@
 //
 
 import Foundation
-import CoreBluetooth
+import CoreBluetoothMock
 import iOS_Common_Libraries
 
 public struct AdvertisementData: Hashable {
+    public static func == (lhs: AdvertisementData, rhs: AdvertisementData) -> Bool {
+        return false 
+    }
+    
     
     // MARK: - Properties
     

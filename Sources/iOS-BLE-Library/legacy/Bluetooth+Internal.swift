@@ -6,11 +6,11 @@
 //
 
 import Foundation
-
+/*
 internal extension Bluetooth {
     
-    func reportContinuationError<T: BluetoothDevice>(_ bluetoothError: BluetoothError, for device: T) {
-        guard let pendingContinuation = continuations[device.uuidString] else { return }
+    func reportContinuationError<T: CBPeripheral>(_ bluetoothError: BluetoothError, for device: T) {
+        guard let pendingContinuation = continuations[device.identifier.uuidString] else { return }
         switch pendingContinuation {
         case .connection(let connection):
             connection.resume(throwing: bluetoothError)
@@ -25,10 +25,11 @@ internal extension Bluetooth {
         }
     }
     
-    func reportDataStreamError<T: BluetoothDevice>(_ bluetoothError: BluetoothError, for device: T) {
-        dataStreams[device.uuidString]?.forEach {
+    func reportDataStreamError<T: CBPeripheral>(_ bluetoothError: BluetoothError, for device: T) {
+        dataStreams[device.identifier.uuidString]?.forEach {
             $0.finish(throwing: bluetoothError)
         }
-        dataStreams[device.uuidString]?.removeAll()
+        dataStreams[device.identifier.uuidString]?.removeAll()
     }
 }
+*/
