@@ -38,33 +38,6 @@ struct ScannerScreen: View {
         .onAppear {
             viewModel.centralManager = bluetoothManager.centralManager
         }
-
-        /*
-        VStack {
-            bluetoothState
-            devicesBlock
-        }
-        .navigationTitle(Text("Scaner"))
-        .toolbar {
-            ToolbarItemGroup(placement: .primaryAction) {
-                Button {
-                    viewModel.toggleScan()
-                } label: {
-                    if viewModel.isScanning {
-                        Image(systemName: "stop.fill")
-                    } else {
-                        Image(systemName: "play.fill")
-                    }
-                }
-
-            }
-        }
-        .alert(
-            viewModel.displayError?.title ?? viewModel.displayError?.message ?? "Error",
-            isPresented: $viewModel.showError) {
-                Button("OK") { }
-            }
-         */
     }
     
     @ViewBuilder
