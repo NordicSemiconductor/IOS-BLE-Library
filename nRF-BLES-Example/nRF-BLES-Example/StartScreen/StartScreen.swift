@@ -1,138 +1,63 @@
 //
 //  StartScreen.swift
-//  Example
+//  nRF-BLES-Example
 //
-//  Created by Nick Kibysh on 20/01/2023.
+//  Created by Nick Kibysh on 01/06/2023.
 //
 
 import SwiftUI
-import iOS_Common_Libraries
-import CoreBluetooth
+import iOS_BLE_Library
 
 struct StartScreen: View {
-    @StateObject private var viewModel = ViewModel()
-    enum Filter: String, CaseIterable {
-        case connectable, named
-    }
+    @EnvironmentObject var centralmanager: BluetoothManager
+    @State var didRequestScan: Bool = false
     
-    @State private var path: [Filter] = []
-    @State private var selectedFilter: Filter?
-    @State private var selectedDevice: DisplayResult?
-
     var body: some View {
-        NavigationSplitView {
-            List(Filter.allCases, id: \.rawValue, selection: $selectedFilter) {
-                NavigationLink($0.rawValue.capitalized, value: $0)
-            }
-        } content: {
-            devicesBlock
-        } detail: {
-            if let vm = viewModel.deviceViewModel(with: selectedDevice) {
-                DeviceDetailsScreen(viewModel: vm)
+        switch centralmanager.stace {
+        case .unknown, .poweredOn, .resetting:
+            if didRequestScan {
+                ScannerScreen()
             } else {
-                NotSelectedDevice()
+                startScanPlaceholder
+                    .padding()
             }
+        case .poweredOff:
+            EmptyView()
+        case .unauthorized:
+            EmptyView()
+        case .unsupported:
+            EmptyView()
         }
-
-        /*
+    }
+    
+    @ViewBuilder
+    var startScanPlaceholder: some View {
         VStack {
-            bluetoothState
-            devicesBlock
-        }
-        .navigationTitle(Text("Scaner"))
-        .toolbar {
-            ToolbarItemGroup(placement: .primaryAction) {
-                Button {
-                    viewModel.toggleScan()
-                } label: {
-                    if viewModel.isScanning {
-                        Image(systemName: "stop.fill")
-                    } else {
-                        Image(systemName: "play.fill")
-                    }
-                }
-
+            imageView(systemImage: "scanner", message: "Scan for nearby devices")
+            Button("Start Scan") {
+                didRequestScan = true
+                _ = self.centralmanager.centralManager.scanForPeripherals(withServices: nil)
             }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
         }
-        .alert(
-            viewModel.displayError?.title ?? viewModel.displayError?.message ?? "Error",
-            isPresented: $viewModel.showError) {
-                Button("OK") { }
-            }
-         */
     }
     
     @ViewBuilder
-    var bluetoothState: some View {
-        HStack {
-            Text("State:")
-            Spacer()
-            Text(viewModel.state.rawValue)
-                .foregroundColor(.green)
-            if viewModel.isScanning {
-                Image(systemName: "scanner.fill")
-                    .foregroundColor(.nordicBlue)
-            } else {
-                Image(systemName: "scanner")
-                    .foregroundColor(.nordicMiddleGrey)
-            }
-        }
-        .padding()
-    }
-    
-    @ViewBuilder
-    var devicesBlock: some View {
+    func imageView(systemImage: String, message: String) -> some View {
         VStack {
-            Spacer()
-            if !viewModel.isScanning && viewModel.scanResults.isEmpty {
-                Button("Start Scan") {
-                    viewModel.startScan()
-                }
-            } else {
-                if viewModel.scanResults.isEmpty {
-                    Text("Scanning...").font(.title)
-                        .foregroundColor(.secondary)
-                } else {
-                    deviceList
-                }
-            }
-            Spacer()
+            Image(systemName: systemImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+            Text(message)
         }
     }
-    
-    @ViewBuilder
-    var deviceList: some View {
-        List {
-            Section {
-                ForEach(viewModel.displayResults) { sr in
-                    NavigationLink(sr.name, value: sr)
-                    /*
-                    NavigationLink {
-                        DeviceDetailsScreen(viewModel: viewModel.deviceViewModel(with: sr))
-                    } label: {
-                        StartScreen.ScanResultView(scanResult: sr)
-                    }
-                     */
-
-                }
-            } header: {
-                Text("Scan Results")
-            }
-        }
-    }
-    
 }
 
 struct StartScreen_Previews: PreviewProvider {
-    
     static var previews: some View {
-        NavigationStack {
-            if #available(iOS 14.0, *) {
-                StartScreen()
-                    .navigationTitle("Scanner")
-            } else {
-                EmptyView()
-            }
-        }
+        StartScreen()
+            .environmentObject(BluetoothManager())
     }
 }

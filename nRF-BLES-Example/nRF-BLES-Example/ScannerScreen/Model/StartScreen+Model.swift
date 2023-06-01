@@ -8,7 +8,7 @@
 import Foundation
 import iOS_BLE_Library
 
-extension StartScreen {
+extension ScannerScreen {
     struct DisplayResult: Identifiable, Hashable {
         let name: String
         let connectable: Bool

@@ -9,7 +9,7 @@ import Foundation
 import CoreBluetoothMock
 import iOS_BLE_Library
 
-extension StartScreen {
+extension ScannerScreen {
     enum BluetoothState: String {
         case unknown = "Bluetooth State is unknownn"
         case resetting = "Resetting..."

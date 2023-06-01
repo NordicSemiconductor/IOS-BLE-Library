@@ -13,6 +13,7 @@ struct nRF_BLES_ExampleApp: App {
         WindowGroup {
             NavigationStack {
                 StartScreen()
+                    .environmentObject(BluetoothManager())
             }
         }
     }
