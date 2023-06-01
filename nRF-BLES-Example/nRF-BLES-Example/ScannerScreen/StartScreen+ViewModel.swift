@@ -35,7 +35,13 @@ extension ScannerScreen {
         private var cancelable = Set<AnyCancellable>()
         
         private var deviceViewModels: [UUID: DeviceDetailsScreen.ViewModel] = [:]
-        var centralManager: CentralManager?
+        var centralManager: CentralManager? {
+            didSet {
+                if centralManager != nil {
+                    startScan()
+                }
+            }
+        }
         
         init() {
             BluetoothEmulation.simulateState()
@@ -44,6 +50,8 @@ extension ScannerScreen {
             $scanResults
                 .map { $0.map { DisplayResult(scanResult: $0) } }
                 .assign(to: &$displayResults)
+            
+            startScan()
         }
         
         func stopScan() {
@@ -82,24 +90,22 @@ extension ScannerScreen {
         func startScan() {
             // IS SCANNING
             centralManager?.isScanningChannel
+                .share()
                 .assign(to: &$isScanning)
             
             // SCAN RESULTS
-            centralManager?.scanForPeripherals(withServices: [])
+            centralManager?.scanResultsChannel
+                .share()
                 .filter { $0.name != nil }
                 .scan([ScanResult]()) { arr, sr in
                     arr.appendedOrReplaced(sr, where: { $0.id == sr.id })
                 }
-                .catch ({ e in
-                    self.displayError = ReadableError(error: e, title: "Error")
-                    print(e)
-                    return Just(self.scanResults)
-                })
                 .receive(on: DispatchQueue.main)
                 .assign(to: &$scanResults)
             
             // STATE
             centralManager?.stateChannel
+                .share()
                 .map { ScannerScreen.BluetoothState(cbState: $0) }
                 .assign(to: &$state)
         }

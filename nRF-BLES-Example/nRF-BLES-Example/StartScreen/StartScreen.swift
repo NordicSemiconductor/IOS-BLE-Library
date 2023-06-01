@@ -36,7 +36,11 @@ struct StartScreen: View {
             imageView(systemImage: "scanner", message: "Scan for nearby devices")
             Button("Start Scan") {
                 didRequestScan = true
-                _ = self.centralmanager.centralManager.scanForPeripherals(withServices: nil)
+                Task {
+                    for try await _ in self.centralmanager.centralManager.scanForPeripherals(withServices: nil).values {
+                        
+                    }
+                }
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
