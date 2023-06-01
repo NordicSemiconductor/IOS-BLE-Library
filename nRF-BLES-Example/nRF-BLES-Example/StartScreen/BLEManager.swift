@@ -20,6 +20,9 @@ class BluetoothManager: ObservableObject {
     
     init(centralManager: CentralManager = CentralManager()) {
         self.centralManager = centralManager
+        BluetoothEmulation.simulateState()
+        BluetoothEmulation.simulatePeripherals()
+ 
         self.enableNotifications()
     }
     

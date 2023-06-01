@@ -23,9 +23,7 @@ struct ScannerScreen: View {
 
     var body: some View {
         NavigationSplitView {
-            List(Filter.allCases, id: \.rawValue, selection: $selectedFilter) {
-                NavigationLink($0.rawValue.capitalized, value: $0)
-            }
+           FilterScreen()
         } content: {
             devicesBlock
         } detail: {
