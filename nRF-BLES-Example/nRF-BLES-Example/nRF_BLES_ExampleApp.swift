@@ -11,7 +11,10 @@ import SwiftUI
 struct nRF_BLES_ExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            StartScreen()
+            NavigationStack {
+                StartScreen()
+                    .environmentObject(BluetoothManager())
+            }
         }
     }
 }

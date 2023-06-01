@@ -16,10 +16,10 @@ extension ScanResult: Identifiable {
     }
 }
 
-extension StartScreen {
+extension ScannerScreen {
     @MainActor
     class ViewModel: ObservableObject {
-        @Published var state: StartScreen.State = .unknown
+        @Published var state: ScannerScreen.BluetoothState = .unknown
         @Published var isScanning: Bool = false
         @Published var scanResults: [ScanResult] = []
         @Published var displayResults: [DisplayResult] = []
@@ -35,22 +35,27 @@ extension StartScreen {
         private var cancelable = Set<AnyCancellable>()
         
         private var deviceViewModels: [UUID: DeviceDetailsScreen.ViewModel] = [:]
-        
-        private let centralManager: CentralManager
+        var centralManager: CentralManager? {
+            didSet {
+                if centralManager != nil {
+                    startScan()
+                }
+            }
+        }
         
         init() {
             BluetoothEmulation.simulateState()
             BluetoothEmulation.simulatePeripherals()
             
-            centralManager = CentralManager()
-            
             $scanResults
                 .map { $0.map { DisplayResult(scanResult: $0) } }
                 .assign(to: &$displayResults)
+            
+            startScan()
         }
         
         func stopScan() {
-            centralManager.stopScan()
+            centralManager?.stopScan()
         }
         
         func toggleScan() {
@@ -64,7 +69,7 @@ extension StartScreen {
         func connect(uuid: UUID) {
             guard let sr = scanResults.first(where: { $0.id == uuid }) else { fatalError() }
             
-            centralManager
+            centralManager?
                 .connect(sr.peripheral)
                 .autoconnect()
                 .print()
@@ -84,39 +89,40 @@ extension StartScreen {
         
         func startScan() {
             // IS SCANNING
-            centralManager.isScanningChannel
+            centralManager?.isScanningChannel
+                .share()
                 .assign(to: &$isScanning)
             
             // SCAN RESULTS
-            centralManager.scanForPeripherals(withServices: [])
+            centralManager?.scanResultsChannel
+                .share()
                 .filter { $0.name != nil }
                 .scan([ScanResult]()) { arr, sr in
                     arr.appendedOrReplaced(sr, where: { $0.id == sr.id })
                 }
-                .catch ({ e in
-                    self.displayError = ReadableError(error: e, title: "Error")
-                    print(e)
-                    return Just(self.scanResults)
-                })
                 .receive(on: DispatchQueue.main)
                 .assign(to: &$scanResults)
             
             // STATE
-            centralManager.stateChannel
-                .map { StartScreen.State(cbState: $0) }
+            centralManager?.stateChannel
+                .share()
+                .map { ScannerScreen.BluetoothState(cbState: $0) }
                 .assign(to: &$state)
         }
         
-        func deviceViewModel(with scanData: DisplayResult) -> DeviceDetailsScreen.ViewModel {
+        func deviceViewModel(with scanData: DisplayResult?) -> DeviceDetailsScreen.ViewModel? {
+            guard let scanData else {
+                return nil 
+            }
             guard let scanData = scanResults.first(where: { $0.id == scanData.id }) else {
-                fatalError()
+                return nil
             }
             
             if let vm = deviceViewModels[scanData.peripheral.identifier] {
                 return vm
             }
             else {
-                let vm = DeviceDetailsScreen.ViewModel(scanResult: scanData, centralManager: centralManager)
+                let vm = DeviceDetailsScreen.ViewModel(scanResult: scanData, centralManager: centralManager!)
                 deviceViewModels[scanData.peripheral.identifier] = vm
                 return vm
             }

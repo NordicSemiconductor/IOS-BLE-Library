@@ -9,9 +9,9 @@ import SwiftUI
 import iOS_BLE_Library
 import CoreBluetooth
 
-extension StartScreen {
+extension ScannerScreen {
     struct ScanResultView: View {
-        let scanResult: StartScreen.DisplayResult
+        let scanResult: ScannerScreen.DisplayResult
         
         var body: some View {
             HStack {
@@ -27,16 +27,16 @@ extension StartScreen {
 }
 
 struct StartScreen_ScanResultView_Previews: PreviewProvider {
-    static let displayResults: [StartScreen.DisplayResult] = [
-        StartScreen.DisplayResult(name: "EdgeImpulse", connectable: true, id: UUID()),
-        StartScreen.DisplayResult(name: "Weather Station", connectable: false, id: UUID()),
-        StartScreen.DisplayResult(name: "Blinky", connectable: true, id: UUID())
+    static let displayResults: [ScannerScreen.DisplayResult] = [
+        ScannerScreen.DisplayResult(name: "EdgeImpulse", connectable: true, id: UUID()),
+        ScannerScreen.DisplayResult(name: "Weather Station", connectable: false, id: UUID()),
+        ScannerScreen.DisplayResult(name: "Blinky", connectable: true, id: UUID())
     ]
     
     static var previews: some View {
         List {
             ForEach(displayResults) {
-                StartScreen.ScanResultView(scanResult: $0)
+                ScannerScreen.ScanResultView(scanResult: $0)
             }
         }
     }
