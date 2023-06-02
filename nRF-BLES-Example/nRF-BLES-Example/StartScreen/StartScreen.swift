@@ -13,20 +13,22 @@ struct StartScreen: View {
     @State var didRequestScan: Bool = false
     
     var body: some View {
-        switch centralmanager.stace {
-        case .unknown, .poweredOn, .resetting:
-            if didRequestScan {
-                ScannerScreen()
-            } else {
-                startScanPlaceholder
-                    .padding()
+        VStack {
+            switch centralmanager.stace {
+            case .unknown, .poweredOn, .resetting:
+                if didRequestScan {
+                    ScannerScreen()
+                } else {
+                    startScanPlaceholder
+                        .padding()
+                }
+            case .poweredOff:
+                EmptyView()
+            case .unauthorized:
+                EmptyView()
+            case .unsupported:
+                EmptyView()
             }
-        case .poweredOff:
-            EmptyView()
-        case .unauthorized:
-            EmptyView()
-        case .unsupported:
-            EmptyView()
         }
     }
     
