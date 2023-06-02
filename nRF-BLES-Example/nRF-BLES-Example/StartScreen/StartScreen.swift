@@ -52,7 +52,10 @@ struct StartScreen: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 200, height: 200)
+                .foregroundColor(.secondary)
             Text(message)
+                .foregroundColor(.secondary)
+                .font(.headline)
         }
     }
 }

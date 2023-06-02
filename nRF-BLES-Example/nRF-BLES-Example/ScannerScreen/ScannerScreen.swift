@@ -13,12 +13,6 @@ struct ScannerScreen: View {
     @StateObject private var viewModel = ViewModel()
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
-    enum Filter: String, CaseIterable {
-        case connectable, named
-    }
-    
-    @State private var path: [Filter] = []
-    @State private var selectedFilter: Filter?
     @State private var selectedDevice: DisplayResult?
 
     var body: some View {
@@ -101,16 +95,16 @@ struct ScannerScreen: View {
     
 }
 
-struct ScannerScreen_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        NavigationStack {
-            if #available(iOS 14.0, *) {
-                ScannerScreen()
-                    .navigationTitle("Scanner")
-            } else {
-                EmptyView()
-            }
-        }
-    }
-}
+//struct ScannerScreen_Previews: PreviewProvider {
+//
+//    static var previews: some View {
+//        NavigationStack {
+//            if #available(iOS 14.0, *) {
+//                ScannerScreen()
+//                    .navigationTitle("Scanner")
+//            } else {
+//                EmptyView()
+//            }
+//        }
+//    }
+//}
