@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import iOS_Bluetooth_Numbers_Database
 
 extension FilterScreen {
     struct ServicePopover: View {
         @State var text: String = ""
+        
+        var handler: (Service) -> ()
         
         var body: some View {
             VStack {
@@ -41,7 +44,9 @@ extension FilterScreen {
 struct ServicePopover_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            FilterScreen.ServicePopover()
+            FilterScreen.ServicePopover { _ in
+                
+            }
         }
     }
 }

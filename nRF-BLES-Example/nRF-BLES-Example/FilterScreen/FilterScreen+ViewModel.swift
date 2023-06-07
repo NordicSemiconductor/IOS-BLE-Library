@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import iOS_Bluetooth_Numbers_Database
 
 extension FilterScreen {
     class ViewModel: ObservableObject {
@@ -13,7 +14,7 @@ extension FilterScreen {
         @Published var named: Bool = false
         @Published var connectable: Bool = false
         
-        @Published var services: [CBUUID] = []
+        @Published var services: [Service] = []
  
     }
 }

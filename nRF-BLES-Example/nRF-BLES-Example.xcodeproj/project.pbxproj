@@ -11,7 +11,8 @@
 		01040B422A2753C5007B7955 /* DeviceDetailVM+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B3F2A2753C5007B7955 /* DeviceDetailVM+Preview.swift */; };
 		01040B432A2753C5007B7955 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B402A2753C5007B7955 /* Mock.swift */; };
 		01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B462A27B34E007B7955 /* NotSelectedDevice.swift */; };
-		010AE2B92A2A2929005BC57C /* ServiceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2B82A2A2929005BC57C /* ServiceListView.swift */; };
+		010AE2B92A2A2929005BC57C /* ServiceListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */; };
+		010AE2BD2A2DF8AB005BC57C /* CustomServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */; };
 		01A8D7932A28937B00C74FEE /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7922A28937B00C74FEE /* StartScreen.swift */; };
 		01A8D7952A28942B00C74FEE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7942A28942B00C74FEE /* BLEManager.swift */; };
 		01A8D7972A289DC000C74FEE /* PreviewBleatoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */; };
@@ -77,7 +78,9 @@
 		01040B3F2A2753C5007B7955 /* DeviceDetailVM+Preview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceDetailVM+Preview.swift"; sourceTree = "<group>"; };
 		01040B402A2753C5007B7955 /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
 		01040B462A27B34E007B7955 /* NotSelectedDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotSelectedDevice.swift; sourceTree = "<group>"; };
-		010AE2B82A2A2929005BC57C /* ServiceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListView.swift; sourceTree = "<group>"; };
+		010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListSelector.swift; sourceTree = "<group>"; };
+		010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomServiceView.swift; sourceTree = "<group>"; };
+		010AE2BE2A2E364D005BC57C /* iOS-Bluetooth-Numbers-Database */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "iOS-Bluetooth-Numbers-Database"; path = "../../iOS-Bluetooth-Numbers-Database"; sourceTree = "<group>"; };
 		01A8D7922A28937B00C74FEE /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		01A8D7942A28942B00C74FEE /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewBleatoothManager.swift; sourceTree = "<group>"; };
@@ -165,7 +168,8 @@
 			children = (
 				01A8D7992A28C96600C74FEE /* FilterScreen.swift */,
 				01D11B922A2A09EB0060835C /* ServicePopover.swift */,
-				010AE2B82A2A2929005BC57C /* ServiceListView.swift */,
+				010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */,
+				010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */,
 				01D11B902A29FDB50060835C /* FilterScreen+ViewModel.swift */,
 			);
 			path = FilterScreen;
@@ -174,6 +178,7 @@
 		01C68DAD2A27460E00635032 = {
 			isa = PBXGroup;
 			children = (
+				010AE2BE2A2E364D005BC57C /* iOS-Bluetooth-Numbers-Database */,
 				01C68E3D2A27512600635032 /* IOS-BLE-Library */,
 				01C68DB82A27460E00635032 /* nRF-BLES-Example */,
 				01C68DCA2A27460F00635032 /* nRF-BLES-ExampleTests */,
@@ -536,7 +541,8 @@
 				01C68E2A2A27498E00635032 /* StartScreen+Ext.swift in Sources */,
 				01C68E2F2A27498E00635032 /* ItemListView.swift in Sources */,
 				01C68E1F2A27498E00635032 /* ReadableError.swift in Sources */,
-				010AE2B92A2A2929005BC57C /* ServiceListView.swift in Sources */,
+				010AE2B92A2A2929005BC57C /* ServiceListSelector.swift in Sources */,
+				010AE2BD2A2DF8AB005BC57C /* CustomServiceView.swift in Sources */,
 				01040B412A2753C5007B7955 /* AdvertisementData+Mock.swift in Sources */,
 				01C68E1D2A27498E00635032 /* Publisher+AsyncFirst.swift in Sources */,
 				01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */,
