@@ -15,13 +15,20 @@ extension Service: Hashable {
 }
 
 struct ServiceListSelector: View {
-    let services = Service.all//.sorted(by: { $0.name < $1.name })
+    let services: [Service]
     @State var searchText: String = ""
-    @State var selectedService: Service?
+//    @State var selectedService: Service?
     
     @State private var showCustomService: Bool = false
     
+    let alreadySelectedServices: [Service]
     let selectionHandler: (Service) -> ()
+    
+    init(alreadySelectedServices: [Service], selectionHandler: @escaping (Service) -> ()) {
+        self.alreadySelectedServices = alreadySelectedServices
+        self.selectionHandler = selectionHandler
+        self.services = Service.all.filter { !alreadySelectedServices.contains($0) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -29,16 +36,20 @@ struct ServiceListSelector: View {
                 if searchResults.isEmpty {
                     addCustomService()
                 } else {
-                    List(selection: $selectedService, content: {
+                    List {
                         ForEach(searchResults, id: \.uuid) { sr in
-                            VStack(alignment: .leading) {
-                                Text(sr.name)
-                                Text(sr.uuidString)
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                            Button {
+                                selectionHandler(sr)
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    Text(sr.name)
+                                    Text(sr.uuidString)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
                             }
                         }
-                    })
+                    }
                 }
             }
             .navigationTitle("Services")
@@ -81,6 +92,6 @@ struct ServiceListSelector: View {
 
 struct ServiceListView_Previews: PreviewProvider {
     static var previews: some View {
-        ServiceListSelector { _ in }
+        ServiceListSelector(alreadySelectedServices: []) { _ in }
     }
 }

@@ -44,7 +44,7 @@ struct FilterScreen: View {
                     showServicePopover = true
                 }
                 .popover(isPresented: $showServicePopover) {
-                    ServiceListSelector { service in
+                    ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
                         self.showServicePopover = false
                         self.viewModel.services.append(service)
                     }
