@@ -7,6 +7,7 @@
 
 import SwiftUI
 import iOS_Bluetooth_Numbers_Database
+import Combine
 
 extension Service: Hashable {
     public func hash(into hasher: inout Hasher) {
@@ -17,9 +18,10 @@ extension Service: Hashable {
 struct ServiceListSelector: View {
     let services: [Service]
     @State var searchText: String = ""
-//    @State var selectedService: Service?
     
     @State private var showCustomService: Bool = false
+    
+    @StateObject private var viewModel = ViewModel()
     
     let alreadySelectedServices: [Service]
     let selectionHandler: (Service) -> ()
@@ -36,19 +38,18 @@ struct ServiceListSelector: View {
                 if searchResults.isEmpty {
                     addCustomService()
                 } else {
-                    List {
-                        ForEach(searchResults, id: \.uuid) { sr in
-                            Button {
-                                selectionHandler(sr)
-                            } label: {
-                                VStack(alignment: .leading) {
-                                    Text(sr.name)
-                                    Text(sr.uuidString)
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                }
+                    List(searchResults) { sr in
+                        Button {
+                            selectionHandler(sr)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text(sr.name)
+                                Text(sr.uuidString)
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
                             }
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -87,6 +88,23 @@ struct ServiceListSelector: View {
                 $0.uuidString.lowercased().contains(searchText.lowercased())
             }
         }
+    }
+}
+
+extension ServiceListSelector {
+    @MainActor
+    fileprivate class ViewModel: ObservableObject {
+        private var cancelable: AnyCancellable?
+        
+        @Published var selectedService: Service?
+        var selectionHandler: ((Service) -> ())?
+        
+        init() {
+            cancelable = selectedService.publisher.sink(receiveValue: { service in
+                self.selectionHandler?(service)
+            })
+        }
+        
     }
 }
 

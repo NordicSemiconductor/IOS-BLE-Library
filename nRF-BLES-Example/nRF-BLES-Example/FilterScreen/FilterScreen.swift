@@ -15,42 +15,44 @@ extension Service: Identifiable {
 }
 
 struct FilterScreen: View {
-   
+    
     @StateObject var viewModel = ViewModel()
     @State var showServicePopover = false
     
     var body: some View {
-        List {
-            Section {
-                Toggle("All Devices", isOn: $viewModel.allDevices )
-            }
-            
-            Section("Custom Filters") {
-                Toggle("Named", isOn: $viewModel.named )
-                Toggle("Connectable", isOn: $viewModel.connectable )
-            }
-            .disabled(viewModel.allDevices)
-            
-            Section("Services") {
-                ForEach(viewModel.services, id: \.uuidString) {
-                    Text($0.name)
+        VStack {
+            List {
+                Section {
+                    Toggle("All Devices", isOn: $viewModel.allDevices )
                 }
-            }
-        }
-        .navigationTitle("Filter")
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                Button("Add Service") {
-                    showServicePopover = true
+                
+                Section("Custom Filters") {
+                    Toggle("Named only", isOn: $viewModel.named )
+                    Toggle("Connectable only", isOn: $viewModel.connectable)
                 }
-                .popover(isPresented: $showServicePopover) {
-                    ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
-                        self.showServicePopover = false
-                        self.viewModel.services.append(service)
+                .disabled(viewModel.allDevices)
+                
+                Section("Services") {
+                    ForEach(viewModel.services, id: \.uuidString) {
+                        Text($0.name)
                     }
                 }
+                .disabled(viewModel.allDevices)
             }
+            
+            Button("Add Service") {
+                showServicePopover = true
+            }
+            .disabled(viewModel.allDevices)
+            .sheet(isPresented: $showServicePopover) {
+                ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
+                    self.showServicePopover = false
+                    self.viewModel.services.append(service)
+                }
+            }
+            
         }
+        .navigationTitle("Filter")
     }
 }
 

@@ -17,6 +17,7 @@
 		01A8D7952A28942B00C74FEE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7942A28942B00C74FEE /* BLEManager.swift */; };
 		01A8D7972A289DC000C74FEE /* PreviewBleatoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */; };
 		01A8D79A2A28C96600C74FEE /* FilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7992A28C96600C74FEE /* FilterScreen.swift */; };
+		01BF55DC2A3093180090F10A /* ViewModifier+OS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */; };
 		01C68DBA2A27460E00635032 /* nRF_BLES_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */; };
 		01C68DBE2A27460F00635032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DBD2A27460F00635032 /* Assets.xcassets */; };
 		01C68DC22A27460F00635032 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DC12A27460F00635032 /* Preview Assets.xcassets */; };
@@ -53,7 +54,6 @@
 		01C68E2F2A27498E00635032 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68E0F2A27498E00635032 /* ItemListView.swift */; };
 		01C68E362A274A8E00635032 /* iOS-Bluetooth-Numbers-Database in Frameworks */ = {isa = PBXBuildFile; productRef = 01C68E352A274A8E00635032 /* iOS-Bluetooth-Numbers-Database */; };
 		01D11B912A29FDB50060835C /* FilterScreen+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D11B902A29FDB50060835C /* FilterScreen+ViewModel.swift */; };
-		01D11B932A2A09EB0060835C /* ServicePopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D11B922A2A09EB0060835C /* ServicePopover.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +85,7 @@
 		01A8D7942A28942B00C74FEE /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewBleatoothManager.swift; sourceTree = "<group>"; };
 		01A8D7992A28C96600C74FEE /* FilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterScreen.swift; sourceTree = "<group>"; };
+		01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+OS.swift"; sourceTree = "<group>"; };
 		01C68DB62A27460E00635032 /* nRF-BLES-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nRF-BLES-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRF_BLES_ExampleApp.swift; sourceTree = "<group>"; };
 		01C68DBD2A27460F00635032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -124,7 +125,6 @@
 		01C68E0F2A27498E00635032 /* ItemListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		01C68E3D2A27512600635032 /* IOS-BLE-Library */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "IOS-BLE-Library"; path = ..; sourceTree = "<group>"; };
 		01D11B902A29FDB50060835C /* FilterScreen+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterScreen+ViewModel.swift"; sourceTree = "<group>"; };
-		01D11B922A2A09EB0060835C /* ServicePopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePopover.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,12 +167,19 @@
 			isa = PBXGroup;
 			children = (
 				01A8D7992A28C96600C74FEE /* FilterScreen.swift */,
-				01D11B922A2A09EB0060835C /* ServicePopover.swift */,
 				010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */,
 				010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */,
 				01D11B902A29FDB50060835C /* FilterScreen+ViewModel.swift */,
 			);
 			path = FilterScreen;
+			sourceTree = "<group>";
+		};
+		01BF55DA2A3092F60090F10A /* UniversalOS */ = {
+			isa = PBXGroup;
+			children = (
+				01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */,
+			);
+			path = UniversalOS;
 			sourceTree = "<group>";
 		};
 		01C68DAD2A27460E00635032 = {
@@ -263,8 +270,8 @@
 		01C68DEC2A27498D00635032 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				01C68DED2A27498D00635032 /* Aliases.swift.swift */,
 				01C68DEE2A27498D00635032 /* Extensions */,
+				01C68DED2A27498D00635032 /* Aliases.swift.swift */,
 				01C68DF62A27498D00635032 /* HumanReadableStringConvertable.swift */,
 				01C68DF72A27498D00635032 /* ReadableError.swift */,
 			);
@@ -274,6 +281,7 @@
 		01C68DEE2A27498D00635032 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				01BF55DA2A3092F60090F10A /* UniversalOS */,
 				01C68DEF2A27498D00635032 /* AdvertisementData+Ext.swift */,
 				01C68DF02A27498D00635032 /* RSSI+Color.swift */,
 				01C68DF12A27498D00635032 /* String+Ext.swift */,
@@ -521,6 +529,7 @@
 				01040B422A2753C5007B7955 /* DeviceDetailVM+Preview.swift in Sources */,
 				01C68E232A27498E00635032 /* DeviceDetailsScreen+HeaderView.swift in Sources */,
 				01C68E172A27498E00635032 /* Aliases.swift.swift in Sources */,
+				01BF55DC2A3093180090F10A /* ViewModifier+OS.swift in Sources */,
 				01C68E2C2A27498E00635032 /* ItemView.swift in Sources */,
 				01A8D7972A289DC000C74FEE /* PreviewBleatoothManager.swift in Sources */,
 				01C68E252A27498E00635032 /* DeviceServiceList.swift in Sources */,
@@ -528,7 +537,6 @@
 				01C68E162A27498E00635032 /* ItemModel.swift in Sources */,
 				01040B432A2753C5007B7955 /* Mock.swift in Sources */,
 				01C68E282A27498E00635032 /* StartScreen+Model.swift in Sources */,
-				01D11B932A2A09EB0060835C /* ServicePopover.swift in Sources */,
 				01C68E1C2A27498E00635032 /* Array+Ext.swift in Sources */,
 				01A8D7932A28937B00C74FEE /* StartScreen.swift in Sources */,
 				01C68E1E2A27498E00635032 /* HumanReadableStringConvertable.swift in Sources */,
