@@ -28,7 +28,7 @@ struct DeviceDetailsScreen: View {
                 Section("Advertisement Data") {
                     if let service = viewModel.advertisementData.serviceUUIDs {
                         NavigationLink {
-                            ServiceList(cbuuidServices: service)
+                            DeviceServiceList(cbuuidServices: service)
                         } label: {
                             ItemView(title: "Service UUIDs", value: "\(service.count) values")
                         }

@@ -13,19 +13,11 @@ struct ScannerScreen: View {
     @StateObject private var viewModel = ViewModel()
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
-    enum Filter: String, CaseIterable {
-        case connectable, named
-    }
-    
-    @State private var path: [Filter] = []
-    @State private var selectedFilter: Filter?
     @State private var selectedDevice: DisplayResult?
 
     var body: some View {
         NavigationSplitView {
-            List(Filter.allCases, id: \.rawValue, selection: $selectedFilter) {
-                NavigationLink($0.rawValue.capitalized, value: $0)
-            }
+           FilterScreen()
         } content: {
             devicesBlock
         } detail: {
@@ -38,33 +30,6 @@ struct ScannerScreen: View {
         .onAppear {
             viewModel.centralManager = bluetoothManager.centralManager
         }
-
-        /*
-        VStack {
-            bluetoothState
-            devicesBlock
-        }
-        .navigationTitle(Text("Scaner"))
-        .toolbar {
-            ToolbarItemGroup(placement: .primaryAction) {
-                Button {
-                    viewModel.toggleScan()
-                } label: {
-                    if viewModel.isScanning {
-                        Image(systemName: "stop.fill")
-                    } else {
-                        Image(systemName: "play.fill")
-                    }
-                }
-
-            }
-        }
-        .alert(
-            viewModel.displayError?.title ?? viewModel.displayError?.message ?? "Error",
-            isPresented: $viewModel.showError) {
-                Button("OK") { }
-            }
-         */
     }
     
     @ViewBuilder
@@ -130,16 +95,16 @@ struct ScannerScreen: View {
     
 }
 
-struct ScannerScreen_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        NavigationStack {
-            if #available(iOS 14.0, *) {
-                ScannerScreen()
-                    .navigationTitle("Scanner")
-            } else {
-                EmptyView()
-            }
-        }
-    }
-}
+//struct ScannerScreen_Previews: PreviewProvider {
+//
+//    static var previews: some View {
+//        NavigationStack {
+//            if #available(iOS 14.0, *) {
+//                ScannerScreen()
+//                    .navigationTitle("Scanner")
+//            } else {
+//                EmptyView()
+//            }
+//        }
+//    }
+//}

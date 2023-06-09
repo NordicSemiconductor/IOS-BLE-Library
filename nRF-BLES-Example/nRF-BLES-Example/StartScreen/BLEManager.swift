@@ -12,6 +12,7 @@ import Combine
 
 class BluetoothManager: ObservableObject {
     private var cancelables: Set<AnyCancellable> = Set()
+    private var scanCancelable: AnyCancellable?
     let centralManager: CentralManager
     
     @Published var stace: CBManagerState = .unknown
@@ -19,6 +20,9 @@ class BluetoothManager: ObservableObject {
     
     init(centralManager: CentralManager = CentralManager()) {
         self.centralManager = centralManager
+        BluetoothEmulation.simulateState()
+        BluetoothEmulation.simulatePeripherals()
+ 
         self.enableNotifications()
     }
     
@@ -32,5 +36,17 @@ class BluetoothManager: ObservableObject {
             self?.stace = state
         }
         .store(in: &cancelables)
+    }
+    
+    func startScan(services: [CBUUID]?) {
+        scanCancelable?.cancel()
+        
+        scanCancelable = self.centralManager.scanForPeripherals(withServices: services)
+            .sink { _ in
+                
+            } receiveValue: { _ in
+                
+            }
+
     }
 }

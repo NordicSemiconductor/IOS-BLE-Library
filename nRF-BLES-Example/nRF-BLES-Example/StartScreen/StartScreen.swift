@@ -13,20 +13,22 @@ struct StartScreen: View {
     @State var didRequestScan: Bool = false
     
     var body: some View {
-        switch centralmanager.stace {
-        case .unknown, .poweredOn, .resetting:
-            if didRequestScan {
-                ScannerScreen()
-            } else {
-                startScanPlaceholder
-                    .padding()
+        VStack {
+            switch centralmanager.stace {
+            case .unknown, .poweredOn, .resetting:
+                if didRequestScan {
+                    ScannerScreen()
+                } else {
+                    startScanPlaceholder
+                        .padding()
+                }
+            case .poweredOff:
+                EmptyView()
+            case .unauthorized:
+                EmptyView()
+            case .unsupported:
+                EmptyView()
             }
-        case .poweredOff:
-            EmptyView()
-        case .unauthorized:
-            EmptyView()
-        case .unsupported:
-            EmptyView()
         }
     }
     
@@ -36,11 +38,7 @@ struct StartScreen: View {
             imageView(systemImage: "scanner", message: "Scan for nearby devices")
             Button("Start Scan") {
                 didRequestScan = true
-                Task {
-                    for try await _ in self.centralmanager.centralManager.scanForPeripherals(withServices: nil).values {
-                        
-                    }
-                }
+                centralmanager.startScan(services: nil)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -54,7 +52,10 @@ struct StartScreen: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 200, height: 200)
+                .foregroundColor(.secondary)
             Text(message)
+                .foregroundColor(.secondary)
+                .font(.headline)
         }
     }
 }

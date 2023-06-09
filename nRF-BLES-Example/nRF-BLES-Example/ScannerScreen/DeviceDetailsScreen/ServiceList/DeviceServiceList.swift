@@ -9,7 +9,7 @@ import SwiftUI
 import iOS_Bluetooth_Numbers_Database
 import CoreBluetooth
 
-struct ServiceList: View {
+struct DeviceServiceList: View {
     struct InternalService: Identifiable {
         let id: String
         let name: String
@@ -49,12 +49,12 @@ struct ServiceList: View {
     }
 }
 
-struct ServiceList_Previews: PreviewProvider {
+struct DeviceServiceList_Previews: PreviewProvider {
     static var previews: some View {
-        ServiceList(services: [
-            ServiceList.InternalService(id: UUID().uuidString, name: "Service 1"),
-            ServiceList.InternalService(id: UUID().uuidString, name: "Service 2"),
-            ServiceList.InternalService(id: UUID().uuidString, name: "Service 3"),
+        DeviceServiceList(services: [
+            DeviceServiceList.InternalService(id: UUID().uuidString, name: "Service 1"),
+            DeviceServiceList.InternalService(id: UUID().uuidString, name: "Service 2"),
+            DeviceServiceList.InternalService(id: UUID().uuidString, name: "Service 3"),
         ])
     }
 }

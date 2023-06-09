@@ -44,9 +44,7 @@ extension ScannerScreen {
         }
         
         init() {
-            BluetoothEmulation.simulateState()
-            BluetoothEmulation.simulatePeripherals()
-            
+           
             $scanResults
                 .map { $0.map { DisplayResult(scanResult: $0) } }
                 .assign(to: &$displayResults)
