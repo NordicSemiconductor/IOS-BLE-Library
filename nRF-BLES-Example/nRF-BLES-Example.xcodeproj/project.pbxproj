@@ -13,11 +13,13 @@
 		01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B462A27B34E007B7955 /* NotSelectedDevice.swift */; };
 		010AE2B92A2A2929005BC57C /* ServiceListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */; };
 		010AE2BD2A2DF8AB005BC57C /* CustomServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */; };
+		018EEC892A35E6A800F87A4A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018EEC882A35E6A800F87A4A /* Device.swift */; };
 		01A8D7932A28937B00C74FEE /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7922A28937B00C74FEE /* StartScreen.swift */; };
 		01A8D7952A28942B00C74FEE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7942A28942B00C74FEE /* BLEManager.swift */; };
 		01A8D7972A289DC000C74FEE /* PreviewBleatoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */; };
 		01A8D79A2A28C96600C74FEE /* FilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7992A28C96600C74FEE /* FilterScreen.swift */; };
 		01BF55DC2A3093180090F10A /* ViewModifier+OS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */; };
+		01C4CC672A338EAF00E59303 /* SheetOrNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4CC662A338EAF00E59303 /* SheetOrNavigation.swift */; };
 		01C68DBA2A27460E00635032 /* nRF_BLES_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */; };
 		01C68DBE2A27460F00635032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DBD2A27460F00635032 /* Assets.xcassets */; };
 		01C68DC22A27460F00635032 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01C68DC12A27460F00635032 /* Preview Assets.xcassets */; };
@@ -81,11 +83,13 @@
 		010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListSelector.swift; sourceTree = "<group>"; };
 		010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomServiceView.swift; sourceTree = "<group>"; };
 		010AE2BE2A2E364D005BC57C /* iOS-Bluetooth-Numbers-Database */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "iOS-Bluetooth-Numbers-Database"; path = "../../iOS-Bluetooth-Numbers-Database"; sourceTree = "<group>"; };
+		018EEC882A35E6A800F87A4A /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		01A8D7922A28937B00C74FEE /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		01A8D7942A28942B00C74FEE /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		01A8D7962A289DC000C74FEE /* PreviewBleatoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewBleatoothManager.swift; sourceTree = "<group>"; };
 		01A8D7992A28C96600C74FEE /* FilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterScreen.swift; sourceTree = "<group>"; };
 		01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModifier+OS.swift"; sourceTree = "<group>"; };
+		01C4CC662A338EAF00E59303 /* SheetOrNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetOrNavigation.swift; sourceTree = "<group>"; };
 		01C68DB62A27460E00635032 /* nRF-BLES-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nRF-BLES-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01C68DB92A27460E00635032 /* nRF_BLES_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRF_BLES_ExampleApp.swift; sourceTree = "<group>"; };
 		01C68DBD2A27460F00635032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -178,8 +182,17 @@
 			isa = PBXGroup;
 			children = (
 				01BF55DB2A3093180090F10A /* ViewModifier+OS.swift */,
+				018EEC882A35E6A800F87A4A /* Device.swift */,
 			);
 			path = UniversalOS;
+			sourceTree = "<group>";
+		};
+		01C4CC652A338E8C00E59303 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				01C4CC662A338EAF00E59303 /* SheetOrNavigation.swift */,
+			);
+			path = ViewModifiers;
 			sourceTree = "<group>";
 		};
 		01C68DAD2A27460E00635032 = {
@@ -270,6 +283,7 @@
 		01C68DEC2A27498D00635032 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				01C4CC652A338E8C00E59303 /* ViewModifiers */,
 				01C68DEE2A27498D00635032 /* Extensions */,
 				01C68DED2A27498D00635032 /* Aliases.swift.swift */,
 				01C68DF62A27498D00635032 /* HumanReadableStringConvertable.swift */,
@@ -549,6 +563,8 @@
 				01C68E2A2A27498E00635032 /* StartScreen+Ext.swift in Sources */,
 				01C68E2F2A27498E00635032 /* ItemListView.swift in Sources */,
 				01C68E1F2A27498E00635032 /* ReadableError.swift in Sources */,
+				01C4CC672A338EAF00E59303 /* SheetOrNavigation.swift in Sources */,
+				018EEC892A35E6A800F87A4A /* Device.swift in Sources */,
 				010AE2B92A2A2929005BC57C /* ServiceListSelector.swift in Sources */,
 				010AE2BD2A2DF8AB005BC57C /* CustomServiceView.swift in Sources */,
 				01040B412A2753C5007B7955 /* AdvertisementData+Mock.swift in Sources */,
