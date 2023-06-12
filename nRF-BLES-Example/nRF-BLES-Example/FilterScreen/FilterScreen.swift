@@ -15,7 +15,7 @@ extension Service: Identifiable {
 }
 
 struct FilterScreen: View {
-    
+    @Environment(\.isPresented) private var isPresented
     @StateObject var viewModel = ViewModel()
     @State var showServicePopover = false
     
@@ -36,20 +36,37 @@ struct FilterScreen: View {
                     ForEach(viewModel.services, id: \.uuidString) {
                         Text($0.name)
                     }
+                    Button("Add Service") {
+                        showServicePopover = true
+                    }
+                    .buttonStyle(.bordered)
+                    .pushPresent(presented: isPresented, isPresented: $showServicePopover) {
+                        ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
+                            self.showServicePopover = false
+                            self.viewModel.services.append(service)
+                        }
+                    }
+//                    .navigationDestination(isPresented: $showServicePopover) {
+//                        ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
+//                            self.showServicePopover = false
+//                            self.viewModel.services.append(service)
+//                        }
+//                    }
                 }
                 .disabled(viewModel.allDevices)
+                
             }
             
-            Button("Add Service") {
-                showServicePopover = true
-            }
-            .disabled(viewModel.allDevices)
-            .sheet(isPresented: $showServicePopover) {
-                ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
-                    self.showServicePopover = false
-                    self.viewModel.services.append(service)
-                }
-            }
+//            Button("Add Service") {
+//                showServicePopover = true
+//            }
+//            .disabled(viewModel.allDevices)
+            //            .sheet(isPresented: $showServicePopover) {
+//                ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
+//                    self.showServicePopover = false
+//                    self.viewModel.services.append(service)
+//                }
+//            }
             
         }
         .navigationTitle("Filter")

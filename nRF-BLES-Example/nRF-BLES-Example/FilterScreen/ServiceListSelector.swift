@@ -33,28 +33,26 @@ struct ServiceListSelector: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                if searchResults.isEmpty {
-                    addCustomService()
-                } else {
-                    List(searchResults) { sr in
-                        Button {
-                            selectionHandler(sr)
-                        } label: {
-                            VStack(alignment: .leading) {
-                                Text(sr.name)
-                                Text(sr.uuidString)
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                            }
+        VStack {
+            if searchResults.isEmpty {
+                addCustomService()
+            } else {
+                List(searchResults) { sr in
+                    Button {
+                        selectionHandler(sr)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(sr.name)
+                            Text(sr.uuidString)
+                                .font(.caption)
+                                .foregroundColor(.gray)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .buttonStyle(.plain)
                 }
             }
-            .navigationTitle("Services")
         }
+        .navigationTitle("Services")
         .searchable(text: $searchText)
     }
     

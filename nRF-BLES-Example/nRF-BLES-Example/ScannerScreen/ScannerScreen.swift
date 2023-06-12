@@ -14,8 +14,20 @@ struct ScannerScreen: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
     @State private var selectedDevice: DisplayResult?
+    @State private var showFilterScreen = false
 
     var body: some View {
+        VStack {
+            if PhysicalDevice.current == .phone {
+                _2columnNavigation
+            } else {
+                _3columnNavigation
+            }
+        }
+    }
+   
+    @ViewBuilder
+    var _3columnNavigation: some View {
         NavigationSplitView {
            FilterScreen()
         } content: {
@@ -30,6 +42,48 @@ struct ScannerScreen: View {
         .onAppear {
             viewModel.centralManager = bluetoothManager.centralManager
         }
+    }
+    
+    @ViewBuilder
+    var _2columnNavigation: some View {
+        NavigationSplitView {
+            devicesBlock
+                .toolbar {
+                    #if os(iOS)
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            showFilterScreen = true
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                        }
+                        .sheet(isPresented: $showFilterScreen) {
+                            NavigationStack {
+                                FilterScreen()
+                                    .toolbar {
+                                        ToolbarItem(placement: .cancellationAction) {
+                                            Button("Close") {
+                                                showFilterScreen = false
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    #else
+                    EmptyView()
+                    #endif
+                }
+        } detail: {
+            if let vm = viewModel.deviceViewModel(with: selectedDevice) {
+                DeviceDetailsScreen(viewModel: vm)
+            } else {
+                NotSelectedDevice()
+            }
+        }
+        .onAppear {
+            viewModel.centralManager = bluetoothManager.centralManager
+        }
+
     }
     
     @ViewBuilder
@@ -68,6 +122,7 @@ struct ScannerScreen: View {
             }
             Spacer()
         }
+        .navigationTitle("Device List")
     }
     
     @ViewBuilder
