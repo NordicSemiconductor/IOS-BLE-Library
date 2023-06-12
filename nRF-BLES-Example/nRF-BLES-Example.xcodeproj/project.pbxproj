@@ -13,6 +13,7 @@
 		01040B472A27B34E007B7955 /* NotSelectedDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01040B462A27B34E007B7955 /* NotSelectedDevice.swift */; };
 		010AE2B92A2A2929005BC57C /* ServiceListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */; };
 		010AE2BD2A2DF8AB005BC57C /* CustomServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */; };
+		011AC2E02A37215F00913FFC /* Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011AC2DF2A37215F00913FFC /* Placeholder.swift */; };
 		018EEC892A35E6A800F87A4A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018EEC882A35E6A800F87A4A /* Device.swift */; };
 		01A8D7932A28937B00C74FEE /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7922A28937B00C74FEE /* StartScreen.swift */; };
 		01A8D7952A28942B00C74FEE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A8D7942A28942B00C74FEE /* BLEManager.swift */; };
@@ -83,6 +84,7 @@
 		010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListSelector.swift; sourceTree = "<group>"; };
 		010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomServiceView.swift; sourceTree = "<group>"; };
 		010AE2BE2A2E364D005BC57C /* iOS-Bluetooth-Numbers-Database */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "iOS-Bluetooth-Numbers-Database"; path = "../../iOS-Bluetooth-Numbers-Database"; sourceTree = "<group>"; };
+		011AC2DF2A37215F00913FFC /* Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Placeholder.swift; sourceTree = "<group>"; };
 		018EEC882A35E6A800F87A4A /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		01A8D7922A28937B00C74FEE /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		01A8D7942A28942B00C74FEE /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
@@ -165,8 +167,49 @@
 				01C68E0D2A27498E00635032 /* RSSIView.swift */,
 				01C68E0E2A27498E00635032 /* NestedItemView.swift */,
 				01C68E0F2A27498E00635032 /* ItemListView.swift */,
+				011AC2DF2A37215F00913FFC /* Placeholder.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		011AC2DA2A371EE600913FFC /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				011AC2DD2A371F1700913FFC /* Filter */,
+				011AC2DE2A371F1D00913FFC /* DeviceList */,
+			);
+			path = Scanner;
+			sourceTree = "<group>";
+		};
+		011AC2DB2A371EF000913FFC /* Device */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
+		011AC2DC2A371F0300913FFC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		011AC2DD2A371F1700913FFC /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				01A8D7992A28C96600C74FEE /* FilterScreen.swift */,
+				010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */,
+				010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */,
+			);
+			path = Filter;
+			sourceTree = "<group>";
+		};
+		011AC2DE2A371F1D00913FFC /* DeviceList */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DeviceList;
 			sourceTree = "<group>";
 		};
 		01A8D7912A28936F00C74FEE /* StartScreen */ = {
@@ -181,9 +224,6 @@
 		01A8D7982A28C95600C74FEE /* FilterScreen */ = {
 			isa = PBXGroup;
 			children = (
-				01A8D7992A28C96600C74FEE /* FilterScreen.swift */,
-				010AE2B82A2A2929005BC57C /* ServiceListSelector.swift */,
-				010AE2BC2A2DF8AB005BC57C /* CustomServiceView.swift */,
 				01D11B902A29FDB50060835C /* FilterScreen+ViewModel.swift */,
 			);
 			path = FilterScreen;
@@ -231,6 +271,7 @@
 		01C68DB82A27460E00635032 /* nRF-BLES-Example */ = {
 			isa = PBXGroup;
 			children = (
+				011AC2DC2A371F0300913FFC /* ViewModels */,
 				01A8D7982A28C95600C74FEE /* FilterScreen */,
 				01A8D7912A28936F00C74FEE /* StartScreen */,
 				01C68DE82A27498D00635032 /* Models */,
@@ -396,6 +437,8 @@
 		01C68E0B2A27498E00635032 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				011AC2DA2A371EE600913FFC /* Scanner */,
+				011AC2DB2A371EF000913FFC /* Device */,
 				011AC2D92A371A9B00913FFC /* Helpers */,
 			);
 			path = Views;
@@ -550,6 +593,7 @@
 				01C68E182A27498E00635032 /* AdvertisementData+Ext.swift in Sources */,
 				01040B422A2753C5007B7955 /* DeviceDetailVM+Preview.swift in Sources */,
 				01C68E232A27498E00635032 /* DeviceDetailsScreen+HeaderView.swift in Sources */,
+				011AC2E02A37215F00913FFC /* Placeholder.swift in Sources */,
 				01C68E172A27498E00635032 /* Aliases.swift.swift in Sources */,
 				01BF55DC2A3093180090F10A /* ViewModifier+OS.swift in Sources */,
 				01C68E2C2A27498E00635032 /* ItemView.swift in Sources */,
