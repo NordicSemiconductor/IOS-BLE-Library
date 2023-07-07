@@ -35,27 +35,14 @@ struct StartScreen: View {
     @ViewBuilder
     var startScanPlaceholder: some View {
         VStack {
-            imageView(systemImage: "scanner", message: "Scan for nearby devices")
-            Button("Start Scan") {
-                didRequestScan = true
-                centralmanager.startScan(services: nil)
+            Placeholder(systemImage: "scanner", title: "Scan for nearby devices") {
+                Button("Start Scan") {
+                    didRequestScan = true
+                    centralmanager.startScan(services: nil)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-        }
-    }
-    
-    @ViewBuilder
-    func imageView(systemImage: String, message: String) -> some View {
-        VStack {
-            Image(systemName: systemImage)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 200, height: 200)
-                .foregroundColor(.secondary)
-            Text(message)
-                .foregroundColor(.secondary)
-                .font(.headline)
         }
     }
 }

@@ -12,7 +12,7 @@ struct nRF_BLES_ExampleApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                StartScreen()
+                StartSplitView()
                     .environmentObject(BluetoothManager())
             }
         }
