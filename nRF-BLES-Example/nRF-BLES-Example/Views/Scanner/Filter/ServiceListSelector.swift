@@ -52,6 +52,16 @@ struct ServiceListSelector: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("New Service") {
+                    showCustomService = true
+                }
+                .navigationDestination(isPresented: $showCustomService) {
+                    CustomServiceView(selectionHandler: self.selectionHandler)
+                }
+            }
+        }
         .navigationTitle("Services")
         .searchable(text: $searchText)
     }
@@ -59,20 +69,14 @@ struct ServiceListSelector: View {
     @ViewBuilder
     func addCustomService() -> some View {
         VStack {
-            Image(systemName: "binoculars")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 200, height: 200)
-                .foregroundColor(.secondary)
-            
-            Text("No Results")
-                .foregroundColor(.secondary)
-                .font(.largeTitle)
-            Button("Add Custom Service") {
-                showCustomService = true
-            }
-            .navigationDestination(isPresented: $showCustomService) {
-                CustomServiceView(selectionHandler: self.selectionHandler)
+            Placeholder(systemImage: "binoculars", title: "No Results") {
+                Button("Add Custom Service") {
+                    showCustomService = true
+                }
+                .navigationDestination(isPresented: $showCustomService) {
+                    CustomServiceView(selectionHandler: self.selectionHandler)
+                }
+                .buttonStyle(.borderedProminent)
             }
         }
     }

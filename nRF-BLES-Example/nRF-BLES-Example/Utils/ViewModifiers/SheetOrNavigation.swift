@@ -18,7 +18,7 @@ struct PushPresent<T: View>: ViewModifier {
             content.navigationDestination(isPresented: $isPresented, destination: destination)
         } else {
             content.sheet(isPresented: $isPresented) {
-                NavigationView {
+                NavigationStack {
                     self.destination()
                 }
             }

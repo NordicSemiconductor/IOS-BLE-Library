@@ -46,28 +46,10 @@ struct FilterScreen: View {
                             self.viewModel.services.append(service)
                         }
                     }
-//                    .navigationDestination(isPresented: $showServicePopover) {
-//                        ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
-//                            self.showServicePopover = false
-//                            self.viewModel.services.append(service)
-//                        }
-//                    }
                 }
                 .disabled(viewModel.allDevices)
                 
             }
-            
-//            Button("Add Service") {
-//                showServicePopover = true
-//            }
-//            .disabled(viewModel.allDevices)
-            //            .sheet(isPresented: $showServicePopover) {
-//                ServiceListSelector(alreadySelectedServices: viewModel.services) { service in
-//                    self.showServicePopover = false
-//                    self.viewModel.services.append(service)
-//                }
-//            }
-            
         }
         .navigationTitle("Filter")
     }
