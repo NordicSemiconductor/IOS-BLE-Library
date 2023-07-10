@@ -14,6 +14,10 @@ extension CBMUUID {
     static let nordicBlinkyService  = CBMUUID(string: "00001523-1212-EFDE-1523-785FEABCD123")
     static let buttonCharacteristic = CBMUUID(string: "00001524-1212-EFDE-1523-785FEABCD123")
     static let ledCharacteristic    = CBMUUID(string: "00001525-1212-EFDE-1523-785FEABCD123")
+    
+    static let heartRate            = CBMUUID(string: "180D")
+    static let runningSpeedCadence  = CBMUUID(string: "1814")
+    static let weightScale          = CBMUUID(string: "181D")
 }
 
 // MARK: - Services
@@ -43,6 +47,20 @@ extension CBMServiceMock {
             .ledCharacteristic
     )
     
+    static let heartRate = CBMServiceMock(
+        type: .heartRate,
+        primary: true
+    )
+    
+    static let runningSpeedCadence = CBMServiceMock(
+        type: .runningSpeedCadence,
+        primary: true
+    )
+    
+    static let weightScale = CBMServiceMock(
+        type: .weightScale,
+        primary: true
+    )
 }
 
 // MARK: - Blinky Implementation
@@ -110,26 +128,70 @@ let blinky = CBMPeripheralSpec
     .simulatePeripheral(proximity: .immediate)
     .advertising(
         advertisementData: [
-            CBAdvertisementDataIsConnectable : true as NSNumber,
+            CBAdvertisementDataIsConnectable : false as NSNumber,
             CBAdvertisementDataLocalNameKey : "Blinky"
         ],
         withInterval: 2.0,
         delay: 5.0,
         alsoWhenConnected: false
     )
-//    .advertising(
-//        advertisementData: [
-//            CBAdvertisementDataIsConnectable : false as NSNumber,
-//            CBAdvertisementDataLocalNameKey : "iBeacon",
-//            //CBAdvertisementDataManufacturerDataKey:
-//        ],
-//        withInterval: 4.0,
-//        delay: 2.0,
-//        alsoWhenConnected: false
-//    )
     .connectable(
         name: "nRF Blinky",
         services: [.blinkyService],
         delegate: BlinkyCBMPeripheralSpecDelegate()
+    )
+    .build()
+
+let hrm = CBMPeripheralSpec
+    .simulatePeripheral(proximity: .near)
+    .advertising(
+        advertisementData: [
+            CBAdvertisementDataIsConnectable : true as NSNumber,
+            CBAdvertisementDataLocalNameKey : "Heart Rate Monitor"
+        ],
+        withInterval: 2.0,
+        delay: 5.0,
+        alsoWhenConnected: false
+    )
+    .connectable(
+        name: "Heart Rate Monitor",
+        services: [.heartRate],
+        delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
+    )
+    .build()
+
+let runningSpeedCadenceSensor = CBMPeripheralSpec
+    .simulatePeripheral(proximity: .far)
+    .advertising(
+        advertisementData: [
+            CBAdvertisementDataIsConnectable : true as NSNumber,
+            CBAdvertisementDataLocalNameKey : "Running Speed and Cadence sensor"
+        ],
+        withInterval: 2.0,
+        delay: 5.0,
+        alsoWhenConnected: false
+    )
+    .connectable(
+        name: "Running Sensor",
+        services: [.runningSpeedCadence],
+        delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
+    )
+    .build()
+
+let weightScale = CBMPeripheralSpec
+    .simulatePeripheral(proximity: .immediate)
+    .advertising(
+        advertisementData: [
+            CBAdvertisementDataIsConnectable : true as NSNumber,
+            CBAdvertisementDataLocalNameKey : "Weight Scale"
+        ],
+        withInterval: 2.0,
+        delay: 5.0,
+        alsoWhenConnected: false
+    )
+    .connectable(
+        name: "Weight Scale",
+        services: [.weightScale],
+        delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
     )
     .build()

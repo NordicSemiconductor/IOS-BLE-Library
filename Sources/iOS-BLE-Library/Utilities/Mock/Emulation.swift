@@ -14,6 +14,6 @@ public struct BluetoothEmulation {
     }
     
     public static func simulatePeripherals() {
-        CBMCentralManagerMock.simulatePeripherals([blinky])
+        CBMCentralManagerMock.simulatePeripherals([blinky, hrm, runningSpeedCadenceSensor, weightScale])
     }
 }
