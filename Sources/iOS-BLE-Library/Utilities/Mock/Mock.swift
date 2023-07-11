@@ -18,6 +18,7 @@ extension CBMUUID {
     static let heartRate            = CBMUUID(string: "180D")
     static let runningSpeedCadence  = CBMUUID(string: "1814")
     static let weightScale          = CBMUUID(string: "181D")
+    static let cyclingSpeedCadence  = CBMUUID(string: "1816")
 }
 
 // MARK: - Services
@@ -129,7 +130,8 @@ let blinky = CBMPeripheralSpec
     .advertising(
         advertisementData: [
             CBAdvertisementDataIsConnectable : false as NSNumber,
-            CBAdvertisementDataLocalNameKey : "Blinky"
+            CBAdvertisementDataLocalNameKey : "Blinky",
+            CBAdvertisementDataServiceUUIDsKey : [CBMUUID.nordicBlinkyService]
         ],
         withInterval: 2.0,
         delay: 5.0,
@@ -147,7 +149,8 @@ let hrm = CBMPeripheralSpec
     .advertising(
         advertisementData: [
             CBAdvertisementDataIsConnectable : true as NSNumber,
-            CBAdvertisementDataLocalNameKey : "Heart Rate Monitor"
+            CBAdvertisementDataLocalNameKey : "Heart Rate Monitor",
+            CBAdvertisementDataServiceUUIDsKey : [CBMUUID.heartRate]
         ],
         withInterval: 2.0,
         delay: 5.0,
@@ -165,7 +168,8 @@ let runningSpeedCadenceSensor = CBMPeripheralSpec
     .advertising(
         advertisementData: [
             CBAdvertisementDataIsConnectable : true as NSNumber,
-            CBAdvertisementDataLocalNameKey : "Running Speed and Cadence sensor"
+            CBAdvertisementDataLocalNameKey : "Running Speed and Cadence sensor",
+            CBAdvertisementDataServiceUUIDsKey : [CBMUUID.runningSpeedCadence, CBMUUID.heartRate, CBMUUID.cyclingSpeedCadence]
         ],
         withInterval: 2.0,
         delay: 5.0,
@@ -183,7 +187,8 @@ let weightScale = CBMPeripheralSpec
     .advertising(
         advertisementData: [
             CBAdvertisementDataIsConnectable : true as NSNumber,
-            CBAdvertisementDataLocalNameKey : "Weight Scale"
+            CBAdvertisementDataLocalNameKey : "Weight Scale",
+            CBAdvertisementDataServiceUUIDsKey : [CBMUUID.weightScale]
         ],
         withInterval: 2.0,
         delay: 5.0,

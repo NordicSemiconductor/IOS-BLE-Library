@@ -11,20 +11,63 @@ import iOS_Common_Libraries
 
 public struct AdvertisementData: Hashable {
     public static func == (lhs: AdvertisementData, rhs: AdvertisementData) -> Bool {
-        return false 
+        return lhs.localName == rhs.localName &&
+            lhs.manufacturerData == rhs.manufacturerData &&
+            lhs.serviceData == rhs.serviceData &&
+            lhs.serviceUUIDs == rhs.serviceUUIDs &&
+            lhs.overflowServiceUUIDs == rhs.overflowServiceUUIDs &&
+            lhs.txPowerLevel == rhs.txPowerLevel &&
+            lhs.isConnectable == rhs.isConnectable &&
+            lhs.solicitedServiceUUIDs == rhs.solicitedServiceUUIDs
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(localName)
+        hasher.combine(manufacturerData)
+        hasher.combine(serviceData)
+        hasher.combine(serviceUUIDs)
+        hasher.combine(overflowServiceUUIDs)
+        hasher.combine(txPowerLevel)
+        hasher.combine(isConnectable)
+        hasher.combine(solicitedServiceUUIDs)
     }
     
     
+    public let rawData: [String : Any]
+    
     // MARK: - Properties
     
-    public let localName: String? // CBAdvertisementDataLocalNameKey
-    public let manufacturerData: Data? // CBAdvertisementDataManufacturerDataKey
-    public let serviceData: [CBUUID : Data]? // CBAdvertisementDataServiceDataKey
-    public let serviceUUIDs: [CBUUID]? // CBAdvertisementDataServiceUUIDsKey
-    public let overflowServiceUUIDs: [CBUUID]? // CBAdvertisementDataOverflowServiceUUIDsKey
-    public let txPowerLevel: Int? // CBAdvertisementDataTxPowerLevelKey
-    public let isConnectable: Bool? // CBAdvertisementDataIsConnectable
-    public let solicitedServiceUUIDs: [CBUUID]? // CBAdvertisementDataSolicitedServiceUUIDsKey
+    public var localName: String? { // CBAdvertisementDataLocalNameKey
+        rawData[CBAdvertisementDataLocalNameKey] as? String
+    }
+    
+    public var manufacturerData: Data? { // CBAdvertisementDataManufacturerDataKey
+        rawData[CBAdvertisementDataManufacturerDataKey] as? Data
+    }
+
+    public var serviceData: [CBUUID : Data]? { // CBAdvertisementDataServiceDataKey
+        rawData[CBAdvertisementDataServiceDataKey] as? [CBUUID : Data]
+    }
+
+    public var serviceUUIDs: [CBUUID]? { // CBAdvertisementDataServiceUUIDsKey
+        rawData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
+    }
+    
+    public var overflowServiceUUIDs: [CBUUID]? { // CBAdvertisementDataOverflowServiceUUIDsKey
+        rawData[CBAdvertisementDataOverflowServiceUUIDsKey] as? [CBUUID]
+    }
+
+    public var txPowerLevel: Int? { // CBAdvertisementDataTxPowerLevelKey
+        (rawData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue
+    }
+
+    public var isConnectable: Bool? { // CBAdvertisementDataIsConnectable
+        (rawData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue
+    }
+
+    public var solicitedServiceUUIDs: [CBUUID]? { // CBAdvertisementDataSolicitedServiceUUIDsKey
+        rawData[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID]
+    }
     
     // MARK: - Init
     
@@ -33,14 +76,7 @@ public struct AdvertisementData: Hashable {
     }
     
     public init(_ advertisementData: [String : Any]) {
-        localName = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-        manufacturerData = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data
-        serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID : Data]
-        serviceUUIDs = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
-        overflowServiceUUIDs = advertisementData[CBAdvertisementDataOverflowServiceUUIDsKey] as? [CBUUID]
-        txPowerLevel = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue
-        isConnectable = (advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue
-        solicitedServiceUUIDs = advertisementData[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID]
+        self.rawData = advertisementData
     }
     
     // MARK: - Advertised ID (MAC Address)
