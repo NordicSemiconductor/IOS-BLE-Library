@@ -65,6 +65,10 @@ extension CBMServiceMock {
 }
 
 // MARK: - Blinky Implementation
+struct MockError: Swift.Error {
+    let title: String
+    let message: String
+}
 
 /// The delegate implements the behavior of the mocked device.
 private class BlinkyCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate {
@@ -95,15 +99,15 @@ private class BlinkyCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate {
     }
     
     // MARK: Event handlers
-
+    
     func reset() {
         ledEnabled = false
         buttonPressed = false
     }
-
+    
     func peripheral(_ peripheral: CBMPeripheralSpec,
                     didReceiveReadRequestFor characteristic: CBMCharacteristicMock)
-            -> Result<Data, Error> {
+    -> Result<Data, Error> {
         if characteristic.uuid == .ledCharacteristic {
             return .success(ledData)
         } else {
@@ -118,6 +122,12 @@ private class BlinkyCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate {
             ledEnabled = data[0] != 0x00
         }
         return .success(())
+    }
+}
+
+private class WeightCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate {
+    func peripheralDidReceiveConnectionRequest(_ peripheral: CBMPeripheralSpec) -> Result<Void, Swift.Error> {
+        .failure(MockError(title: "Connection Error", message: "Failed to connect the peripheral"))
     }
 }
 
@@ -197,6 +207,6 @@ let weightScale = CBMPeripheralSpec
     .connectable(
         name: "Weight Scale",
         services: [.weightScale],
-        delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
+        delegate: WeightCBMPeripheralSpecDelegate() // TODO: Change
     )
     .build()
