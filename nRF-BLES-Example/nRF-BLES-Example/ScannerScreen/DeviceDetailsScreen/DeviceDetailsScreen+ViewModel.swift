@@ -28,7 +28,7 @@ extension DeviceDetailsScreen {
                 }
             }
         }
-        private lazy var peripheralManager = PeripheralManager(peripheral: peripheral, delegate: ReactivePeripheralDelegate())
+        private lazy var peripheral = Peripheral(peripheral: peripheral, delegate: ReactivePeripheralDelegate())
         
         // MARK: Published
         @Published var name: String = ""

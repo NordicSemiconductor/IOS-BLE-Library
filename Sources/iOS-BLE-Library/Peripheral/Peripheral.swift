@@ -61,8 +61,7 @@ private class MockObserver: Observer {
     }
 }
 
-// TODO: It deserves a better name. `PeripheralManager` sounds similar to `CBPeripheralManager` but has a different purpose.
-public class PeripheralManager {
+public class Peripheral {
     public enum Error: Swift.Error {
         case badDelegate
     }
@@ -100,13 +99,13 @@ public class PeripheralManager {
 }
 
 // MARK: - Channels
-extension PeripheralManager {
+extension Peripheral {
     public var peripheralStateChannel: AnyPublisher<CBPeripheralState, Never> {
         stateSubject.eraseToAnyPublisher()
     }
 }
 
-extension PeripheralManager {
+extension Peripheral {
     // TODO: Extract repeated code
     public func discoverServices(serviceUUIDs: [CBMUUID]?) -> Publishers.BluetoothPublisher<CBService, Swift.Error> {
         let allServices = peripheralDelegate.discoveredServicesSubject
@@ -187,7 +186,7 @@ extension PeripheralManager {
 }
 
 // MARK: - Writing Characteristic and Descriptor Values
-extension PeripheralManager {
+extension Peripheral {
     public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Future<Void, Swift.Error> {
         return writer.write(data, to: characteristic)
     }
@@ -202,7 +201,7 @@ extension PeripheralManager {
 }
 
 // MARK: - Reading Characteristic and Descriptor Values
-extension PeripheralManager {
+extension Peripheral {
     public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Swift.Error> {
         return reader.readValue(from: characteristic)
     }

@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import CoreBluetoothMock
 
-extension PeripheralManager {
+extension Peripheral {
     class OperationQueue {
         let queue = Foundation.OperationQueue()
         let peripheral: CBPeripheral
@@ -39,7 +39,7 @@ extension PeripheralManager {
     }
 }
 
-extension PeripheralManager.CharacteristicWriter {
+extension Peripheral.CharacteristicWriter {
     func write(_ value: Data, to characteristic: CBCharacteristic) -> Future<Void, Swift.Error> {
         let operation = WriteCharacteristicOperation(data: value,
                                        writtenEventsPublisher: writtenEventsPublisher,
@@ -52,7 +52,7 @@ extension PeripheralManager.CharacteristicWriter {
     }
 }
 
-extension PeripheralManager.CharacteristicReader {
+extension Peripheral.CharacteristicReader {
     func readValue(from characteristc: CBCharacteristic) -> Future<Data?, Swift.Error> {
         let operation = ReadCharacteristicOperation(
             updateEventPublisher: updateEventPublisher,
