@@ -82,6 +82,7 @@ public class PeripheralManager {
         peripheral: peripheral
     )
     
+    // TODO: Why don't we use default delegate?
     public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
         self.peripheral = peripheral
         self.peripheralDelegate = delegate
