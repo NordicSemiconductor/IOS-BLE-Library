@@ -55,7 +55,6 @@ extension Publishers {
         
         public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, CBService == S.Input {
             inner.receive(subscriber: subscriber)
-            
         }
         
         public func connect() -> Cancellable {

@@ -41,7 +41,7 @@ extension Publishers {
 }
 
 extension Publishers.GuestList {
-    class Inner<Downstream, Guest>: Subscriber where Downstream: Subscriber, Upstream.Output == Downstream.Input, Upstream.Failure == Downstream.Failure {
+    class Inner<Downstream, Guest>: Subscriber, Subscription where Downstream: Subscriber, Upstream.Output == Downstream.Input, Upstream.Failure == Downstream.Failure {
         typealias Input = Upstream.Output
         typealias Failure = Upstream.Failure
         
@@ -49,6 +49,7 @@ extension Publishers.GuestList {
         private var subscription: Subscription?
         private let check: (Guest, Upstream.Output) -> Bool
         private let downstream: Downstream
+        private var demand: Subscribers.Demand = .unlimited
         
         init(downstream: Downstream, list: [Guest], check: @escaping (Guest, Input) -> Bool) {
             self.downstream = downstream
@@ -58,31 +59,39 @@ extension Publishers.GuestList {
         
         func receive(subscription: Subscription) {
             self.subscription = subscription
-            downstream.receive(subscription: subscription)
+            downstream.receive(subscription: self)
         }
         
         func receive(_ input: Upstream.Output) -> Subscribers.Demand {
             for guest in list.enumerated() {
                 if check(guest.element, input) {
                     list.remove(at: guest.offset)
-                    #warning("it was like this before")
-                    // _ = downstream.receive(input)
-                    return downstream.receive(input)
+                    demand = downstream.receive(input)
                     break
                 }
             }
             
             if list.isEmpty {
                 downstream.receive(completion: .finished)
-                subscription?.cancel()
+                cancel()
             }
             
-            return .max(list.count)
+            return demand
         }
         
         func receive(completion: Subscribers.Completion<Upstream.Failure>) {
             downstream.receive(completion: completion)
         }
+        
+        func request(_ demand: Subscribers.Demand) {
+            self.demand = demand
+            subscription?.request(demand)
+        }
+        
+        func cancel() {
+            subscription?.cancel()
+        }
+        
     }
 }
 

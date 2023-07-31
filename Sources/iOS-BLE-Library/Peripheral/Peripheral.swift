@@ -206,6 +206,19 @@ extension Peripheral {
         return reader.readValue(from: characteristic)
     }
     
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Swift.Error> {
+        return peripheralDelegate.updatedCharacteristicValuesSubject
+            .filter { $0.0.uuid == characteristic.uuid }
+            .tryCompactMap { (ch, err) in
+                if let err {
+                    throw err
+                }
+                
+                return ch.value
+            }
+            .eraseToAnyPublisher()
+    }
+    
     public func readValue(for descriptor: CBDescriptor) -> Future<Data, Swift.Error> {
         fatalError()
     }
