@@ -172,7 +172,7 @@ let hrm = CBMPeripheralSpec
         delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
     )
     .build()
-
+/*
 let runningSpeedCadenceSensor = CBMPeripheralSpec
     .simulatePeripheral(proximity: .far)
     .advertising(
@@ -191,6 +191,7 @@ let runningSpeedCadenceSensor = CBMPeripheralSpec
         delegate: BlinkyCBMPeripheralSpecDelegate() // TODO: Change
     )
     .build()
+ */
 
 let weightScale = CBMPeripheralSpec
     .simulatePeripheral(proximity: .immediate)

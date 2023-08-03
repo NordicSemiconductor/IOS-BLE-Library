@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetoothMock
+import CoreBluetoothMock_Collection
 
 public struct BluetoothEmulation {
     public static func simulateState() {
@@ -14,6 +15,6 @@ public struct BluetoothEmulation {
     }
     
     public static func simulatePeripherals() {
-        CBMCentralManagerMock.simulatePeripherals([blinky, hrm, runningSpeedCadenceSensor, weightScale])
+        CBMCentralManagerMock.simulatePeripherals([blinky, hrm, RunningSpeedAndCadence.peripheral, weightScale])
     }
 }

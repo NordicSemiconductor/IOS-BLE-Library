@@ -224,3 +224,20 @@ extension Peripheral {
     }
 
 }
+
+// MARK: - Setting Notifications for a Characteristic’s Value
+extension Peripheral {
+    public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<Bool, Swift.Error> {
+        return peripheralDelegate.notificationStateSubject
+            .first { $0.0.uuid == characteristic.uuid }
+            .tryMap { result in
+                if let e = result.1 {
+                    throw e 
+                }
+                return result.0.isNotifying
+            }
+            .bluetooth {
+                self.peripheral.setNotifyValue(isEnabled, for: characteristic)
+            }
+    }
+}
