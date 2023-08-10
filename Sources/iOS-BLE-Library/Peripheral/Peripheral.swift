@@ -195,7 +195,7 @@ extension Peripheral {
         peripheral.writeValue(data, for: characteristic, type: .withoutResponse)
     }
     
-    public func writeValue(_ value: Data, for descriptor: CBDescriptor) {
+    public func writeValue(_ data: Data, for descriptor: CBDescriptor) {
         fatalError()
     }
 }
@@ -222,12 +222,17 @@ extension Peripheral {
     public func readValue(for descriptor: CBDescriptor) -> Future<Data, Swift.Error> {
         fatalError()
     }
-
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
 extension Peripheral {
     public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<Bool, Swift.Error> {
+        if characteristic.isNotifying == isEnabled {
+            return Just(isEnabled)
+                .setFailureType(to: Swift.Error.self)
+                .bluetooth { }
+        }
+        
         return peripheralDelegate.notificationStateSubject
             .first { $0.0.uuid == characteristic.uuid }
             .tryMap { result in
