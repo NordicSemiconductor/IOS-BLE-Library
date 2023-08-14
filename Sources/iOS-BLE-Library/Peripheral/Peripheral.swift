@@ -187,8 +187,19 @@ extension Peripheral {
 
 // MARK: - Writing Characteristic and Descriptor Values
 extension Peripheral {
-    public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Future<Void, Swift.Error> {
-        return writer.write(data, to: characteristic)
+    public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Publishers.BluetoothPublisher<Void, Swift.Error> {
+        return peripheralDelegate.writtenCharacteristicValuesSubject
+            .first(where: { $0.0.uuid == characteristic.uuid })
+            .tryMap { result in
+                if let e = result.1 {
+                    throw e
+                } else {
+                    return ()
+                }
+            }
+            .bluetooth {
+                self.peripheral.writeValue(data, for: characteristic, type: .withResponse)
+            }
     }
     
     public func writeValueWithoutResponse(_ data: Data, for characteristic: CBMCharacteristic) {

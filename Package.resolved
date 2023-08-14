@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
-      "identity" : "ios-common-libraries",
+      "identity" : "corebluetoothmock-collection",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/NordicPlayground/IOS-Common-Libraries",
+      "location" : "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
       "state" : {
-        "branch" : "feature/reduce_pckage_version",
-        "revision" : "5a5023a3ef91f0d7842bf5dd64e6523ad4406052"
+        "branch" : "main",
+        "revision" : "f79ae8e33848a42d31702fc29c4d2556e89c185f"
+      }
+    },
+    {
+      "identity" : "ios-bluetooth-numbers-database",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NickKibish/iOS-Bluetooth-Numbers-Database.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "46dae550b89af3f8897070d331930f7e231748ff"
       }
     },
     {
