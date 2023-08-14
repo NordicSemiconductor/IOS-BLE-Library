@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreBluetooth
+import CoreBluetoothMock
 
 // MARK: - CBManagerState
 
@@ -32,8 +32,6 @@ extension CBManagerState: CustomDebugStringConvertible, CustomStringConvertible 
             return "unknown"
         case .unsupported:
             return "unsupported"
-        @unknown default:
-            return "unknownState"
         }
     }
 }

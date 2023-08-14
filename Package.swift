@@ -6,25 +6,35 @@ import PackageDescription
 let package = Package(
     name: "iOS-BLE-Library",
     platforms: [
-        .iOS(.v15),
+        .iOS(.v13),
         .macOS(.v12)
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "iOS-BLE-Library",
             targets: ["iOS-BLE-Library"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/NordicPlayground/IOS-Common-Libraries", branch: "main"),
+        .package(
+            url: "https://github.com/NickKibish/IOS-CoreBluetooth-Mock.git",
+            branch: "main"
+//            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
+//            from: "0.16.1"
+        ),
+        .package(
+            url: "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
+            branch: "main"
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "iOS-BLE-Library",
-            dependencies: [.product(name: "iOSCommonLibraries", package: "iOS-Common-Libraries")]),
+            dependencies: [
+                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")
+            ]),
         .testTarget(
             name: "iOS-BLE-LibraryTests",
             dependencies: ["iOS-BLE-Library"]),
