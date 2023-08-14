@@ -9,3 +9,14 @@ An in-development Bluetooth Low Energy Library by Nordic Semiconductor to intera
 # Use At Your Own Risk (Currently)
 
 As of this writing, we are not recommending this library for external use. It is used by both our Private and Public / Open-Source apps, hence the need to make it public as well. But for now we haven't settled on the API - we're still learning from all of Apple's new technologies such as Actors and Async / Await, therefore, it is likely big changes might be required as we move forward. 
+
+# TBD
+* Documentation
+    * It will be added but the API is copying the CoreBluetooth API, so it should be easy to understand.
+* Examples
+    * Currently examples can be found in iOS-nRF-Toolbox in the [develop](https://github.com/NordicSemiconductor/IOS-nRF-Toolbox/tree/develop) branch.
+* Unit Tests
+* Create two versions of the library: 
+    * CoreBluetooth API compatible
+    * [CoreBluetoothMock](https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock) API compatible
+    * Currently the library is using the CoreBluetoothMock API. It can be not compatible with other libraries that relies on the CoreBluetooth API.
