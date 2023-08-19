@@ -66,7 +66,7 @@ public class CentralManager {
     }
 }
 
-// MARK: Methods
+// MARK: Establishing or Canceling Connections with Peripherals
 extension CentralManager {
     public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.Peripheral {
         return self.connectedPeripheralChannel
@@ -109,10 +109,59 @@ extension CentralManager {
     }
 }
 
+// MARK: Retrieving Lists of Peripherals
+extension CentralManager {
+    public func retrieveConnectedPeripherals(withServices identifiers: [CBUUID]) -> [CBPeripheral] {
+        centralManager.retrieveConnectedPeripherals(withServices: identifiers)
+    }
+    
+    public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> [CBPeripheral] {
+        centralManager.retrievePeripherals(withIdentifiers: identifiers)
+    }
+}
+
+// MARK: Scanning or Stopping Scans of Peripherals
+extension CentralManager {
+    public func scanForPeripherals(withServices services: [CBUUID]?) -> Publishers.BluetoothPublisher<ScanResult, Swift.Error> {
+        stopScan()
+        // TODO: Change to BluetoothPublisher
+        return centralManagerDelegate.stateSubject
+            .prefix(untilOutputFrom: killSwitchSubject)
+            .tryFirst { state in
+                guard let determined = state.ready else { return false }
+
+                guard determined else { throw Error.badState(state) }
+                return true
+            }
+            .flatMap { _ in
+                // TODO: Check for mmemory leaks
+                return self.centralManagerDelegate.scanResultSubject
+                    .setFailureType(to: Swift.Error.self)
+            }
+            .mapError{ [weak self] e in
+                self?.stopScan()
+                return e
+            }
+            .bluetooth {
+                self.centralManager.scanForPeripherals(withServices: services)
+            }
+    }
+    
+    public func stopScan() {
+        centralManager.stopScan()
+    }
+    
+    
+    
+    
+}
+
+
 // MARK: Channels
 extension CentralManager {
     public var stateChannel: AnyPublisher<CBManagerState, Never> {
-        centralManagerDelegate.statePublisher
+        centralManagerDelegate
+            .stateSubject
             .eraseToAnyPublisher()
     }
     
@@ -135,36 +184,4 @@ extension CentralManager {
         centralManagerDelegate.disconnectedPeripheralsSubject
             .eraseToAnyPublisher()
     }
-}
-
-extension CentralManager {
-    public func stopScan() {
-        centralManager.stopScan()
-    }
-    
-    public func scanForPeripherals(withServices services: [CBUUID]?) -> AnyPublisher<ScanResult, Swift.Error> {
-        stopScan()
-        // TODO: Change to BluetoothPublisher
-        return centralManagerDelegate.stateSubject
-            .prefix(untilOutputFrom: killSwitchSubject)
-            .tryFirst { state in
-                guard let determined = state.ready else { return false }
-
-                guard determined else { throw Error.badState(state) }
-                return true
-            }
-            .flatMap { _ in
-                // TODO: Check for mmemory leaks
-                self.centralManager.scanForPeripherals(withServices: services)
-                return self.centralManagerDelegate.scanResultSubject
-                    .setFailureType(to: Swift.Error.self)
-            }
-            .mapError{ [weak self] e in
-                self?.stopScan()
-                return e
-            }
-            .eraseToAnyPublisher()
-    }
-    
-    
 }
