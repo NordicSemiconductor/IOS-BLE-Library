@@ -138,6 +138,9 @@ extension CentralManager {
                 return self.centralManagerDelegate.scanResultSubject
                     .setFailureType(to: Swift.Error.self)
             }
+            .map { a in
+                return a 
+            }
             .mapError{ [weak self] e in
                 self?.stopScan()
                 return e
@@ -150,10 +153,6 @@ extension CentralManager {
     public func stopScan() {
         centralManager.stopScan()
     }
-    
-    
-    
-    
 }
 
 
