@@ -26,7 +26,7 @@ final class CentralManagerTests: XCTestCase {
         let cm = CBCentralManagerFactory.instance(delegate: cmd, queue: .main, forceMock: true)
         self.central = try CentralManager(centralManager: cm)
         
-        CBMCentralManagerMock.simulateInitialState(.unknown)
+        CBMCentralManagerMock.simulateInitialState(.poweredOn)
         CBMCentralManagerMock.simulatePeripherals([rs.peripheral])
         
         cancelables = Set()
@@ -34,43 +34,44 @@ final class CentralManagerTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        try super.tearDownWithError()
+        
         cancelables.removeAll()
         cancelables = nil
         central = nil
         rs = nil
+        CBMCentralManagerMock.tearDownSimulation()
     }
 
     func testScan() async {
-        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        let valueExpectation = XCTestExpectation(description: "Receive at least 1 value (ScanResult)")
+        let completionExpectation = XCTestExpectation(description: "Publisher finished")
         
-        let expectation = XCTestExpectation(description: "Scan for peripherals")
-
         central.scanForPeripherals(withServices: nil)
             .autoconnect()
             .prefix(1)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    expectation.fulfill()
+                    completionExpectation.fulfill()
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
                 }
             }, receiveValue: { _ in
-                
+                valueExpectation.fulfill()
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [valueExpectation, completionExpectation], timeout: 5)
     }
     
     func testFailedStateScan() async {
-        CBMCentralManagerMock.simulateInitialState(.poweredOff)
+        CBMCentralManagerMock.simulatePowerOff()
         
         let expectation = XCTestExpectation(description: "Scan for peripherals")
 
         central.scanForPeripherals(withServices: nil)
             .autoconnect()
-            .prefix(1)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -95,10 +96,8 @@ final class CentralManagerTests: XCTestCase {
     }
 
     func testStopScan() async {
-        CBMCentralManagerMock.simulateInitialState(.poweredOn)
-        
         let firstExp = XCTestExpectation(description: "First scan for peripherals")
-        let secondExp = XCTestExpectation(description: "Repeated scan for peripherals")
+        let valueExpectation1 = XCTestExpectation(description: "1: Receive at least 1 value (ScanResult)")
 
         central.scanForPeripherals(withServices: nil)
             .autoconnect()
@@ -111,9 +110,15 @@ final class CentralManagerTests: XCTestCase {
                 }
                 firstExp.fulfill()
             }, receiveValue: { _ in
+                valueExpectation1.fulfill()
                 self.central.stopScan()
             })
             .store(in: &cancelables)
+        
+        await fulfillment(of: [firstExp, valueExpectation1], timeout: 5)
+        
+        let valueExpectation2 = XCTestExpectation(description: "2: Receive at least 1 value (ScanResult)")
+        let secondExp = XCTestExpectation(description: "Repeated scan for peripherals")
         
         central.scanForPeripherals(withServices: nil)
             .autoconnect()
@@ -126,11 +131,11 @@ final class CentralManagerTests: XCTestCase {
                 }
                 secondExp.fulfill()
             }, receiveValue: { _ in
+                valueExpectation2.fulfill()
                 self.central.stopScan()
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [firstExp, secondExp], timeout: 10)
+        await fulfillment(of: [secondExp, valueExpectation2], timeout: 5)
     }
-    
 }
