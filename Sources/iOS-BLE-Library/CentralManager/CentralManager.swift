@@ -126,7 +126,6 @@ extension CentralManager {
         stopScan()
         // TODO: Change to BluetoothPublisher
         return centralManagerDelegate.stateSubject
-            .prefix(untilOutputFrom: killSwitchSubject)
             .tryFirst { state in
                 guard let determined = state.ready else { return false }
 
@@ -145,13 +144,15 @@ extension CentralManager {
                 self?.stopScan()
                 return e
             }
+            .prefix(untilOutputFrom: killSwitchSubject)
             .bluetooth {
                 self.centralManager.scanForPeripherals(withServices: services)
             }
     }
     
     public func stopScan() {
-        centralManager.stopScan()
+    centralManager.stopScan()
+        killSwitchSubject.send(())
     }
 }
 

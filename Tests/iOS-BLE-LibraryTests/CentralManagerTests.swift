@@ -93,5 +93,44 @@ final class CentralManagerTests: XCTestCase {
         
         await fulfillment(of: [expectation], timeout: 5)
     }
+
+    func testStopScan() async {
+        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        
+        let firstExp = XCTestExpectation(description: "First scan for peripherals")
+        let secondExp = XCTestExpectation(description: "Repeated scan for peripherals")
+
+        central.scanForPeripherals(withServices: nil)
+            .autoconnect()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    firstExp.fulfill()
+                case .failure(let e):
+                    XCTFail("Found error: \(e.localizedDescription), instead of success result")
+                }
+                firstExp.fulfill()
+            }, receiveValue: { _ in
+                self.central.stopScan()
+            })
+            .store(in: &cancelables)
+        
+        central.scanForPeripherals(withServices: nil)
+            .autoconnect()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    secondExp.fulfill()
+                case .failure(let e):
+                    XCTFail("Found error: \(e.localizedDescription), instead of success result")
+                }
+                secondExp.fulfill()
+            }, receiveValue: { _ in
+                self.central.stopScan()
+            })
+            .store(in: &cancelables)
+        
+        await fulfillment(of: [firstExp, secondExp], timeout: 10)
+    }
     
 }
