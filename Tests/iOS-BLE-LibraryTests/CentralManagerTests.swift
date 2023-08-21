@@ -28,7 +28,7 @@ final class CentralManagerTests: XCTestCase {
         
         CBMCentralManagerMock.simulateInitialState(.unknown)
         CBMCentralManagerMock.simulatePeripherals([rs.peripheral])
-        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        
         cancelables = Set()
         central = CentralManager()
     }
@@ -41,6 +41,8 @@ final class CentralManagerTests: XCTestCase {
     }
 
     func testScan() async {
+        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        
         let expectation = XCTestExpectation(description: "Scan for peripherals")
 
         central.scanForPeripherals(withServices: nil)
@@ -58,6 +60,38 @@ final class CentralManagerTests: XCTestCase {
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 5)
     }
+    
+    func testFailedStateScan() async {
+        CBMCentralManagerMock.simulateInitialState(.poweredOff)
+        
+        let expectation = XCTestExpectation(description: "Scan for peripherals")
+
+        central.scanForPeripherals(withServices: nil)
+            .autoconnect()
+            .prefix(1)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    XCTFail("Failure completion is expeted")
+                case .failure(let error) where error is CentralManager.Error:
+                    guard case CentralManager.Error.badState(let s) = error else {
+                        XCTFail("Expected `badState` error. Found: \(error.localizedDescription)")
+                        break
+                    }
+                    
+                    XCTAssertEqual(s, .poweredOff)
+                case .failure(let e):
+                    XCTFail("Should be CentralManager.Error.badState. Found \(e.localizedDescription)")
+                }
+                expectation.fulfill()
+            }, receiveValue: { _ in
+                XCTFail("No peripherals are expected. Failure completion is expeted")
+            })
+            .store(in: &cancelables)
+        
+        await fulfillment(of: [expectation], timeout: 5)
+    }
+    
 }

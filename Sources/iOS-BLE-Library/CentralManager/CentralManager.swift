@@ -10,7 +10,7 @@ import CoreBluetoothMock
 import Combine
 
 extension CentralManager {
-    enum Error: Swift.Error {
+    public enum Error: Swift.Error {
         case wrongManager
         case badState(CBManagerState)
         case unknownError
