@@ -77,15 +77,15 @@ extension CentralManager {
         })
         
         return self.connectedPeripheralChannel
-            .first(where: { $0.0.identifier == peripheral.identifier})
-            .tryMap{ p in
+            .filter { $0.0.identifier == peripheral.identifier }
+            .tryMap { p in
                 if let e = p.1 {
                     throw e
                 }
                 
                 return p.0
             }
-            .prefix(untilOutputFrom: killSwitch)
+            .prefix(untilUntilOutputOrCompletion: killSwitch)
             .bluetooth {
                 self.centralManager.connect(peripheral, options: options)
             }
