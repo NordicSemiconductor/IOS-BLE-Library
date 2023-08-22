@@ -68,7 +68,7 @@ public class CentralManager {
 
 // MARK: Establishing or Canceling Connections with Peripherals
 extension CentralManager {
-    public func c(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.BluetoothPublisher<CBPeripheral, Swift.Error> {
+    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.BluetoothPublisher<CBPeripheral, Swift.Error> {
         let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { p in
             if let e = p.1 {
                 throw e
@@ -89,26 +89,6 @@ extension CentralManager {
             .bluetooth {
                 self.centralManager.connect(peripheral, options: options)
             }
-    }
-    
-    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.Peripheral {
-        return self.connectedPeripheralChannel
-        .tryFilter { r in
-            guard r.0.identifier == peripheral.identifier else {
-                return false
-            }
-            
-            if let e = r.1 {
-                throw e
-            } else {
-                return true
-            }
-        }
-        .map { $0.0 }
-        .first()
-        .peripheral {
-            self.centralManager.connect(peripheral, options: options)
-        }
     }
     
     public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.Peripheral {

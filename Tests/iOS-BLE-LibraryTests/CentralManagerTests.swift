@@ -138,4 +138,44 @@ final class CentralManagerTests: XCTestCase {
         
         await fulfillment(of: [secondExp, valueExpectation2], timeout: 5)
     }
+    
+    func testConnect() async throws {
+        let connectionPeripheral = try await central.scanForPeripherals(withServices: nil)
+            .autoconnect()
+            .prefix(1)
+            .value
+            .peripheral
+        
+        let connectionExpectation = XCTestExpectation(description: "Connection expectation")
+        let disconnectionExpectation = XCTestExpectation(description: "Disconnection expectation")
+        central.connect(connectionPeripheral)
+            .autoconnect()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    disconnectionExpectation.fulfill()
+                case .failure(let e):
+                    XCTFail(e.localizedDescription)
+                }
+            } receiveValue: { peripheral in
+                XCTAssertEqual(peripheral.identifier, connectionPeripheral.identifier)
+                connectionExpectation.fulfill()
+            }
+            .store(in: &cancelables)
+
+        await fulfillment(of: [connectionExpectation], timeout: 3)
+        
+        central.cancelPeripheralConnection(connectionPeripheral)
+            .autoconnect()
+            .sink { completion in
+                if case .failure(let e) = completion {
+                    XCTFail(e.localizedDescription)
+                }
+            } receiveValue: { peripheral in
+                XCTAssertEqual(peripheral.identifier, connectionPeripheral.identifier)
+            }
+            .store(in: &cancelables)
+        
+        await fulfillment(of: [disconnectionExpectation], timeout: 3)
+    }
 }
