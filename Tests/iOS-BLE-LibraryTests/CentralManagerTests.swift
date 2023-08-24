@@ -76,8 +76,8 @@ final class CentralManagerTests: XCTestCase {
                 switch completion {
                 case .finished:
                     XCTFail("Failure completion is expeted")
-                case .failure(let error) where error is CentralManager.Error:
-                    guard case CentralManager.Error.badState(let s) = error else {
+                case .failure(let error) where error is CentralManager.Err:
+                    guard case CentralManager.Err.badState(let s) = error else {
                         XCTFail("Expected `badState` error. Found: \(error.localizedDescription)")
                         break
                     }

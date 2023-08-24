@@ -10,7 +10,7 @@ import CoreBluetoothMock
 import Combine
 
 extension CentralManager {
-    public enum Error: Swift.Error {
+    public enum Err: Error {
         case wrongManager
         case badState(CBManagerState)
         case unknownError
@@ -56,7 +56,7 @@ public class CentralManager {
     
     public init(centralManager: CBCentralManager) throws {
         guard let reactiveDelegate = centralManager.delegate as? ReactiveCentralManagerDelegate else {
-            throw Error.wrongManager
+            throw Err.wrongManager
         }
         
         self.centralManager = centralManager
@@ -68,7 +68,7 @@ public class CentralManager {
 
 // MARK: Establishing or Canceling Connections with Peripherals
 extension CentralManager {
-    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.BluetoothPublisher<CBPeripheral, Swift.Error> {
+    public func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) -> Publishers.BluetoothPublisher<CBPeripheral, Error> {
         let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { p in
             if let e = p.1 {
                 throw e
@@ -125,20 +125,20 @@ extension CentralManager {
 
 // MARK: Scanning or Stopping Scans of Peripherals
 extension CentralManager {
-    public func scanForPeripherals(withServices services: [CBUUID]?) -> Publishers.BluetoothPublisher<ScanResult, Swift.Error> {
+    public func scanForPeripherals(withServices services: [CBUUID]?) -> Publishers.BluetoothPublisher<ScanResult, Error> {
         stopScan()
         // TODO: Change to BluetoothPublisher
         return centralManagerDelegate.stateSubject
             .tryFirst { state in
                 guard let determined = state.ready else { return false }
 
-                guard determined else { throw Error.badState(state) }
+                guard determined else { throw Err.badState(state) }
                 return true
             }
             .flatMap { _ in
                 // TODO: Check for mmemory leaks
                 return self.centralManagerDelegate.scanResultSubject
-                    .setFailureType(to: Swift.Error.self)
+                    .setFailureType(to: Error.self)
             }
             .map { a in
                 return a 
@@ -178,12 +178,12 @@ extension CentralManager {
             .eraseToAnyPublisher()
     }
     
-    public var connectedPeripheralChannel: AnyPublisher<(CBPeripheral, Swift.Error?), Never> {
+    public var connectedPeripheralChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
         centralManagerDelegate.connectedPeripheralSubject
             .eraseToAnyPublisher()
     }
     
-    public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Swift.Error?), Never> {
+    public var disconnectedPeripheralsChannel: AnyPublisher<(CBPeripheral, Error?), Never> {
         centralManagerDelegate.disconnectedPeripheralsSubject
             .eraseToAnyPublisher()
     }

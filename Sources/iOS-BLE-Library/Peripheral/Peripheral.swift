@@ -62,7 +62,8 @@ private class MockObserver: Observer {
 }
 
 public class Peripheral {
-    public enum Error: Swift.Error {
+    /// I'm Errr from Omicron Persei 8
+    public enum Err: Error {
         case badDelegate
     }
     
@@ -107,7 +108,7 @@ extension Peripheral {
 
 extension Peripheral {
     // TODO: Extract repeated code
-    public func discoverServices(serviceUUIDs: [CBMUUID]?) -> Publishers.BluetoothPublisher<CBService, Swift.Error> {
+    public func discoverServices(serviceUUIDs: [CBMUUID]?) -> Publishers.BluetoothPublisher<CBService, Error> {
         let allServices = peripheralDelegate.discoveredServicesSubject
             .tryCompactMap { result throws -> [CBService]? in
                 if let e = result.1 {
@@ -116,11 +117,11 @@ extension Peripheral {
                     return result.0
                 }
             }
-            .flatMap { services -> Publishers.Sequence<[CBService], Swift.Error> in
+            .flatMap { services -> Publishers.Sequence<[CBService], Error> in
                 Publishers.Sequence(sequence: services)
             }
         
-        let filtered: AnyPublisher<CBService, Swift.Error>
+        let filtered: AnyPublisher<CBService, Error>
         
         if let serviceList = serviceUUIDs {
             filtered = allServices.guestList(serviceList, keypath: \.uuid).eraseToAnyPublisher()
@@ -133,7 +134,7 @@ extension Peripheral {
         }
     }
     
-    public func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService) -> Publishers.BluetoothPublisher<CBCharacteristic, Swift.Error> {
+    public func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService) -> Publishers.BluetoothPublisher<CBCharacteristic, Error> {
         let allCharacteristics = peripheralDelegate.discoveredCharacteristicsSubject
             .filter {
                 $0.0.uuid == service.uuid
@@ -145,11 +146,11 @@ extension Peripheral {
                     return result.1
                 }
             }
-            .flatMap { characteristics -> Publishers.Sequence<[CBCharacteristic], Swift.Error> in
+            .flatMap { characteristics -> Publishers.Sequence<[CBCharacteristic], Error> in
                 Publishers.Sequence(sequence: characteristics)
             }
         
-        let filtered: AnyPublisher<CBCharacteristic, Swift.Error>
+        let filtered: AnyPublisher<CBCharacteristic, Error>
             
         if let list = characteristicUUIDs {
             filtered = allCharacteristics
@@ -164,7 +165,7 @@ extension Peripheral {
         }
     }
     
-    public func discoverDescriptors(for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<CBDescriptor, Swift.Error> {
+    public func discoverDescriptors(for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<CBDescriptor, Error> {
         return peripheralDelegate.discoveredDescriptorsSubject
             .filter {
                 $0.0.uuid == characteristic.uuid
@@ -176,7 +177,7 @@ extension Peripheral {
                     return result.1
                 }
             }
-            .flatMap { descriptors -> Publishers.Sequence<[CBDescriptor], Swift.Error> in
+            .flatMap { descriptors -> Publishers.Sequence<[CBDescriptor], Error> in
                 Publishers.Sequence(sequence: descriptors)
             }
             .bluetooth {
@@ -187,7 +188,7 @@ extension Peripheral {
 
 // MARK: - Writing Characteristic and Descriptor Values
 extension Peripheral {
-    public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Publishers.BluetoothPublisher<Void, Swift.Error> {
+    public func writeValueWithResponse(_ data: Data, for characteristic: CBMCharacteristic) -> Publishers.BluetoothPublisher<Void, Error> {
         return peripheralDelegate.writtenCharacteristicValuesSubject
             .first(where: { $0.0.uuid == characteristic.uuid })
             .tryMap { result in
@@ -213,11 +214,11 @@ extension Peripheral {
 
 // MARK: - Reading Characteristic and Descriptor Values
 extension Peripheral {
-    public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Swift.Error> {
+    public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Error> {
         return reader.readValue(from: characteristic)
     }
     
-    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Swift.Error> {
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error> {
         return peripheralDelegate.updatedCharacteristicValuesSubject
             .filter { $0.0.uuid == characteristic.uuid }
             .tryCompactMap { (ch, err) in
@@ -230,17 +231,17 @@ extension Peripheral {
             .eraseToAnyPublisher()
     }
     
-    public func readValue(for descriptor: CBDescriptor) -> Future<Data, Swift.Error> {
+    public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
         fatalError()
     }
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
 extension Peripheral {
-    public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<Bool, Swift.Error> {
+    public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic) -> Publishers.BluetoothPublisher<Bool, Error> {
         if characteristic.isNotifying == isEnabled {
             return Just(isEnabled)
-                .setFailureType(to: Swift.Error.self)
+                .setFailureType(to: Error.self)
                 .bluetooth { }
         }
         
