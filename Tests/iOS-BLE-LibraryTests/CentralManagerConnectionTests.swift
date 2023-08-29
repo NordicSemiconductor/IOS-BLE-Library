@@ -1,5 +1,5 @@
 //
-//  CentralManagerTests.swift
+//  CentralManagerConnectionTests.swift
 //  
 //
 //  Created by Nick Kibysh on 18/08/2023.
@@ -11,7 +11,7 @@ import CoreBluetoothMock_Collection
 import CoreBluetoothMock
 import Combine
 
-final class CentralManagerTests: XCTestCase {
+final class CentralManagerConnectionTests: XCTestCase {
     
     var cancelables: Set<AnyCancellable>!
     var central: CentralManager!
