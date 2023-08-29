@@ -21,18 +21,18 @@ extension Peripheral {
     }
     
     class CharacteristicWriter: OperationQueue {
-        let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+        let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
         
-        init(writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, peripheral: CBPeripheral) {
+        init(writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>, peripheral: CBPeripheral) {
             self.writtenEventsPublisher = writtenEventsPublisher
             super.init(peripheral: peripheral)
         }
     }
     
     class CharacteristicReader: OperationQueue {
-        let updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+        let updateEventPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
         
-        init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, peripheral: CBPeripheral) {
+        init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>, peripheral: CBPeripheral) {
             self.updateEventPublisher = updateEventPublisher
             super.init(peripheral: peripheral)
         }
@@ -40,7 +40,7 @@ extension Peripheral {
 }
 
 extension Peripheral.CharacteristicWriter {
-    func write(_ value: Data, to characteristic: CBCharacteristic) -> Future<Void, Swift.Error> {
+    func write(_ value: Data, to characteristic: CBCharacteristic) -> Future<Void, Error> {
         let operation = WriteCharacteristicOperation(data: value,
                                        writtenEventsPublisher: writtenEventsPublisher,
                                        characteristic: characteristic,
@@ -53,7 +53,7 @@ extension Peripheral.CharacteristicWriter {
 }
 
 extension Peripheral.CharacteristicReader {
-    func readValue(from characteristc: CBCharacteristic) -> Future<Data?, Swift.Error> {
+    func readValue(from characteristc: CBCharacteristic) -> Future<Data?, Error> {
         let operation = ReadCharacteristicOperation(
             updateEventPublisher: updateEventPublisher,
             characteristic: characteristc,
@@ -70,7 +70,7 @@ private class BasicOperation<T>: Operation {
     let peripheral: CBPeripheral
     var cancelable: AnyCancellable?
     
-    private(set) var promise: ((Result<T, Swift.Error>) -> Void)?
+    private(set) var promise: ((Result<T, Error>) -> Void)?
     
     enum State: String {
         case ready, executing, finished
@@ -84,7 +84,7 @@ private class BasicOperation<T>: Operation {
         self.peripheral = peripheral
     }
     
-    lazy private(set) var future: Future<T, Swift.Error> = Future { [unowned self] promise in
+    lazy private(set) var future: Future<T, Error> = Future { [unowned self] promise in
         self.promise = promise
     }
     
@@ -118,12 +118,12 @@ private class BasicOperation<T>: Operation {
 
 private class WriteCharacteristicOperation: BasicOperation<Void> {
     
-    let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+    let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
     let characteristic: CBCharacteristic
     
     let data: Data
     
-    init(data: Data, writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
+    init(data: Data, writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
         self.data = data
         self.writtenEventsPublisher = writtenEventsPublisher
         self.characteristic = characteristic
@@ -168,10 +168,10 @@ private class WriteCharacteristicOperation: BasicOperation<Void> {
 }
 
 private class ReadCharacteristicOperation: BasicOperation<Data?> {
-    let updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>
+    let updateEventPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
     let characteristic: CBCharacteristic
     
-    init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Swift.Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
+    init(updateEventPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>, characteristic: CBCharacteristic, peripheral: CBPeripheral) {
         self.updateEventPublisher = updateEventPublisher
         self.characteristic = characteristic
         super.init(peripheral: peripheral)
