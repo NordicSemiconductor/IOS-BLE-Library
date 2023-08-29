@@ -1,5 +1,5 @@
 //
-//  CentralManagerConnectionTests.swift
+//  CentralManagerTests.swift
 //  
 //
 //  Created by Nick Kibysh on 18/08/2023.
@@ -11,7 +11,7 @@ import CoreBluetoothMock_Collection
 import CoreBluetoothMock
 import Combine
 
-final class CentralManagerConnectionTests: XCTestCase {
+final class CentralManagerTests: XCTestCase {
     
     var cancelables: Set<AnyCancellable>!
     var central: CentralManager!
@@ -22,15 +22,14 @@ final class CentralManagerConnectionTests: XCTestCase {
         
         self.rs = RunningSpeedAndCadence()
         
+        CBMCentralManagerMock.simulateInitialState(.poweredOn)
+        CBMCentralManagerMock.simulatePeripherals([rs.peripheral])
+        
         let cmd = ReactiveCentralManagerDelegate()
         let cm = CBCentralManagerFactory.instance(delegate: cmd, queue: .main, forceMock: true)
         self.central = try CentralManager(centralManager: cm)
         
-        CBMCentralManagerMock.simulateInitialState(.poweredOn)
-        CBMCentralManagerMock.simulatePeripherals([rs.peripheral])
-        
         cancelables = Set()
-        central = CentralManager()
     }
 
     override func tearDownWithError() throws {
@@ -41,6 +40,15 @@ final class CentralManagerConnectionTests: XCTestCase {
         central = nil
         rs = nil
         CBMCentralManagerMock.tearDownSimulation()
+    }
+    
+    func testCentralManagerCreation() throws {
+        let cm1 = CBCentralManager(true)
+        XCTAssertThrowsError(try CentralManager(centralManager: cm1), "Error should be thrown, as delegate is not ReactiveCentralManagerDelegate")
+        
+        let d = ReactiveCentralManagerDelegate()
+        let cm2 = CBCentralManagerFactory.instance(delegate: d, queue: .main)
+        XCTAssertNoThrow(try CentralManager(centralManager: cm2), "No error should be thrown")
     }
 
     func testScan() async {
@@ -142,7 +150,6 @@ final class CentralManagerConnectionTests: XCTestCase {
     func testConnect() async throws {
         let connectionPeripheral = try await central.scanForPeripherals(withServices: nil)
             .autoconnect()
-            .prefix(1)
             .value
             .peripheral
         
@@ -182,7 +189,6 @@ final class CentralManagerConnectionTests: XCTestCase {
     func testDisconnectFromPeripheral() async throws {
         let connectionPeripheral = try await central.scanForPeripherals(withServices: nil)
             .autoconnect()
-            .prefix(1)
             .value
             .peripheral
         
