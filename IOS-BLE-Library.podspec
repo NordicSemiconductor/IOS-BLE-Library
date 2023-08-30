@@ -7,8 +7,7 @@ Pod::Spec.new do |s|
     s.author           = { 'Nordic Semiconductor ASA' => 'mag@nordicsemi.no' }
     s.source           = { :git => 'https://github.com/NordicSemiconductor/IOS-BLE-Library.git', :tag => '0.1.1' }
     # s.source           = { :git => 'https://github.com/NordicSemiconductor/IOS-BLE-Library.git', :branch => 'feature/pod_integration' }
-    s.platforms        = :ios 
-    s.ios.deployment_target = '13.0'
+    s.platforms        = { :ios => '13.0', :osx => '12' }
     # s.osx.deployment_target = '12.0'
     s.source_files = 'Sources/iOS-BLE-Library/**/*'
 
