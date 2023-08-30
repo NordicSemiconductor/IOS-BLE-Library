@@ -17,10 +17,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(
-            url: "https://github.com/NickKibish/IOS-CoreBluetooth-Mock.git",
-            branch: "main"
-//            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
-//            from: "0.16.1"
+            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
+            from: "0.17.0"
         ),
         .package(
             url: "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
