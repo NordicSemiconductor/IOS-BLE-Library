@@ -19,27 +19,27 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
     let scanResultSubject = PassthroughSubject<ScanResult, Never>()
     let connectedPeripheralSubject = PassthroughSubject<(CBPeripheral, Error?), Never>()
     let disconnectedPeripheralsSubject = PassthroughSubject<(CBPeripheral, Error?), Never>()
+    let connectionEventSubject = PassthroughSubject<(CBPeripheral, CBConnectionEvent), Never>()
     
-    public var statePublisher: AnyPublisher<CBManagerState, Never> {
-        stateSubject.eraseToAnyPublisher()
+    // MARK: Monitoring Connections with Peripherals
+    
+    open func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        connectedPeripheralSubject.send((peripheral, nil))
     }
     
-    public var state: CBManagerState {
-        stateSubject.value
+    open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        disconnectedPeripheralsSubject.send((peripheral, error))
     }
     
-    // MARK: CBCentralManagerDelegate
-    open func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        stateSubject.send(central.state)
+    open func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        connectedPeripheralSubject.send((peripheral, error))
     }
     
-    /*
-     func centralManager(CBCentralManager, willRestoreState: [String : Any])
-     */
+    open func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
+        connectionEventSubject.send((peripheral, event))
+    }
     
-    /*
-     func centralManager(CBCentralManager, didUpdateANCSAuthorizationFor: CBPeripheral)
-     */
+    // MARK: Discovering and Retrieving Peripherals
     
     open func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         let scanResult = ScanResult(
@@ -50,22 +50,22 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         scanResultSubject.send(scanResult)
     }
     
-    public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        connectedPeripheralSubject.send((peripheral, nil))
+    // MARK: Monitoring the Central Manager’s State
+    
+    open func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        stateSubject.send(central.state)
     }
     
-    public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        let e = error ?? BluetoothError.failedToConnect
-        connectedPeripheralSubject.send((peripheral, e))
+    public func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+        unimplementedError()
     }
     
-    public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        disconnectedPeripheralsSubject.send((peripheral, error))
+    // MARK: Monitoring the Central Manager’s Authorization
+    public func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {
+        unimplementedError()
     }
-    /*
-    @available(iOS 13, *)
-    public func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
-        
-    }
-    */
+    
+    // MARK: Instance Methods
+    // BETA
+    // func centralManager(CBCentralManager, didDisconnectPeripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: Error?)
 }

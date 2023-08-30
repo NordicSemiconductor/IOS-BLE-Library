@@ -27,6 +27,9 @@ public class ReactivePeripheralDelegate: NSObject {
     
     // MARK: Managing Notifications for a Characteristic’s Value
     public let notificationStateSubject = PassthroughSubject<(CBCharacteristic, Error?), Never>()
+    
+    // MARK: Monitoring Changes to a Peripheral’s Name or Services
+    public let updateNameSubject = PassthroughSubject<String?, Never>()
 }
 
 extension ReactivePeripheralDelegate: CBPeripheralDelegate {
@@ -107,7 +110,7 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
     
     public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
         l.i(#function)
-        fatalError()
+        updateNameSubject.send(peripheral.name)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {

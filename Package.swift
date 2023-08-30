@@ -17,10 +17,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(
-            url: "https://github.com/NickKibish/IOS-CoreBluetooth-Mock.git",
-            branch: "main"
-//            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
-//            from: "0.16.1"
+            url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git",
+            from: "0.17.0"
         ),
         .package(
             url: "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
@@ -33,10 +31,12 @@ let package = Package(
         .target(
             name: "iOS-BLE-Library",
             dependencies: [
-                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")
+                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock"),
             ]),
         .testTarget(
             name: "iOS-BLE-LibraryTests",
-            dependencies: ["iOS-BLE-Library"]),
+            dependencies: ["iOS-BLE-Library",
+                           .product(name: "CoreBluetoothMock-Collection", package: "CoreBluetoothMock-Collection")
+            ]),
     ]
 )
