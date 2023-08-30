@@ -11,6 +11,6 @@ Pod::Spec.new do |s|
     # s.osx.deployment_target = '12.0'
     s.source_files = 'Sources/iOS-BLE-Library/**/*'
 
-    s.dependency 'CoreBluetoothMock', '~> 0.16.0'
+    s.dependency 'CoreBluetoothMock'
 
   end
