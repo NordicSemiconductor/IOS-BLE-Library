@@ -6,11 +6,9 @@ Pod::Spec.new do |s|
     s.license          = { :type => 'BSD-3-Clause', :file => 'LICENSE' }
     s.author           = { 'Nordic Semiconductor ASA' => 'mag@nordicsemi.no' }
     s.source           = { :git => 'https://github.com/NordicSemiconductor/IOS-BLE-Library.git', :tag => '0.1.1' }
-    # s.source           = { :git => 'https://github.com/NordicSemiconductor/IOS-BLE-Library.git', :branch => 'feature/pod_integration' }
     s.platforms        = { :ios => '13.0', :osx => '12' }
-    # s.osx.deployment_target = '12.0'
     s.source_files = 'Sources/iOS-BLE-Library/**/*'
 
-    s.dependency 'CoreBluetoothMock'
+    s.dependency 'CoreBluetoothMock', '~> 0.17.0'
 
   end
