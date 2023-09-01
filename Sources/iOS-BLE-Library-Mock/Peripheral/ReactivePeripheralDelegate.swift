@@ -5,13 +5,7 @@
 //  Created by Nick Kibysh on 28/04/2023.
 //
 
-//CG_REPLACE
-import CoreBluetooth
-//CG_WITH
-/*
 import CoreBluetoothMock
-*/
-//CG_END
 import Foundation
 import Combine
 

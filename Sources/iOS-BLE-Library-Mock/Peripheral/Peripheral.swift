@@ -9,13 +9,7 @@ import Foundation
 
 
 import CoreBluetooth
-//CG_REPLACE
-/**/
-//CG_WITH
-/*
 import CoreBluetoothMock
-*/
-//CG_END
 
 import Combine
 
@@ -46,11 +40,7 @@ private class NativeObserver: Observer {
     }
 }
 
-//CG_REPLACE
-/**/
-//CG_WITH
-/*
- private class MockObserver: Observer {
+private class MockObserver: Observer {
      @objc private var peripheral: CBMPeripheralMock
      
      private weak var publisher: CurrentValueSubject<CBPeripheralState, Never>!
@@ -72,8 +62,6 @@ private class NativeObserver: Observer {
          }
      }
  }
- */
-//CG_END
 
 public class Peripheral {
     /// I'm Errr from Omicron Persei 8
@@ -102,20 +90,13 @@ public class Peripheral {
         self.peripheralDelegate = delegate
         peripheral.delegate = delegate
         
-//CG_REPLACE
-        observer = NativeObserver(peripheral: peripheral, publisher: stateSubject)
-        observer.setup()
-//CG_WITH
-/*
-         if let p = peripheral as? CBMPeripheralNative {
+if let p = peripheral as? CBMPeripheralNative {
                      observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
                      observer.setup()
                  } else if let p = peripheral as? CBMPeripheralMock {
                      observer = MockObserver(peripheral: p, publisher: stateSubject)
                      observer.setup()
                  }
-*/
-//CG_END
     }
 }
 

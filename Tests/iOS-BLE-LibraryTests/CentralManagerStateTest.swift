@@ -4,9 +4,8 @@
 //
 //  Created by Nick Kibysh on 29/08/2023.
 //
-
 import XCTest
-@testable import iOS_BLE_Library
+@testable import iOS_BLE_Library_Mock
 import CoreBluetoothMock
 import Combine
 

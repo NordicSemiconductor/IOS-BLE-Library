@@ -10,9 +10,8 @@ let package = Package(
         .macOS(.v12)
     ],
     products: [
-        .library(
-            name: "iOS-BLE-Library",
-            targets: ["iOS-BLE-Library"]),
+        .library(name: "iOS-BLE-Library", targets: ["iOS-BLE-Library"]),
+        .library(name: "iOS-BLE-Library-Mock", targets: ["iOS-BLE-Library-Mock"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -28,14 +27,14 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(name: "iOS-BLE-Library"),
         .target(
-            name: "iOS-BLE-Library",
-            dependencies: [
-                .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock"),
-            ]),
+            name: "iOS-BLE-Library-Mock",
+            dependencies: ["iOS-BLE-Library", .product(name: "CoreBluetoothMock", package: "IOS-CoreBluetooth-Mock")]
+        ),
         .testTarget(
             name: "iOS-BLE-LibraryTests",
-            dependencies: ["iOS-BLE-Library",
+            dependencies: ["iOS-BLE-Library-Mock",
                            .product(name: "CoreBluetoothMock-Collection", package: "CoreBluetoothMock-Collection")
             ]),
     ]
