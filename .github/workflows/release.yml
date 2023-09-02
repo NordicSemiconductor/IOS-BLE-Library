@@ -1,0 +1,49 @@
+name: New Release on Tag Push
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: 5.5.1
+
+      - name: Build and Test
+        run: |
+          swift build
+          swift test
+
+      - name: Get Tag Name and Message
+        id: tag_info
+        run: |
+          echo "::set-output name=tag_name::$(git tag --contains $GITHUB_SHA)"
+          echo "::set-output name=tag_message::$(git show -s --format=%B $GITHUB_SHA)"
+
+      - name: Update .podspec File
+        run: |
+          tag_name="${{ steps.tag_info.outputs.tag_name }}"
+          sed -i '' "s/s.version *= *'[0-9.]*'/s.version = '${tag_name}'/g" YourLibraryName.podspec  # Replace 'YourLibraryName' with your actual podspec filename
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            .build/release/YourLibraryName.framework.zip  # Adjust the path and filename accordingly
+          name: ${{ steps.tag_info.outputs.tag_name }}
+          body: ${{ steps.tag_info.outputs.tag_message }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Release URL
+        run: |
+          echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
