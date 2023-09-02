@@ -43,7 +43,7 @@ jobs:
             .build/release/YourLibraryName.framework.zip  # Adjust the path and filename accordingly
           name: ${{ steps.tag_info.outputs.tag_name }}
           body: ${{ steps.tag_info.outputs.tag_message }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Get Release URL
         run: |
