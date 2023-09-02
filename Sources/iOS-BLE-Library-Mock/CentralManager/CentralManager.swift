@@ -6,13 +6,7 @@
 //
 
 import Foundation
-//CG_REPLACE
-import CoreBluetooth
-//CG_WITH
-/*
 import CoreBluetoothMock
-*/
-//CG_END
 import Combine
 
 extension CentralManager {
@@ -73,13 +67,7 @@ public class CentralManager {
     ///   - queue: The queue to perform operations on. Default is the main queue.
     public init(centralManagerDelegate: ReactiveCentralManagerDelegate = ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main) {
         self.centralManagerDelegate = centralManagerDelegate
-//CG_REPLACE
-        self.centralManager = CBCentralManager(delegate: centralManagerDelegate, queue: queue)
-//CG_WITH
-/*
-        self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
-*/
-//CG_END
+self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
         observer.setup()
     }
     

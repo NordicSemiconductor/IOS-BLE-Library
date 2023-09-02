@@ -7,13 +7,7 @@
 
 import Foundation
 import Combine
-//CG_REPLACE
-import CoreBluetooth
-//CG_WITH
-/*
 import CoreBluetoothMock
-*/
-//CG_END
 
 extension Peripheral {
     class OperationQueue {

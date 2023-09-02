@@ -6,13 +6,7 @@
 //
 
 import Foundation
-//CG_REPLACE
-import CoreBluetooth
-//CG_WITH
-/*
 import CoreBluetoothMock
-*/
-//CG_END
 
 public struct ScanResult {
     public let peripheral: CBPeripheral

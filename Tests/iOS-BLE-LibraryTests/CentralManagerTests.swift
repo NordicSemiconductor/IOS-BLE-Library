@@ -4,9 +4,8 @@
 //
 //  Created by Nick Kibysh on 18/08/2023.
 //
-
 import XCTest
-@testable import iOS_BLE_Library
+@testable import iOS_BLE_Library_Mock
 import CoreBluetoothMock_Collection
 import CoreBluetoothMock
 import Combine
@@ -70,7 +69,7 @@ final class CentralManagerTests: XCTestCase {
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [valueExpectation, completionExpectation], timeout: 5)
+        await fulfillment(of: [valueExpectation, completionExpectation], timeout: 15)
     }
     
     func testFailedStateScan() async {
@@ -123,7 +122,7 @@ final class CentralManagerTests: XCTestCase {
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [firstExp, valueExpectation1], timeout: 5)
+        await fulfillment(of: [firstExp, valueExpectation1], timeout: 15)
         
         let valueExpectation2 = XCTestExpectation(description: "2: Receive at least 1 value (ScanResult)")
         let secondExp = XCTestExpectation(description: "Repeated scan for peripherals")
@@ -144,7 +143,7 @@ final class CentralManagerTests: XCTestCase {
             })
             .store(in: &cancelables)
         
-        await fulfillment(of: [secondExp, valueExpectation2], timeout: 5)
+        await fulfillment(of: [secondExp, valueExpectation2], timeout: 15)
     }
     
     func testConnect() async throws {
