@@ -1,5 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'IOS-BLE-Library-Mock'
+    s.swift_version    = '5.0'
     s.version          = '0.1.2'
     s.summary          = 'Extension for standard CoreBluetooth framework that is based on Combine and brings Reactive Approach. This version of the library uses CoreBluetoothMock for testing and running on simulator. But it can be usen on real devices and in production as well.'
     s.homepage         = 'https://github.com/NordicSemiconductor/IOS-BLE-Library'
