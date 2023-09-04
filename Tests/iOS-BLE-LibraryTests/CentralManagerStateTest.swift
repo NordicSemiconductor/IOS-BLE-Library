@@ -14,7 +14,9 @@ final class CentralManagerStateTest: XCTestCase {
         var cancelables = Set<AnyCancellable>()
         
         CBMCentralManagerMock.simulateInitialState(.unknown)
-        let central = CentralManager()
+        let cmd = ReactiveCentralManagerDelegate()
+        let cm = CBCentralManagerFactory.instance(delegate: cmd, queue: .main, forceMock: true)
+        let central = try CentralManager(centralManager: cm)
         
         let powerOffExp = expectation(description: "Power OFF state")
         let powerOnExp = expectation(description: "Power ON state")

@@ -16,7 +16,6 @@ import CoreBluetoothMock
 //CG_END
 
 open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
-    
     enum BluetoothError: Error {
         case failedToConnect
     }
@@ -28,7 +27,6 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
     let connectionEventSubject = PassthroughSubject<(CBPeripheral, CBConnectionEvent), Never>()
     
     // MARK: Monitoring Connections with Peripherals
-    
     open func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         connectedPeripheralSubject.send((peripheral, nil))
     }
@@ -41,9 +39,11 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         connectedPeripheralSubject.send((peripheral, error))
     }
     
+    #if !os(macOS)
     open func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
         connectionEventSubject.send((peripheral, event))
     }
+    #endif
     
     // MARK: Discovering and Retrieving Peripherals
     
@@ -67,9 +67,11 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
     }
     
     // MARK: Monitoring the Central Manager’s Authorization
+    #if !os(macOS)
     public func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {
         unimplementedError()
     }
+    #endif
     
     // MARK: Instance Methods
     // BETA
