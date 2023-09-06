@@ -16,6 +16,10 @@ jobs:
       tag_name: ${{ steps.get_tag_name.outputs.tag_name }}  }}
       tag_message: ${{ steps.get_tag_message.outputs.tag_message }}
     steps:
+    - name: Add Git Identity
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
     - name: Checkout code
       uses: actions/checkout@v4
     - name: Get last tag name
