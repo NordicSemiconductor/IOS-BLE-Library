@@ -17,7 +17,8 @@ extension Publisher {
 }
 
 extension Publishers {
-    struct PrefixUntilOutputOrCompletion<Upstream: Publisher, Other: Publisher>: Publisher where Other.Failure == Upstream.Failure {
+	struct PrefixUntilOutputOrCompletion<Upstream: Publisher, Other: Publisher>: Publisher
+	where Other.Failure == Upstream.Failure {
 
 		public typealias Output = Upstream.Output
 		public typealias Failure = Upstream.Failure
@@ -65,10 +66,10 @@ extension Publishers.PrefixUntilOutputOrCompletion {
 			}
 		}
 
-        private var subscription: Subscription?
-        private var termination: Termination?
-        private var terminationSubscription: Subscription?
-        private let downstream: Downstream
+		private var subscription: Subscription?
+		private var termination: Termination?
+		private var terminationSubscription: Subscription?
+		private let downstream: Downstream
 
 		init(downstream: Downstream, trigger: Other) {
 			self.downstream = downstream
@@ -78,7 +79,7 @@ extension Publishers.PrefixUntilOutputOrCompletion {
 		}
 
 		func receive(subscription: Subscription) {
-            self.subscription = subscription
+			self.subscription = subscription
 			downstream.receive(subscription: self)
 		}
 
@@ -87,10 +88,10 @@ extension Publishers.PrefixUntilOutputOrCompletion {
 		}
 
 		func receive(completion: Subscribers.Completion<Failure>) {
-            terminationSubscription?.cancel()
-            termination = nil
-            subscription = nil
-            downstream.receive(completion: completion)
+			terminationSubscription?.cancel()
+			termination = nil
+			subscription = nil
+			downstream.receive(completion: completion)
 		}
 
 		func request(_ demand: Subscribers.Demand) {
@@ -98,30 +99,30 @@ extension Publishers.PrefixUntilOutputOrCompletion {
 		}
 
 		func cancel() {
-            subscription?.cancel()
-            terminationSubscription?.cancel()
+			subscription?.cancel()
+			terminationSubscription?.cancel()
 		}
 
 		// MARK: - Private
 
 		private func terminationReceive(subscription: Subscription) {
-            terminationSubscription = subscription
+			terminationSubscription = subscription
 			subscription.request(.max(1))
 		}
 
 		private func terminationReceive(_ input: Other.Output) -> Subscribers.Demand {
-            terminate(.finished)
-            return .none
+			terminate(.finished)
+			return .none
 		}
 
 		private func terminationReceive(completion: Subscribers.Completion<Other.Failure>) {
-            terminate(completion)
+			terminate(completion)
 		}
-        
-        private func terminate(_ completion: Subscribers.Completion<Other.Failure>) {
-            terminationSubscription?.cancel()
-            self.subscription?.cancel()
-            downstream.receive(completion: completion)
-        }
+
+		private func terminate(_ completion: Subscribers.Completion<Other.Failure>) {
+			terminationSubscription?.cancel()
+			self.subscription?.cancel()
+			downstream.receive(completion: completion)
+		}
 	}
 }
