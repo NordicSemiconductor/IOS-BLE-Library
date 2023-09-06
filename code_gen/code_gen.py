@@ -22,9 +22,12 @@ if __name__ == '__main__':
 
     print('replacing code...')
     # modify all .swift files in the destination directory and its subdirectories
+    modified_files = 0
     for root, dirs, files in os.walk(destination):
         for file in files:
             if file.endswith('.swift'):
                 file_path = os.path.join(root, file)
                 rc.modify_swift_file(file_path)
+                modified_files += 1
+    print('modified files: ' + str(modified_files))
 
