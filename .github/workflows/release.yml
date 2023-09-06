@@ -40,6 +40,7 @@ jobs:
     - name: Run copy script
       run: |
         python3 code_gen/code_gen.py Sources
+        git status
     - name: Check for Changes
       id: check_changes
       run: |
