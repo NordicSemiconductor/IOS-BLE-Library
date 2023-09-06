@@ -31,73 +31,73 @@ jobs:
       run: echo "tag_message=$(git tag -l --format='%(contents:subject)' ${{ steps.get_tag_name.outputs.tag_name }})" >> $GITHUB_OUTPUT
     
   # run code_gen/code_gen.py and commit the changes to the repo
-  run_copy_script:
-    runs-on: ubuntu-latest
-    needs: get_tag_info
-    permissions:
-      contents: write
-    outputs:
-      changes_made: ${{ steps.check_changes.outputs.changes_made }}
-      working_branch: ${{ steps.check_changes.outputs.working_branch }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Run copy script
-      run: |
-        python3 code_gen/code_gen.py Sources
-    - name: Check for Changes
-      id: check_changes
-      run: |
-        if [ -n "$(git status --porcelain)" ]; then
-          echo "changes_made=true" >> $GITHUB_OUTPUT
-          # echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
-          echo "working_branch=main" >> $GITHUB_OUTPUT
-        else
-          echo "changes_made=false" >> $GITHUB_OUTPUT
-          echo "working_branch=main" >> $GITHUB_OUTPUT
-        fi
-    - name: Add & Commit
-      if: steps.check_changes.outputs.changes_made == 'true'
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
-        branch: ${{ steps.check_changes.outputs.working_branch }}
+  # run_copy_script:
+  #   runs-on: ubuntu-latest
+  #   needs: get_tag_info
+  #   permissions:
+  #     contents: write
+  #   outputs:
+  #     changes_made: ${{ steps.check_changes.outputs.changes_made }}
+  #     working_branch: ${{ steps.check_changes.outputs.working_branch }}
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #   - name: Run copy script
+  #     run: |
+  #       python3 code_gen/code_gen.py Sources
+  #   - name: Check for Changes
+  #     id: check_changes
+  #     run: |
+  #       if [ -n "$(git status --porcelain)" ]; then
+  #         echo "changes_made=true" >> $GITHUB_OUTPUT
+  #         # echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
+  #         echo "working_branch=main" >> $GITHUB_OUTPUT
+  #       else
+  #         echo "changes_made=false" >> $GITHUB_OUTPUT
+  #         echo "working_branch=main" >> $GITHUB_OUTPUT
+  #       fi
+  #   - name: Add & Commit
+  #     if: steps.check_changes.outputs.changes_made == 'true'
+  #     uses: stefanzweifel/git-auto-commit-action@v4
+  #     with:
+  #       commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
+  #       branch: ${{ steps.check_changes.outputs.working_branch }}
   
-  reindent_code:
-    runs-on: macos-latest
-    needs: [run_copy_script, get_tag_info]
+  # reindent_code:
+  #   runs-on: macos-latest
+  #   needs: [run_copy_script, get_tag_info]
 
-    steps:
-    - name: checkout
-      if: needs.run_copy_script.outputs.changes_made == 'true'
-      uses: actions/checkout@v4
-      with: 
-        ref: ${{ needs.run_copy_script.outputs.working_branch }}
-    - name: Install Formatter
-      if: needs.run_copy_script.outputs.changes_made == 'true'
-      run: |
-        brew install mint
-        mint install apple/swift-format@release/5.7
-        mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
-    - name: Add & Commit
-      if: needs.run_copy_script.outputs.changes_made == 'true'
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'Reindented code'
-        branch: ${{ needs.run_copy_script.outputs.working_branch }}
-    - name: Notify
-      if: needs.run_copy_script.outputs.changes_made == 'false'
-      run: echo "No changes made"
+  #   steps:
+  #   - name: checkout
+  #     if: needs.run_copy_script.outputs.changes_made == 'true'
+  #     uses: actions/checkout@v4
+  #     with: 
+  #       ref: ${{ needs.run_copy_script.outputs.working_branch }}
+  #   - name: Install Formatter
+  #     if: needs.run_copy_script.outputs.changes_made == 'true'
+  #     run: |
+  #       brew install mint
+  #       mint install apple/swift-format@release/5.7
+  #       mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
+  #   - name: Add & Commit
+  #     if: needs.run_copy_script.outputs.changes_made == 'true'
+  #     uses: stefanzweifel/git-auto-commit-action@v4
+  #     with:
+  #       commit_message: 'Reindented code'
+  #       branch: ${{ needs.run_copy_script.outputs.working_branch }}
+  #   - name: Notify
+  #     if: needs.run_copy_script.outputs.changes_made == 'false'
+  #     run: echo "No changes made"
 
   build_and_test:
     runs-on: macos-latest
-    needs: [reindent_code, run_copy_script]
+    # needs: [reindent_code, run_copy_script]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.run_copy_script.outputs.working_branch }}
+        # with:
+        #   ref: ${{ needs.run_copy_script.outputs.working_branch }}
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
