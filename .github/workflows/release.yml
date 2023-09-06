@@ -44,9 +44,11 @@ jobs:
       id: check_changes
       run: |
         if git diff --quiet; then
+          echo "No changes made"
           echo "changes_made=false" >> $GITHUB_OUTPUT
           echo "working_branch=main" >> $GITHUB_OUTPUT
         else
+          echo "Changes made"
           echo "changes_made=true" >> $GITHUB_OUTPUT
           echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
         fi
