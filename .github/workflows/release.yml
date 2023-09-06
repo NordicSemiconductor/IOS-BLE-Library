@@ -45,11 +45,10 @@ jobs:
     - name: Run copy script
       run: |
         python3 code_gen/code_gen.py Sources
-        ls -la Sources/ 
     - name: Check for Changes
       id: check_changes
       run: |
-        if [ -n "$git_status" ]; then
+        if [ -n "$(git status --porcelain)" ]; then
           echo "changes_made=true" >> $GITHUB_OUTPUT
           echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
         else
