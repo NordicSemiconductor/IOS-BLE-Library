@@ -9,3 +9,5 @@ DerivedData/
 .netrc
 .idea/
 .vscode/
+
+__pycache__

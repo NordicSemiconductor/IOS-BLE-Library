@@ -35,6 +35,7 @@ jobs:
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
+        git checkout -b main
         git add .
         git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
         git push origin main
@@ -67,6 +68,7 @@ jobs:
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
+        git checkout -b main
         git add .
         git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
         git push origin main
