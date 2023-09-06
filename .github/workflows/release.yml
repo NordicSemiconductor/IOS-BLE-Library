@@ -34,20 +34,9 @@ jobs:
       with:
         add: '.'
         message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
-    - name: Commit and Push Changes
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Determine the latest tag
-        latest_tag=$(git describe --tags --abbrev=0)
-
-        # Delete the latest tag
-        git tag -d $latest_tag
-        git push --delete origin $latest_tag
-
-        # Create a new tag at the current HEAD
-        git tag $latest_tag
-        git push origin $latest_tag
+        tag: '${{ github.ref }} --force'
+        tag_push: --force
+        fetch: --force
 
   echo_output:
     runs-on: ubuntu-latest
@@ -62,36 +51,23 @@ jobs:
     needs: run_copy_script
 
     steps:
-    - name: Install Formatter
-      if: needs.run_copy_script.outputs.changes-made == 'true'
-      run: |
-        brew install mint
-        mint install apple/swift-format@release/5.7
-        mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
-    - name: Add & Commit
-      if: needs.run_copy_script.outputs.changes-made == 'true'
-      uses: EndBug/add-and-commit@v9.1.1
-      with:
-        add: '.'
-        message: 'Reindented code'
-    - name: Commit and Push Changes
-      if: needs.run_copy_script.outputs.changes-made == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Determine the latest tag
-        latest_tag=$(git describe --tags --abbrev=0)
-
-        # Delete the latest tag
-        git tag -d $latest_tag
-        git push --delete origin $latest_tag
-
-        # Create a new tag at the current HEAD
-        git tag $latest_tag
-        git push origin $latest_tag
-    - name: Notify
-      if: needs.run_copy_script.outputs.changes-made == 'false'
-      run: echo "No changes made"
+    - name: Pass
+      run: echo "Pass"
+    # - name: Install Formatter
+    #   if: needs.run_copy_script.outputs.changes-made == 'true'
+    #   run: |
+    #     brew install mint
+    #     mint install apple/swift-format@release/5.7
+    #     mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
+    # - name: Add & Commit
+    #   if: needs.run_copy_script.outputs.changes-made == 'true'
+    #   uses: EndBug/add-and-commit@v9.1.1
+    #   with:
+    #     add: '.'
+    #     message: 'Reindented code'
+    # - name: Notify
+    #   if: needs.run_copy_script.outputs.changes-made == 'false'
+    #   run: echo "No changes made"
 
   get_tag_info:
     runs-on: ubuntu-latest
