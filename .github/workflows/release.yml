@@ -51,6 +51,14 @@ jobs:
         # Create a new tag at the current HEAD
         git tag $latest_tag
         git push origin $latest_tag
+
+  echo_output:
+    runs-on: ubuntu-latest
+    needs: run_copy_script
+    steps:
+    - name: Echo Output
+      run: |
+        echo "Changes Made: ${{ needs.run_copy_script.outputs.changes-made }}"
   
   reindent_code:
     runs-on: macos-latest
