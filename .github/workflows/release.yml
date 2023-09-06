@@ -43,6 +43,7 @@ jobs:
     - name: Check for Changes
       id: check_changes
       run: |
+        git status
         if git diff --quiet; then
           echo "No changes made"
           echo "changes_made=false" >> $GITHUB_OUTPUT
