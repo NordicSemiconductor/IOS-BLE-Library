@@ -5,6 +5,7 @@ on:
     tags:
       - '*.*.*'
 
+
 env:
   LAST_TAG_NAME: ""
   LAST_TAG_MESSAGE: ""
@@ -48,17 +49,12 @@ jobs:
     - name: Check for Changes
       id: check_changes
       run: |
-        ls -la Sources/
-        git status
-        # this `git status` shows no changes
-        if git diff --quiet; then
-          echo "No changes made"
-          echo "changes_made=false" >> $GITHUB_OUTPUT
-          echo "working_branch=main" >> $GITHUB_OUTPUT
-        else
-          echo "Changes made"
+        if [ -n "$git_status" ]; then
           echo "changes_made=true" >> $GITHUB_OUTPUT
           echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        else
+          echo "changes_made=false" >> $GITHUB_OUTPUT
+          echo "working_branch=main" >> $GITHUB_OUTPUT
         fi
     - name: Add & Commit
       if: steps.check_changes.outputs.changes_made == 'true'
