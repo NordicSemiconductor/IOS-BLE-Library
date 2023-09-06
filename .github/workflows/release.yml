@@ -44,12 +44,11 @@ jobs:
     - name: Run copy script
       run: |
         python3 code_gen/code_gen.py Sources
-        git add .
-        git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
-        # here I get changes
+        ls -la Sources/ 
     - name: Check for Changes
       id: check_changes
       run: |
+        ls -la Sources/
         git status
         # this `git status` shows no changes
         if git diff --quiet; then
