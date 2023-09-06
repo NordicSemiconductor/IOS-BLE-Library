@@ -78,7 +78,7 @@ jobs:
       run: |
         brew install mint
         mint install apple/swift-format@release/5.7
-        mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
+        mint run apple/swift-format@release/5.7  -i -r Sources/iOS-BLE-Library-Mock
     - name: checkout
       if: needs.run_copy_script.outputs.changes_made == 'true'
       uses: actions/checkout@v4
