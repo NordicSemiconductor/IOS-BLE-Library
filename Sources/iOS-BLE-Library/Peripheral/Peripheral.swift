@@ -6,9 +6,10 @@
 //
 
 import Combine
+import CoreBluetooth
 
 //CG_REPLACE
-import CoreBluetooth
+/*EMPTY BLOCK*/
 //CG_WITH
 /*
 import CoreBluetoothMock
@@ -73,7 +74,7 @@ private class NativeObserver: Observer {
          }
      }
  }
- */
+*/
 //CG_END
 
 public class Peripheral {
@@ -105,11 +106,11 @@ public class Peripheral {
 		self.peripheralDelegate = delegate
 		peripheral.delegate = delegate
 
-		//CG_REPLACE
+//CG_REPLACE
 		observer = NativeObserver(peripheral: peripheral, publisher: stateSubject)
 		observer.setup()
-		//CG_WITH
-		/*
+//CG_WITH
+/*
          if let p = peripheral as? CBMPeripheralNative {
                      observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
                      observer.setup()
@@ -118,7 +119,7 @@ public class Peripheral {
                      observer.setup()
                  }
 */
-		//CG_END
+//CG_END
 	}
 }
 

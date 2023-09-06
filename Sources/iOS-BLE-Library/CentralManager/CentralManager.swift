@@ -78,14 +78,14 @@ public class CentralManager {
 			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main
 	) {
 		self.centralManagerDelegate = centralManagerDelegate
-		//CG_REPLACE
+//CG_REPLACE
 		self.centralManager = CBCentralManager(
 			delegate: centralManagerDelegate, queue: queue)
-		//CG_WITH
-		/*
+//CG_WITH
+/*
         self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
 */
-		//CG_END
+//CG_END
 		observer.setup()
 	}
 
