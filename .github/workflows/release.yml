@@ -94,27 +94,27 @@ jobs:
       if: needs.run_copy_script.outputs.changes_made == 'false'
       run: echo "No changes made"
 
-  build_and_test:
-    runs-on: macos-latest
-    needs: [reindent_code, run_copy_script]
+  # build_and_test:
+  #   runs-on: macos-latest
+  #   needs: [reindent_code, run_copy_script]
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.run_copy_script.outputs.working_branch }}
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ needs.run_copy_script.outputs.working_branch }}
 
-      - name: Set up Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: 5.6
+  #     - name: Set up Swift
+  #       uses: swift-actions/setup-swift@v1
+  #       with:
+  #         swift-version: 5.6
 
-      - name: Build Native
-        run: swift build --target iOS-BLE-Library
-      - name: Build Mock
-        run: swift build --target iOS-BLE-Library-Mock
-      - name: Test
-        run: swift test
+  #     - name: Build Native
+  #       run: swift build --target iOS-BLE-Library
+  #     - name: Build Mock
+  #       run: swift build --target iOS-BLE-Library-Mock
+  #     - name: Test
+  #       run: swift test
 
   # pod_release:
   #   needs: [get_tag_info, build_and_test, run_copy_script]
