@@ -72,7 +72,8 @@ public class CentralManager {
 			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main
 	) {
 		self.centralManagerDelegate = centralManagerDelegate
-self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
+		self.centralManager = CBMCentralManagerFactory.instance(
+			delegate: centralManagerDelegate, queue: queue)
 		observer.setup()
 	}
 
