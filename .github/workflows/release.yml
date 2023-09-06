@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Run copy script
       run: |
-        python3 code_gen/code_gen.py
+        python3 code_gen/code_gen.py Sources
     - name: Commit and Push Changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
