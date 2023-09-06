@@ -64,9 +64,10 @@ jobs:
     steps:
     - name: Install Formatter
       if: needs.run_copy_script.outputs.changes-made == 'true'
-      run: brew install mint
-    - run: mint install apple/swift-format@release/5.7
-    - run: mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
+      run: |
+        brew install mint
+        mint install apple/swift-format@release/5.7
+        mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
     - name: Add & Commit
       if: needs.run_copy_script.outputs.changes-made == 'true'
       uses: EndBug/add-and-commit@v9.1.1
