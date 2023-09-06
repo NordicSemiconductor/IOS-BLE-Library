@@ -17,7 +17,7 @@ jobs:
       changes-made: ${{ steps.check_changes.outputs.changes-made }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Run copy script
       run: |
         python3 code_gen/code_gen.py Sources
@@ -98,7 +98,7 @@ jobs:
     needs: reindent_code
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Get last tag name
       run: echo "LAST_TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
     - name: Get last tag message
@@ -113,12 +113,12 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Swift
         uses: swift-actions/setup-swift@v1
         with:
-          swift-version: 5.5.1
+          swift-version: 5.6
 
       - name: Build Native
         run: swift build --target iOS-BLE-Library
@@ -132,7 +132,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with: 
