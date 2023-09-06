@@ -29,18 +29,15 @@ jobs:
         else
           echo "changes-made=true" >> $GITHUB_OUTPUT
         fi
+    - name: Add & Commit
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        add: '.'
+        message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
     - name: Commit and Push Changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
-        git pull origin main --allow-unrelated-histories
-        git checkout -b main
-        git add .
-        git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
-        git push origin main
-
         # Determine the latest tag
         latest_tag=$(git describe --tags --abbrev=0)
 
@@ -70,19 +67,17 @@ jobs:
       run: brew install mint
     - run: mint install apple/swift-format@release/5.7
     - run: mint run apple/swift-format@release/5.7  -i -r Sources/iOS-Bluetooth-Numbers-Database/Extensions
+    - name: Add & Commit
+      if: needs.run_copy_script.outputs.changes-made == 'true'
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        add: '.'
+        message: 'Reindented code'
     - name: Commit and Push Changes
       if: needs.run_copy_script.outputs.changes-made == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
-        git pull origin main --allow-unrelated-histories
-        git checkout -b main
-        git add .
-        git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
-        git push origin main
-
         # Determine the latest tag
         latest_tag=$(git describe --tags --abbrev=0)
 
