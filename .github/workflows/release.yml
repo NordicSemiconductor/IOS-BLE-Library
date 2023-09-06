@@ -62,32 +62,23 @@ jobs:
       with:
         commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
         branch: ${{ steps.check_changes.outputs.working_branch }}
-        
-  echo_output:
-    runs-on: ubuntu-latest
-    needs: run_copy_script
-    steps:
-    - name: Echo Output
-      run: |
-        echo "Changes Made: ${{ needs.run_copy_script.outputs.changes_made }}"
-        echo "Working Branch: ${{ needs.run_copy_script.outputs.working_branch }}"
   
   reindent_code:
     runs-on: macos-latest
     needs: [run_copy_script, get_tag_info]
 
     steps:
-    - name: Install Formatter
-      if: needs.run_copy_script.outputs.changes_made == 'true'
-      run: |
-        brew install mint
-        mint install apple/swift-format@release/5.7
-        mint run apple/swift-format@release/5.7  -i -r Sources/iOS-BLE-Library-Mock
     - name: checkout
       if: needs.run_copy_script.outputs.changes_made == 'true'
       uses: actions/checkout@v4
       with: 
         ref: ${{ needs.run_copy_script.outputs.working_branch }}
+    - name: Install Formatter
+      if: needs.run_copy_script.outputs.changes_made == 'true'
+      run: |
+        brew install mint
+        mint install apple/swift-format@release/5.7
+        mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
     - name: Add & Commit
       if: needs.run_copy_script.outputs.changes_made == 'true'
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -98,27 +89,27 @@ jobs:
       if: needs.run_copy_script.outputs.changes_made == 'false'
       run: echo "No changes made"
 
-  # build_and_test:
-  #   runs-on: macos-latest
-  #   needs: [reindent_code, run_copy_script]
+  build_and_test:
+    runs-on: macos-latest
+    needs: [reindent_code, run_copy_script]
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: ${{ needs.run_copy_script.outputs.working_branch }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.run_copy_script.outputs.working_branch }}
 
-  #     - name: Set up Swift
-  #       uses: swift-actions/setup-swift@v1
-  #       with:
-  #         swift-version: 5.6
+      - name: Set up Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: 5.6
 
-  #     - name: Build Native
-  #       run: swift build --target iOS-BLE-Library
-  #     - name: Build Mock
-  #       run: swift build --target iOS-BLE-Library-Mock
-  #     - name: Test
-  #       run: swift test
+      - name: Build Native
+        run: swift build --target iOS-BLE-Library
+      - name: Build Mock
+        run: swift build --target iOS-BLE-Library-Mock
+      - name: Test
+        run: swift test
 
   # pod_release:
   #   needs: [get_tag_info, build_and_test, run_copy_script]
