@@ -104,9 +104,9 @@ jobs:
           xcode-version: latest-stable
 
       - name: Build Native
-        run: swift build --target iOS-BLE-Library
+        run: swift build --target iOS-BLE-Library --force-resolved-versions
       - name: Build Mock
-        run: swift build --target iOS-BLE-Library-Mock
+        run: swift build --target iOS-BLE-Library-Mock --force-resolved-versions
       - name: Test
         run: swift test
 
