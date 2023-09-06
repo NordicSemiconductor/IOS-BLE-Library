@@ -3,12 +3,60 @@ name: New Release on Tag Push
 on:
   push:
     tags:
-      - '*'
-  workflow_dispatch:
+      - '*.*.*'
+
+env:
+  LAST_TAG_NAME: ""
+  LAST_TAG_MESSAGE: ""
 
 jobs:
-  release:
+  # run code_gen/code_gen.py and commit the changes to the repo
+  run_copy_script:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run copy script
+      run: |
+        python3 code_gen/code_gen.py
+    - name: Commit and Push Changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add .
+        git commit -m "Copied files from native CoreBluetooth version to CoreBluetoothMock"
+        git push origin main
+
+        # Determine the latest tag
+        latest_tag=$(git describe --tags --abbrev=0)
+
+        # Delete the latest tag
+        git tag -d $latest_tag
+        git push --delete origin $latest_tag
+
+        # Create a new tag at the current HEAD
+        git tag $latest_tag
+        git push origin $latest_tag
+
+  get_tag_info:
+    runs-on: ubuntu-latest
+    needs: run_copy_script
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Get last tag name
+      run: echo "LAST_TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+    - name: Get last tag message
+      run: echo "LAST_TAG_MESSAGE=$(git tag -l --format='%(contents:subject)' ${{ env.LAST_TAG_NAME }})" >> $GITHUB_ENV
+    outputs:
+        tag_name: ${{ env.LAST_TAG_NAME }}
+        tag_message: ${{ env.LAST_TAG_MESSAGE }}
+
+  build_and_test:
     runs-on: macos-latest
+    needs: run_copy_script
 
     steps:
       - name: Checkout Repository
@@ -19,32 +67,51 @@ jobs:
         with:
           swift-version: 5.5.1
 
-      - name: Build and Test
-        run: |
-          swift build
-          swift test
+      - name: Build Native
+        run: swift build --target iOS-BLE-Library
+      - name: Build Mock
+        run: swift build --target iOS-BLE-Library-Mock
+      - name: Test
+        run: swift test
 
-      - name: Get Tag Name and Message
-        id: tag_info
+  pod_release:
+    needs: [get_tag_info, build_and_test]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with: 
+          ruby-version: 2.7
+      - name: Install CocoaPods
+        run: gem install cocoapods
+      - name: Deploy IOS-BLE-Library to Cocoapods
         run: |
-          echo "::set-output name=tag_name::$(git tag --contains $GITHUB_SHA)"
-          echo "::set-output name=tag_message::$(git show -s --format=%B $GITHUB_SHA)"
-
-      - name: Update .podspec File
+          pod lib lint IOS-BLE-Library.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+      - name: Deploy IOS-BLE-Library-Mock to Cocoapods
         run: |
-          tag_name="${{ steps.tag_info.outputs.tag_name }}"
-          sed -i '' "s/s.version *= *'[0-9.]*'/s.version = '${tag_name}'/g" YourLibraryName.podspec  # Replace 'YourLibraryName' with your actual podspec filename
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            .build/release/YourLibraryName.framework.zip  # Adjust the path and filename accordingly
-          name: ${{ steps.tag_info.outputs.tag_name }}
-          body: ${{ steps.tag_info.outputs.tag_message }}
-          token: ${{ secrets.ACCESS_TOKEN }}
-
-      - name: Get Release URL
-        run: |
-          echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
+          pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+          
+  create_release:
+    permissions:
+      contents: write
+    needs: [get_tag_info, pod_release]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+            tag_name: ${{ needs.get_tag_info.outputs.tag_name }}
+            release_name: Release ${{ needs.get_tag_info.outputs.tag_name }}
+            body: ${{ needs.get_tag_info.outputs.tag_message }}
