@@ -50,7 +50,8 @@ jobs:
       run: |
         if [ -n "$(git status --porcelain)" ]; then
           echo "changes_made=true" >> $GITHUB_OUTPUT
-          echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
+          # echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
+          echo "working_branch=main" >> $GITHUB_OUTPUT
         else
           echo "changes_made=false" >> $GITHUB_OUTPUT
           echo "working_branch=main" >> $GITHUB_OUTPUT
@@ -60,7 +61,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
-        # branch: ${{ steps.check_changes.outputs.working_branch }}
+        branch: ${{ steps.check_changes.outputs.working_branch }}
         
   echo_output:
     runs-on: ubuntu-latest
@@ -92,7 +93,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: 'Reindented code'
-        # branch: ${{ needs.run_copy_script.outputs.working_branch }}
+        branch: ${{ needs.run_copy_script.outputs.working_branch }}
     - name: Notify
       if: needs.run_copy_script.outputs.changes_made == 'false'
       run: echo "No changes made"
