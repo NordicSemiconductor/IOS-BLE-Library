@@ -105,6 +105,8 @@ jobs:
 
       - name: Print Xcode Version
         run: xcodebuild -version
+      - name: Print Swift Version
+        run: xcrun swift -version
       - name: Build Native
         run: swift build --target iOS-BLE-Library --force-resolved-versions
       - name: Build Mock
