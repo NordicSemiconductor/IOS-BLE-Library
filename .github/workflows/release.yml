@@ -105,6 +105,9 @@ jobs:
 
       - name: Print Xcode Version
         run: xcodebuild -version
+      - uses: swift-actions/setup-swift@v1
+      - name: Get swift version
+        run: swift --version # Swift 5.8.1
       - name: Print Swift Version
         run: xcrun swift -version
       - name: Build Native
