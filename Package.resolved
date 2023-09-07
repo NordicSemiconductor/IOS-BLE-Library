@@ -5,7 +5,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
       "state" : {
-        "revision" : "633ce09743eec887fee584d4e66b2dd4e313005c",
+        "revision" : "91fc016e9345f37d0b4539f9fc6c270d6d5d6f75",
         "version" : "1.0.0"
       }
     },
