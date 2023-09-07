@@ -5,7 +5,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NickKibish/CoreBluetoothMock-Collection.git",
       "state" : {
-        "revision" : "857cd1da8fc3536710f7d6ee67ce30b64558be40",
+        "revision" : "633ce09743eec887fee584d4e66b2dd4e313005c",
         "version" : "1.0.0"
       }
     },
@@ -14,7 +14,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NickKibish/iOS-Bluetooth-Numbers-Database.git",
       "state" : {
-        "revision" : "71c3d1d0e1bb6e7a59da3aed8e2a2a2ddfd5fd8c",
+        "revision" : "40ae8d7050d16fc2603c314dd560a7992c35f56f",
         "version" : "1.0.0"
       }
     },
