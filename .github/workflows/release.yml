@@ -115,7 +115,7 @@ jobs:
       - name: Build Mock
         run: swift build --target iOS-BLE-Library-Mock --force-resolved-versions
       - name: Test
-        run: swift test
+        run: swift test -v
 
   # pod_release:
   #   needs: [get_tag_info, build_and_test, run_copy_script]
