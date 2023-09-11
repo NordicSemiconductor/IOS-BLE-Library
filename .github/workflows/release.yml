@@ -99,9 +99,9 @@ jobs:
         # with:
         #   ref: ${{ needs.run_copy_script.outputs.working_branch }}
 
-      # - uses: maxim-lobanov/setup-xcode@v1
-      #   with:
-      #     xcode-version: latest-stable
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Print Xcode Version
         run: xcodebuild -version
