@@ -66,6 +66,13 @@ jobs:
       with:
         commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
         branch: ${{ steps.check_changes.outputs.working_branch }}
+    - name: Move Tag 
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: |
+        git tag -d ${{ needs.get_tag_info.outputs.tag_name }}
+        git push origin :refs/tags/${{ needs.get_tag_info.outputs.tag_name }}
+        git tag -a ${{ needs.get_tag_info.outputs.tag_name }} -m "${{ needs.get_tag_info.outputs.tag_message }}"
+        git push origin ${{ needs.get_tag_info.outputs.tag_name }}
 
   build_and_test:
     runs-on: macos-latest
@@ -90,46 +97,46 @@ jobs:
       # - name: Test
       #   run: swift test -v --skip-build 
 
-  # pod_release:
-  #   needs: [get_tag_info, build_and_test, run_copy_script]
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: ${{ needs.run_copy_script.outputs.working_branch }}
-  #     - name: Setup Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with: 
-  #         ruby-version: 2.7
-  #     - name: Install CocoaPods
-  #       run: gem install cocoapods
-  #     - name: Deploy IOS-BLE-Library to Cocoapods
-  #       run: |
-  #         pod lib lint IOS-BLE-Library.podspec --allow-warnings
-  #         pod trunk push IOS-BLE-Library.podspec --allow-warnings
-  #       env:
-  #         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-  #         LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
-  #     - name: Deploy IOS-BLE-Library-Mock to Cocoapods
-  #       run: |
-  #         pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
-  #         pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
-  #       env:
-  #         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-  #         LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+  pod_release:
+    needs: [get_tag_info, build_and_test, run_copy_script]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.run_copy_script.outputs.working_branch }}
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with: 
+          ruby-version: 2.7
+      - name: Install CocoaPods
+        run: gem install cocoapods
+      - name: Deploy IOS-BLE-Library to Cocoapods
+        run: |
+          pod lib lint IOS-BLE-Library.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+      - name: Deploy IOS-BLE-Library-Mock to Cocoapods
+        run: |
+          pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
           
-  # create_release:
-  #   permissions:
-  #     contents: write
-  #   needs: [get_tag_info, pod_release]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Create Release
-  #     uses: actions/create-release@v1
-  #     env:
-  #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     with:
-  #           tag_name: ${{ needs.get_tag_info.outputs.tag_name }}
-  #           release_name: Release ${{ needs.get_tag_info.outputs.tag_name }}
-  #           body: ${{ needs.get_tag_info.outputs.tag_message }}
+  create_release:
+    permissions:
+      contents: write
+    needs: [get_tag_info, pod_release]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+            tag_name: ${{ needs.get_tag_info.outputs.tag_name }}
+            release_name: Release ${{ needs.get_tag_info.outputs.tag_name }}
+            body: ${{ needs.get_tag_info.outputs.tag_message }}
