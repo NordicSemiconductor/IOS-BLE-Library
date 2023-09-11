@@ -26,6 +26,9 @@ jobs:
     - name: Get last tag name
       id: get_tag_name
       run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+    - name: Tag Name
+      run: |
+        echo "Tag Name: ${{ steps.get_tag_name.outputs.tag_name }}"
     - name: Get last tag message
       id: get_tag_message
       run: echo "tag_message=$(git tag -l --format='%(contents:subject)' ${{ steps.get_tag_name.outputs.tag_name }})" >> $GITHUB_OUTPUT
