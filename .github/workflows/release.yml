@@ -29,6 +29,10 @@ jobs:
     - name: Get last tag message
       id: get_tag_message
       run: echo "tag_message=$(git tag -l --format='%(contents:subject)' ${{ steps.get_tag_name.outputs.tag_name }})" >> $GITHUB_OUTPUT
+    - name: Print Outputs
+      run: |
+        echo "Tag Name: ${{ steps.get_tag_name.outputs.tag_name }}"
+        echo "Tag Message: ${{ steps.get_tag_message.outputs.tag_message }}"
     
   run_copy_script:
     runs-on: macos-latest
@@ -71,7 +75,7 @@ jobs:
       run: |
         git tag -d ${{ needs.get_tag_info.outputs.tag_name }}
         git push origin :refs/tags/${{ needs.get_tag_info.outputs.tag_name }}
-        git tag -a ${{ needs.get_tag_info.outputs.tag_name }} -m "${{ needs.get_tag_info.outputs.tag_message }}"
+        git tag -a ${{needs.get_tag_info.outputs.tag_name}} -m "${{ needs.get_tag_info.outputs.tag_message }}"
         git push origin ${{ needs.get_tag_info.outputs.tag_name }}
 
   build_and_test:
