@@ -27,7 +27,7 @@ jobs:
         fetch-depth: 0
     - name: Print tag
       run: |
-        git show -s --format=%s 0.1.3
+        git cat-file -p 0.1.3 | tail -n +6
     - name: Get last tag name
       id: get_tag_name
       run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
