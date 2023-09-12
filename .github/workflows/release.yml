@@ -27,9 +27,7 @@ jobs:
         fetch-depth: 0
     - name: Print tag
       run: |
-        git show 0.1.3
-        echo "TAGS::::"
-        git tag -l 0.1.0 --format '%(contents)'
+        git tag -l ${{ github.ref }} --format '%(contents)'
     - name: Get last tag name
       id: get_tag_name
       run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
@@ -38,7 +36,7 @@ jobs:
         echo "Tag Name: ${{ steps.get_tag_name.outputs.tag_name }}"
     - name: Get last tag message
       id: get_tag_message
-      run: echo "tag_message=$(git tag -l --format='%(contents:subject)' ${{ steps.get_tag_name.outputs.tag_name }})" >> $GITHUB_OUTPUT
+      run: echo "tag_message=$(git tag -l ${{ steps.get_tag_name.outputs.tag_name }} --format='%(contents)')" >> $GITHUB_OUTPUT
     - name: Print Outputs
       run: |
         echo "Tag Name: ${{ steps.get_tag_name.outputs.tag_name }}"
