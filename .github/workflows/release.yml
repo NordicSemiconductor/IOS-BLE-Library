@@ -28,6 +28,8 @@ jobs:
     - name: Print tag
       run: |
         git show 0.1.3
+        echo "TAGS::::"
+        git tag -n9
     - name: Get last tag name
       id: get_tag_name
       run: echo "tag_name=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
