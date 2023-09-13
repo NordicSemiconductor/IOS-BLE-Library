@@ -70,7 +70,7 @@ jobs:
     - name: Move Tag 
       if: steps.check_changes.outputs.changes_made == 'true'
       run: |
-        git tag -d ${{ needs.get_tag_info.outputs.tag_name }}
+        git tag -d "${{ needs.get_tag_info.outputs.tag_name }}"
         git push origin :refs/tags/${{ needs.get_tag_info.outputs.tag_name }}
         git tag -a ${{ needs.get_tag_info.outputs.tag_name }} -m "${{ needs.get_tag_info.outputs.tag_message }}"
         git push origin ${{ needs.get_tag_info.outputs.tag_name }}
