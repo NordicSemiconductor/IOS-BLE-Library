@@ -9,7 +9,7 @@ jobs:
   get_tag_info:
     runs-on: ubuntu-latest
     outputs:
-      tag_name: ${{ steps.get_tag_name.outputs.tag_name }}  }}
+      tag_name: ${{ steps.get_tag_name.outputs.tag_name }}
       tag_message: ${{ steps.get_tag_message.outputs.tag_message }}
     steps:
       - name: Checkout code
