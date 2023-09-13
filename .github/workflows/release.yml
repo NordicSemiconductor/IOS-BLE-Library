@@ -77,11 +77,13 @@ jobs:
 
   build_and_test:
     runs-on: macos-latest
-    needs: [run_copy_script]
+    needs: [run_copy_script, get_tag_info]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.get_tag_info.outputs.tag_name }}
 
       - name: Print Xcode Version
         run: xcodebuild -version
