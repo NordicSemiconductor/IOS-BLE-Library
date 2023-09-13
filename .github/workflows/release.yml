@@ -91,9 +91,9 @@ jobs:
       - name: Print Swift Version
         run: xcrun swift -version
       - name: Build Native
-        run: swift build --target iOS-BLE-Library --force-resolved-versions
+        run: swift build --target iOS-BLE-Library 
       - name: Build Mock
-        run: swift build --target iOS-BLE-Library-Mock --force-resolved-versions
+        run: swift build --target iOS-BLE-Library-Mock 
       # Tests temporarily disabled
       # - name: Test
       #   run: swift test -v --skip-build 
