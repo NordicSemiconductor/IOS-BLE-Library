@@ -5,11 +5,6 @@ on:
     tags:
       - '*.*.*'
 
-
-env:
-  LAST_TAG_NAME: ""
-  LAST_TAG_MESSAGE: ""
-
 jobs:
   get_tag_info:
     runs-on: ubuntu-latest
@@ -36,113 +31,113 @@ jobs:
           echo "Tag Name: ${{ steps.get_tag_name.outputs.tag_name }}"
           echo "Tag Message: ${{ steps.get_tag_message.outputs.tag_message }}"
     
-  # run_copy_script:
-  #   runs-on: macos-latest
-  #   needs: get_tag_info
-  #   permissions:
-  #     contents: write
-  #   outputs:
-  #     changes_made: ${{ steps.check_changes.outputs.changes_made }}
-  #     working_branch: ${{ steps.check_changes.outputs.working_branch }}
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
-  #   - name: Run copy script
-  #     run: |
-  #       python3 code_gen/code_gen.py Sources
-  #   - name: Reindent Code
-  #     run: |
-  #       brew install mint
-  #       mint install apple/swift-format@release/5.7
-  #       mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
-  #   - name: Check for Changes
-  #     id: check_changes
-  #     run: |
-  #       if [ -n "$(git status --porcelain)" ]; then
-  #         echo "changes_made=true" >> $GITHUB_OUTPUT
-  #         # echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
-  #         echo "working_branch=main" >> $GITHUB_OUTPUT
-  #       else
-  #         echo "changes_made=false" >> $GITHUB_OUTPUT
-  #         echo "working_branch=main" >> $GITHUB_OUTPUT
-  #       fi
-  #   - name: Add & Commit
-  #     if: steps.check_changes.outputs.changes_made == 'true'
-  #     uses: stefanzweifel/git-auto-commit-action@v4
-  #     with:
-  #       commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
-  #       branch: ${{ steps.check_changes.outputs.working_branch }}
-  #   - name: Move Tag 
-  #     if: steps.check_changes.outputs.changes_made == 'true'
-  #     run: |
-  #       git tag -d ${{ needs.get_tag_info.outputs.tag_name }}
-  #       git push origin :refs/tags/${{ needs.get_tag_info.outputs.tag_name }}
-  #       git tag -a ${{ needs.get_tag_info.outputs.tag_name }} -m "${{ needs.get_tag_info.outputs.tag_message }}"
-  #       git push origin ${{ needs.get_tag_info.outputs.tag_name }}
+  run_copy_script:
+    runs-on: macos-latest
+    needs: get_tag_info
+    permissions:
+      contents: write
+    outputs:
+      changes_made: ${{ steps.check_changes.outputs.changes_made }}
+      working_branch: ${{ steps.check_changes.outputs.working_branch }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Run copy script
+      run: |
+        python3 code_gen/code_gen.py Sources
+    - name: Reindent Code
+      run: |
+        brew install mint
+        mint install apple/swift-format@release/5.7
+        mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
+    - name: Check for Changes
+      id: check_changes
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changes_made=true" >> $GITHUB_OUTPUT
+          # echo "working_branch=release/${{ needs.get_tag_info.outputs.tag_name }}" >> $GITHUB_OUTPUT
+          echo "working_branch=main" >> $GITHUB_OUTPUT
+        else
+          echo "changes_made=false" >> $GITHUB_OUTPUT
+          echo "working_branch=main" >> $GITHUB_OUTPUT
+        fi
+    - name: Add & Commit
+      if: steps.check_changes.outputs.changes_made == 'true'
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'Copied files from native CoreBluetooth version to CoreBluetoothMock'
+        branch: ${{ steps.check_changes.outputs.working_branch }}
+    - name: Move Tag 
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: |
+        git tag -d ${{ needs.get_tag_info.outputs.tag_name }}
+        git push origin :refs/tags/${{ needs.get_tag_info.outputs.tag_name }}
+        git tag -a ${{ needs.get_tag_info.outputs.tag_name }} -m "${{ needs.get_tag_info.outputs.tag_message }}"
+        git push origin ${{ needs.get_tag_info.outputs.tag_name }}
 
-  # build_and_test:
-  #   runs-on: macos-latest
-  #   needs: [run_copy_script]
+  build_and_test:
+    runs-on: macos-latest
+    needs: [run_copy_script]
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  #     - name: Print Xcode Version
-  #       run: xcodebuild -version
-  #     - uses: swift-actions/setup-swift@v1
-  #     - name: Get swift version
-  #       run: swift --version # Swift 5.8.1
-  #     - name: Print Swift Version
-  #       run: xcrun swift -version
-  #     - name: Build Native
-  #       run: swift build --target iOS-BLE-Library --force-resolved-versions
-  #     - name: Build Mock
-  #       run: swift build --target iOS-BLE-Library-Mock --force-resolved-versions
-  #     # Tests temporarily disabled
-  #     # - name: Test
-  #     #   run: swift test -v --skip-build 
+      - name: Print Xcode Version
+        run: xcodebuild -version
+      - uses: swift-actions/setup-swift@v1
+      - name: Get swift version
+        run: swift --version # Swift 5.8.1
+      - name: Print Swift Version
+        run: xcrun swift -version
+      - name: Build Native
+        run: swift build --target iOS-BLE-Library --force-resolved-versions
+      - name: Build Mock
+        run: swift build --target iOS-BLE-Library-Mock --force-resolved-versions
+      # Tests temporarily disabled
+      # - name: Test
+      #   run: swift test -v --skip-build 
 
-  # pod_release:
-  #   needs: [get_tag_info, build_and_test, run_copy_script]
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: ${{ needs.run_copy_script.outputs.working_branch }}
-  #     - name: Setup Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with: 
-  #         ruby-version: 2.7
-  #     - name: Install CocoaPods
-  #       run: gem install cocoapods
-  #     - name: Deploy IOS-BLE-Library to Cocoapods
-  #       run: |
-  #         pod lib lint IOS-BLE-Library.podspec --allow-warnings
-  #         pod trunk push IOS-BLE-Library.podspec --allow-warnings
-  #       env:
-  #         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-  #         LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
-  #     - name: Deploy IOS-BLE-Library-Mock to Cocoapods
-  #       run: |
-  #         pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
-  #         pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
-  #       env:
-  #         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-  #         LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+  pod_release:
+    needs: [get_tag_info, build_and_test, run_copy_script]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.run_copy_script.outputs.working_branch }}
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with: 
+          ruby-version: 2.7
+      - name: Install CocoaPods
+        run: gem install cocoapods
+      - name: Deploy IOS-BLE-Library to Cocoapods
+        run: |
+          pod lib lint IOS-BLE-Library.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
+      - name: Deploy IOS-BLE-Library-Mock to Cocoapods
+        run: |
+          pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
+          pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
           
-  # create_release:
-  #   permissions:
-  #     contents: write
-  #   needs: [get_tag_info, pod_release]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Create Release
-  #     uses: actions/create-release@v1
-  #     env:
-  #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     with:
-  #           tag_name: ${{ needs.get_tag_info.outputs.tag_name }}
-  #           release_name: Release ${{ needs.get_tag_info.outputs.tag_name }}
-  #           body: ${{ needs.get_tag_info.outputs.tag_message }}
+  create_release:
+    permissions:
+      contents: write
+    needs: [get_tag_info, pod_release]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+            tag_name: ${{ needs.get_tag_info.outputs.tag_name }}
+            release_name: Release ${{ needs.get_tag_info.outputs.tag_name }}
+            body: ${{ needs.get_tag_info.outputs.tag_message }}
