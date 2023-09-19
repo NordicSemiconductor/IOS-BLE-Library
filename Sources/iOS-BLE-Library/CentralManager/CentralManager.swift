@@ -59,14 +59,18 @@ private class Observer: NSObject {
 	}
 }
 
-/// A custom Central Manager class that extends the functionality of the standard CBCentralManager.
-/// This class brings a reactive approach and is based on the Swift Combine framework.
+/// A Custom Central Manager class.
+/// 
+/// It wraps the standard CBCentralManager and has similar API. However, instead of using delegate, it uses publishers, thus bringing the reactive programming paradigm to the CoreBluetooth framework.
 public class CentralManager {
 	private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
 	private let killSwitchSubject = PassthroughSubject<Void, Never>()
 	private lazy var observer = Observer(cm: centralManager, publisher: isScanningSubject)
 
+	/// The underlying CBCentralManager instance.
 	public let centralManager: CBCentralManager
+    
+	/// The reactive delegate for the ``centralManager``.
 	public let centralManagerDelegate: ReactiveCentralManagerDelegate
 
 	/// Initializes a new instance of `CentralManager`.
@@ -146,7 +150,7 @@ extension CentralManager {
 	/// Cancels the connection with the specified peripheral.
 	/// - Parameter peripheral: The peripheral to disconnect from.
 	/// - Returns: A publisher that emits the disconnected peripheral.
-	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.Peripheral
+	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.BluetoothPublisher<CBPeripheral, Error>
 	{
 		return self.disconnectedPeripheralsChannel
 			.tryFilter { r in
@@ -162,9 +166,9 @@ extension CentralManager {
 			}
 			.map { $0.0 }
 			.first()
-			.peripheral {
-				self.centralManager.cancelPeripheralConnection(peripheral)
-			}
+            .bluetooth {
+                self.centralManager.cancelPeripheralConnection(peripheral)
+            }
 	}
 }
 
