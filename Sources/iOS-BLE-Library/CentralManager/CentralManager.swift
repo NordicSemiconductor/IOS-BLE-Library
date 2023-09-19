@@ -24,9 +24,9 @@ extension CentralManager {
 		public var localizedDescription: String {
 			switch self {
 			case .wrongManager:
-				return "Incorrect manager instance provided."
+				return "Incorrect manager instance provided. Delegate must be of type ReactiveCentralManagerDelegate."
 			case .badState(let state):
-				return "Bad state: \(state)"
+				return "Bad state: \(state)."
 			case .unknownError:
 				return "An unknown error occurred."
 			}
@@ -170,6 +170,7 @@ extension CentralManager {
 
 // MARK: Retrieving Lists of Peripherals
 extension CentralManager {
+	#warning("check `connect` method")		
 	/// Returns a list of the peripherals connected to the system whose
 	/// services match a given set of criteria.
 	///
@@ -200,14 +201,17 @@ extension CentralManager {
 
 // MARK: Scanning or Stopping Scans of Peripherals
 extension CentralManager {
+	#warning("Question: Should we throw an error if the scan is already running?")
 	/// Initiates a scan for peripherals with the specified services.
+	/// 
+	/// Calling this method stops an ongoing scan if it is already running and finishes the publisher returned by ``scanForPeripherals(withServices:)``.
+	/// 
 	/// - Parameter services: The services to scan for.
-	/// - Returns: A publisher that emits scan results or errors.
+	/// - Returns: A publisher that emits scan results or an error.
 	public func scanForPeripherals(withServices services: [CBUUID]?)
 		-> Publishers.BluetoothPublisher<ScanResult, Error>
 	{
 		stopScan()
-		// TODO: Change to BluetoothPublisher
 		return centralManagerDelegate.stateSubject
 			.tryFirst { state in
 				guard let determined = state.ready else { return false }
