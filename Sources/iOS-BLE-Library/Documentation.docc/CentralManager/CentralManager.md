@@ -1,5 +1,13 @@
 # ``iOS_BLE_Library/CentralManager``
 
+### Create a Central Manager
+
+Since it's not recommended to override the `CBCentralManager`'s methods, ``CentralManager`` is merely a wrapper around `CBCentralManager` with an instance of it inside.
+
+The new instance of `CBCentralManager` can be created during initialization using ``init(centralManagerDelegate:queue:)``, or an existing instance can be passed using ``init(centralManager:)``.
+
+If you pass a central manager inside ``init(centralManager:)``, it should already have a delegate set. The delegate should be an instance of ``ReactiveCentralManagerDelegate``; otherwise, an error will be thrown.
+
 ### Connection 
 
 Use ``CentralManager/connect(_:options:)`` to connect to a peripheral.
@@ -47,6 +55,28 @@ centralManager.connectedPeripheralChannel
 ```
 
 ## Topics
+
+### Initializers
+
+- ``init(centralManagerDelegate:queue:)``
+- ``init(centralManager:)``
+
+### Instance Properties
+
+- ``centralManager``
+- ``centralManagerDelegate``
+
+### Scan
+
+- ``scanForPeripherals(withServices:)``
+- ``stopScan()``
+- ``retrievePeripherals(withIdentifiers:)``
+
+### Connection
+
+- ``connect(_:options:)``
+- ``cancelPeripheralConnection(_:)``
+- ``retrieveConnectedPeripherals(withServices:)``
 
 ### Channels
 
