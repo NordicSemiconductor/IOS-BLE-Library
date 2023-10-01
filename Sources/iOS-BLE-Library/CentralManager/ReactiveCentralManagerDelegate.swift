@@ -75,12 +75,6 @@ open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
 		stateSubject.send(central.state)
 	}
 
-	public func centralManager(
-		_ central: CBCentralManager, willRestoreState dict: [String: Any]
-	) {
-		unimplementedError()
-	}
-
 	// MARK: Monitoring the Central Manager’s Authorization
 	#if !os(macOS)
 		public func centralManager(
