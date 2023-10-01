@@ -18,9 +18,10 @@ extension CentralManager {
 		public var localizedDescription: String {
 			switch self {
 			case .wrongManager:
-				return "Incorrect manager instance provided."
+				return
+					"Incorrect manager instance provided. Delegate must be of type ReactiveCentralManagerDelegate."
 			case .badState(let state):
-				return "Bad state: \(state)"
+				return "Bad state: \(state)."
 			case .unknownError:
 				return "An unknown error occurred."
 			}
@@ -53,14 +54,18 @@ private class Observer: NSObject {
 	}
 }
 
-/// A custom Central Manager class that extends the functionality of the standard CBCentralManager.
-/// This class brings a reactive approach and is based on the Swift Combine framework.
+/// A Custom Central Manager class.
+///
+/// It wraps the standard CBCentralManager and has similar API. However, instead of using delegate, it uses publishers, thus bringing the reactive programming paradigm to the CoreBluetooth framework.
 public class CentralManager {
 	private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
 	private let killSwitchSubject = PassthroughSubject<Void, Never>()
 	private lazy var observer = Observer(cm: centralManager, publisher: isScanningSubject)
 
+	/// The underlying CBCentralManager instance.
 	public let centralManager: CBCentralManager
+
+	/// The reactive delegate for the ``centralManager``.
 	public let centralManagerDelegate: ReactiveCentralManagerDelegate
 
 	/// Initializes a new instance of `CentralManager`.
@@ -134,7 +139,8 @@ extension CentralManager {
 	/// Cancels the connection with the specified peripheral.
 	/// - Parameter peripheral: The peripheral to disconnect from.
 	/// - Returns: A publisher that emits the disconnected peripheral.
-	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.Peripheral
+	public func cancelPeripheralConnection(_ peripheral: CBPeripheral)
+		-> Publishers.BluetoothPublisher<CBPeripheral, Error>
 	{
 		return self.disconnectedPeripheralsChannel
 			.tryFilter { r in
@@ -150,7 +156,7 @@ extension CentralManager {
 			}
 			.map { $0.0 }
 			.first()
-			.peripheral {
+			.bluetooth {
 				self.centralManager.cancelPeripheralConnection(peripheral)
 			}
 	}
@@ -158,6 +164,7 @@ extension CentralManager {
 
 // MARK: Retrieving Lists of Peripherals
 extension CentralManager {
+	#warning("check `connect` method")
 	/// Returns a list of the peripherals connected to the system whose
 	/// services match a given set of criteria.
 	///
@@ -188,14 +195,17 @@ extension CentralManager {
 
 // MARK: Scanning or Stopping Scans of Peripherals
 extension CentralManager {
+	#warning("Question: Should we throw an error if the scan is already running?")
 	/// Initiates a scan for peripherals with the specified services.
+	///
+	/// Calling this method stops an ongoing scan if it is already running and finishes the publisher returned by ``scanForPeripherals(withServices:)``.
+	///
 	/// - Parameter services: The services to scan for.
-	/// - Returns: A publisher that emits scan results or errors.
+	/// - Returns: A publisher that emits scan results or an error.
 	public func scanForPeripherals(withServices services: [CBUUID]?)
 		-> Publishers.BluetoothPublisher<ScanResult, Error>
 	{
 		stopScan()
-		// TODO: Change to BluetoothPublisher
 		return centralManagerDelegate.stateSubject
 			.tryFirst { state in
 				guard let determined = state.ready else { return false }
