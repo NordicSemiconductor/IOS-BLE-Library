@@ -74,7 +74,10 @@ public class Peripheral {
 		case badDelegate
 	}
 
+	/// The underlying CBPeripheral instance.
 	public let peripheral: CBPeripheral
+
+	/// The delegate for handling peripheral events.
 	public let peripheralDelegate: ReactivePeripheralDelegate
 
 	private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
@@ -92,6 +95,11 @@ public class Peripheral {
 	)
 
 	// TODO: Why don't we use default delegate?
+	/// Initializes a Peripheral instance.
+	///
+	/// - Parameters:
+	///   - peripheral: The CBPeripheral to manage.
+	///   - delegate: The delegate for handling peripheral events.
 	public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
 		self.peripheral = peripheral
 		self.peripheralDelegate = delegate
@@ -109,6 +117,7 @@ public class Peripheral {
 
 // MARK: - Channels
 extension Peripheral {
+	/// A publisher for the current state of the peripheral.
 	public var peripheralStateChannel: AnyPublisher<CBPeripheralState, Never> {
 		stateSubject.eraseToAnyPublisher()
 	}
@@ -116,6 +125,10 @@ extension Peripheral {
 
 extension Peripheral {
 	// TODO: Extract repeated code
+	/// Discover services for the peripheral.
+	///
+	/// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all services will be discovered.
+	/// - Returns: A publisher emitting discovered services or an error.
 	public func discoverServices(serviceUUIDs: [CBUUID]?)
 		-> Publishers.BluetoothPublisher<CBService, Error>
 	{
@@ -145,6 +158,12 @@ extension Peripheral {
 		}
 	}
 
+	/// Discover characteristics for a given service.
+	///
+	/// - Parameters:
+	///   - characteristicUUIDs: An optional array of characteristic UUIDs to filter the discovery results. If nil, all characteristics will be discovered.
+	///   - service: The service for which to discover characteristics.
+	/// - Returns: A publisher emitting discovered characteristics or an error.
 	public func discoverCharacteristics(
 		_ characteristicUUIDs: [CBUUID]?, for service: CBService
 	) -> Publishers.BluetoothPublisher<CBCharacteristic, Error> {
@@ -180,6 +199,10 @@ extension Peripheral {
 		}
 	}
 
+	/// Discover descriptors for a given characteristic.
+	///
+	/// - Parameter characteristic: The characteristic for which to discover descriptors.
+	/// - Returns: A publisher emitting discovered descriptors or an error.
 	public func discoverDescriptors(for characteristic: CBCharacteristic)
 		-> Publishers.BluetoothPublisher<CBDescriptor, Error>
 	{
@@ -205,6 +228,12 @@ extension Peripheral {
 
 // MARK: - Writing Characteristic and Descriptor Values
 extension Peripheral {
+	/// Write data to a characteristic and wait for a response.
+	///
+	/// - Parameters:
+	///   - data: The data to write.
+	///   - characteristic: The characteristic to write to.
+	/// - Returns: A publisher indicating success or an error.
 	public func writeValueWithResponse(_ data: Data, for characteristic: CBCharacteristic)
 		-> Publishers.BluetoothPublisher<Void, Error>
 	{
@@ -223,10 +252,20 @@ extension Peripheral {
 			}
 	}
 
+	/// Write data to a characteristic without waiting for a response.
+	///
+	/// - Parameters:
+	///   - data: The data to write.
+	///   - characteristic: The characteristic to write to.
 	public func writeValueWithoutResponse(_ data: Data, for characteristic: CBCharacteristic) {
 		peripheral.writeValue(data, for: characteristic, type: .withoutResponse)
 	}
 
+	/// Write data to a descriptor.
+	///
+	/// - Parameters:
+	///   - data: The data to write.
+	///   - descriptor: The descriptor to write to.
 	public func writeValue(_ data: Data, for descriptor: CBDescriptor) {
 		fatalError()
 	}
@@ -234,10 +273,18 @@ extension Peripheral {
 
 // MARK: - Reading Characteristic and Descriptor Values
 extension Peripheral {
+	/// Read the value of a characteristic.
+	///
+	/// - Parameter characteristic: The characteristic to read from.
+	/// - Returns: A future emitting the read data or an error.
 	public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Error> {
 		return reader.readValue(from: characteristic)
 	}
 
+	/// Listen for updates to the value of a characteristic.
+	///
+	/// - Parameter characteristic: The characteristic to monitor for updates.
+	/// - Returns: A publisher emitting characteristic values or an error.
 	public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
 	{
 		return peripheralDelegate.updatedCharacteristicValuesSubject
@@ -252,6 +299,10 @@ extension Peripheral {
 			.eraseToAnyPublisher()
 	}
 
+	/// Read the value of a descriptor.
+	///
+	/// - Parameter descriptor: The descriptor to read from.
+	/// - Returns: A future emitting the read data or an error.
 	public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
 		fatalError()
 	}
@@ -259,6 +310,12 @@ extension Peripheral {
 
 // MARK: - Setting Notifications for a Characteristic’s Value
 extension Peripheral {
+	/// Set notification state for a characteristic.
+	///
+	/// - Parameters:
+	///   - isEnabled: Whether notifications should be enabled or disabled.
+	///   - characteristic: The characteristic for which to set the notification state.
+	/// - Returns: A publisher indicating success or an error.
 	public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic)
 		-> Publishers.BluetoothPublisher<Bool, Error>
 	{
