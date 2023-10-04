@@ -74,7 +74,8 @@ public class CentralManager {
 	///   - queue: The queue to perform operations on. Default is the main queue.
 	public init(
 		centralManagerDelegate: ReactiveCentralManagerDelegate =
-			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main
+			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main,
+		options: [String: Any]? = nil
 	) {
 		self.centralManagerDelegate = centralManagerDelegate
 		self.centralManager = CBMCentralManagerFactory.instance(
