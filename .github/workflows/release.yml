@@ -114,7 +114,8 @@ jobs:
         with: 
           ruby-version: 2.7
       - name: Install CocoaPods
-        run: gem install cocoapods
+        run: |
+          sudo bundle install
       - name: Deploy IOS-BLE-Library to Cocoapods
         run: |
           pod lib lint IOS-BLE-Library.podspec --allow-warnings
