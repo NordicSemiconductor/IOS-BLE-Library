@@ -37,7 +37,7 @@ extension Publishers {
          .store(in: &cancellables)
      ```
     */
-	public class BluetoothPublisher<Output, Failure: Error>: ConnectablePublisher {
+	class BluetoothPublisher<Output, Failure: Error>: ConnectablePublisher {
 
 		private let inner: BaseConnectable<Output, Failure>
 

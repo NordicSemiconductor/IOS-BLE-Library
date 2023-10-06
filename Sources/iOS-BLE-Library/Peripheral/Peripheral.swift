@@ -314,12 +314,12 @@ extension Peripheral {
     ///   - characteristic: The characteristic for which to set the notification state.
     /// - Returns: A publisher indicating success or an error.
 	public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic)
-		-> Publishers.BluetoothPublisher<Bool, Error>
+		-> AnyPublisher<Bool, Error>
 	{
 		if characteristic.isNotifying == isEnabled {
 			return Just(isEnabled)
 				.setFailureType(to: Error.self)
-				.bluetooth {}
+                .eraseToAnyPublisher()
 		}
 
 		return peripheralDelegate.notificationStateSubject
@@ -333,5 +333,7 @@ extension Peripheral {
 			.bluetooth {
 				self.peripheral.setNotifyValue(isEnabled, for: characteristic)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 }
