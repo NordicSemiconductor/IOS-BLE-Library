@@ -2,36 +2,11 @@
 
 ### Create a Central Manager
 
-Since it's not recommended to override the `CBCentralManager`'s methods, ``CentralManager`` is merely a wrapper around `CBCentralManager` with an instance of it inside.
+``CentralManager`` is merely a wrapper around `CBCentralManager` with an instance of it inside.
 
-The new instance of `CBCentralManager` can be created during initialization using ``init(centralManagerDelegate:queue:)``, or an existing instance can be passed using ``init(centralManager:)``.
+The new instance of `CBCentralManager` can be created during initialization using ``init(centralManagerDelegate:queue:options:)``, or an existing instance can be passed using ``init(centralManager:)``.
 
 If you pass a central manager inside ``init(centralManager:)``, it should already have a delegate set. The delegate should be an instance of ``ReactiveCentralManagerDelegate``; otherwise, an error will be thrown.
-
-### Connection 
-
-Use ``CentralManager/connect(_:options:)`` to connect to a peripheral.
-The returned publisher will emit the connected peripheral or an error if the connection fails.
-The publisher will not complete until the peripheral is disconnected. 
-If the connection fails, or the peripheral is unexpectedly disconnected, the publisher will fail with an error.
-
-> The publisher returned by ``CentralManager/connect(_:options:)`` is a `ConnectablePublisher`. Therefore, you need to call `connect()` or `autoconnect()` to initiate the connection process.
-
-```swift
-centralManager.connect(peripheral)
-    .autoconnect()
-    .sink { completion in
-        switch completion {
-        case .finished:
-            print("Peripheral disconnected successfully")
-        case .failure(let error):
-            print("Error: \(error)")
-        }
-    } receiveValue: { peripheral in
-        print("Peripheral connected: \(peripheral)")
-    }
-    .store(in: &cancellables)
-```
 
 ### Channels
 

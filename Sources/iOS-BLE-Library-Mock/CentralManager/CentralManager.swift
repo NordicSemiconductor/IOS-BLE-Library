@@ -109,6 +109,26 @@ extension CentralManager {
 	///            If the peripheral was disconnected successfully, the publisher finishes without error.
 	///            If the connection was unsuccessful or disconnection returns an error (e.g., peripheral disconnected unexpectedly),
 	///            the publisher finishes with an error.
+    ///
+    /// Use ``CentralManager/connect(_:options:)`` to connect to a peripheral.
+    ///    The returned publisher will emit the connected peripheral or an error if the connection fails.
+    ///    The publisher will not complete until the peripheral is disconnected.
+    ///    If the connection fails, or the peripheral is unexpectedly disconnected, the publisher will fail with an error.
+    ///
+    ///    ```swift
+    ///    centralManager.connect(peripheral)
+    ///        .sink { completion in
+    ///            switch completion {
+    ///            case .finished:
+	///                print("Peripheral disconnected successfully")
+	///            case .failure(let error):
+	///                print("Error: \(error)")
+	///            }
+	///        } receiveValue: { peripheral in
+	///            print("Peripheral connected: \(peripheral)")
+	///        }
+	///        .store(in: &cancellables)
+	///    ```
 	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil)
 		-> AnyPublisher<CBPeripheral, Error>
 	{
