@@ -77,6 +77,7 @@ private class NativeObserver: Observer {
 */
 //CG_END
 
+
 public class Peripheral {
 	/// I'm Errr from Omicron Persei 8
 	public enum Err: Error {
@@ -140,13 +141,12 @@ extension Peripheral {
 }
 
 extension Peripheral {
-	// TODO: Extract repeated code
 	/// Discover services for the peripheral.
     ///
     /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all services will be discovered.
     /// - Returns: A publisher emitting discovered services or an error.
 	public func discoverServices(serviceUUIDs: [CBUUID]?)
-		-> Publishers.BluetoothPublisher<CBService, Error>
+		-> AnyPublisher<[CBService], Error>
 	{
 		let allServices = peripheralDelegate.discoveredServicesSubject
 			.tryCompactMap { result throws -> [CBService]? in
@@ -155,23 +155,14 @@ extension Peripheral {
 				} else {
 					return result.0
 				}
-			}
-			.flatMap { services -> Publishers.Sequence<[CBService], Error> in
-				Publishers.Sequence(sequence: services)
-			}
+            }
+            .first()
 
-		let filtered: AnyPublisher<CBService, Error>
-
-		if let serviceList = serviceUUIDs {
-			filtered = allServices.guestList(serviceList, keypath: \.uuid)
-				.eraseToAnyPublisher()
-		} else {
-			filtered = allServices.eraseToAnyPublisher()
-		}
-
-		return filtered.bluetooth {
+		return allServices.bluetooth {
 			self.peripheral.discoverServices(serviceUUIDs)
 		}
+        .autoconnect()
+        .eraseToAnyPublisher()
 	}
 
 	/// Discover characteristics for a given service.
@@ -182,7 +173,7 @@ extension Peripheral {
     /// - Returns: A publisher emitting discovered characteristics or an error.
 	public func discoverCharacteristics(
 		_ characteristicUUIDs: [CBUUID]?, for service: CBService
-	) -> Publishers.BluetoothPublisher<CBCharacteristic, Error> {
+	) -> AnyPublisher<[CBCharacteristic], Error> {
 		let allCharacteristics = peripheralDelegate.discoveredCharacteristicsSubject
 			.filter {
 				$0.0.uuid == service.uuid
@@ -194,25 +185,13 @@ extension Peripheral {
 					return result.1
 				}
 			}
-			.flatMap {
-				characteristics -> Publishers.Sequence<[CBCharacteristic], Error> in
-				Publishers.Sequence(sequence: characteristics)
-			}
+            .first()
 
-		let filtered: AnyPublisher<CBCharacteristic, Error>
-
-		if let list = characteristicUUIDs {
-			filtered =
-				allCharacteristics
-				.guestList(list, keypath: \.uuid)
-				.eraseToAnyPublisher()
-		} else {
-			filtered = allCharacteristics.eraseToAnyPublisher()
-		}
-
-		return filtered.bluetooth {
+		return allCharacteristics.bluetooth {
 			self.peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
 		}
+        .autoconnect()
+        .eraseToAnyPublisher()
 	}
 
 	/// Discover descriptors for a given characteristic.
@@ -220,7 +199,7 @@ extension Peripheral {
     /// - Parameter characteristic: The characteristic for which to discover descriptors.
     /// - Returns: A publisher emitting discovered descriptors or an error.
 	public func discoverDescriptors(for characteristic: CBCharacteristic)
-		-> Publishers.BluetoothPublisher<CBDescriptor, Error>
+		-> AnyPublisher<[CBDescriptor], Error>
 	{
 		return peripheralDelegate.discoveredDescriptorsSubject
 			.filter {
@@ -233,12 +212,12 @@ extension Peripheral {
 					return result.1
 				}
 			}
-			.flatMap { descriptors -> Publishers.Sequence<[CBDescriptor], Error> in
-				Publishers.Sequence(sequence: descriptors)
-			}
+            .first()
 			.bluetooth {
 				self.peripheral.discoverDescriptors(for: characteristic)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 }
 
@@ -251,7 +230,7 @@ extension Peripheral {
     ///   - characteristic: The characteristic to write to.
     /// - Returns: A publisher indicating success or an error.
 	public func writeValueWithResponse(_ data: Data, for characteristic: CBCharacteristic)
-		-> Publishers.BluetoothPublisher<Void, Error>
+		-> AnyPublisher<Void, Error>
 	{
 		return peripheralDelegate.writtenCharacteristicValuesSubject
 			.first(where: { $0.0.uuid == characteristic.uuid })
@@ -266,6 +245,8 @@ extension Peripheral {
 				self.peripheral.writeValue(
 					data, for: characteristic, type: .withResponse)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Write data to a characteristic without waiting for a response.
@@ -333,12 +314,12 @@ extension Peripheral {
     ///   - characteristic: The characteristic for which to set the notification state.
     /// - Returns: A publisher indicating success or an error.
 	public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic)
-		-> Publishers.BluetoothPublisher<Bool, Error>
+		-> AnyPublisher<Bool, Error>
 	{
 		if characteristic.isNotifying == isEnabled {
 			return Just(isEnabled)
 				.setFailureType(to: Error.self)
-				.bluetooth {}
+                .eraseToAnyPublisher()
 		}
 
 		return peripheralDelegate.notificationStateSubject
@@ -352,5 +333,7 @@ extension Peripheral {
 			.bluetooth {
 				self.peripheral.setNotifyValue(isEnabled, for: characteristic)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 }
