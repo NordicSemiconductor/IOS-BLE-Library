@@ -42,6 +42,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      
     - name: Run copy script
       run: |
         python3 code_gen/code_gen.py Sources

@@ -11,12 +11,14 @@ import Foundation
 
 public class ReactivePeripheralDelegate: NSObject {
 	let l = L(category: #file)
-
-	// MARK: Subjects
+    
+    // MARK: Discovering Services
 	public let discoveredServicesSubject = PassthroughSubject<([CBService]?, Error?), Never>()
 	public let discoveredIncludedServicesSubject = PassthroughSubject<
 		(CBService, [CBService]?, Error?), Never
 	>()
+    
+    // MARK: Discovering Characteristics and their Descriptors
 	public let discoveredCharacteristicsSubject = PassthroughSubject<
 		(CBService, [CBCharacteristic]?, Error?), Never
 	>()
@@ -46,6 +48,7 @@ public class ReactivePeripheralDelegate: NSObject {
 
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 	public let updateNameSubject = PassthroughSubject<String?, Never>()
+    public let modifyServicesSubject = PassthroughSubject<[CBService], Never>()
 }
 
 extension ReactivePeripheralDelegate: CBPeripheralDelegate {
@@ -142,11 +145,6 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
 		fatalError()
 	}
 
-	public func peripheralDidUpdateRSSI(_ peripheral: CBPeripheral, error: Error?) {
-		l.i(#function)
-		fatalError()
-	}
-
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 
 	public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
@@ -158,16 +156,16 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
 		_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]
 	) {
 		l.i(#function)
-		fatalError()
+        modifyServicesSubject.send(invalidatedServices)
 	}
 
 	// MARK: Monitoring L2CAP Channels
-
+/*
 	public func peripheral(
 		_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
 	) {
 		l.i(#function)
 		fatalError()
 	}
-
+*/
 }

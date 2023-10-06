@@ -123,7 +123,7 @@ extension CentralManager {
 	///            If the connection was unsuccessful or disconnection returns an error (e.g., peripheral disconnected unexpectedly),
 	///            the publisher finishes with an error.
 	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil)
-		-> Publishers.BluetoothPublisher<CBPeripheral, Error>
+		-> AnyPublisher<CBPeripheral, Error>
 	{
 		let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { p in
 			if let e = p.1 {
@@ -145,12 +145,14 @@ extension CentralManager {
 			.bluetooth {
 				self.centralManager.connect(peripheral, options: options)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Cancels the connection with the specified peripheral.
 	/// - Parameter peripheral: The peripheral to disconnect from.
 	/// - Returns: A publisher that emits the disconnected peripheral.
-	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> Publishers.BluetoothPublisher<CBPeripheral, Error>
+	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> AnyPublisher<CBPeripheral, Error>
 	{
 		return self.disconnectedPeripheralsChannel
 			.tryFilter { r in
@@ -169,6 +171,8 @@ extension CentralManager {
             .bluetooth {
                 self.centralManager.cancelPeripheralConnection(peripheral)
             }
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 }
 
@@ -213,7 +217,7 @@ extension CentralManager {
 	/// - Parameter services: The services to scan for.
 	/// - Returns: A publisher that emits scan results or an error.
 	public func scanForPeripherals(withServices services: [CBUUID]?)
-		-> Publishers.BluetoothPublisher<ScanResult, Error>
+		-> AnyPublisher<ScanResult, Error>
 	{
 		stopScan()
 		return centralManagerDelegate.stateSubject
@@ -239,6 +243,8 @@ extension CentralManager {
 			.bluetooth {
 				self.centralManager.scanForPeripherals(withServices: services)
 			}
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Stops an ongoing scan for peripherals.
