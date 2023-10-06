@@ -87,6 +87,10 @@ public class Peripheral {
 	/// The underlying CBPeripheral instance.
 	public let peripheral: CBPeripheral
 
+    // MARK: Identifying a Peripheralin page link
+    /// The name of the peripheral.
+    public var name: String? { peripheral.name }
+    
 	/// The delegate for handling peripheral events.
 	public let peripheralDelegate: ReactivePeripheralDelegate
 
@@ -140,30 +144,45 @@ extension Peripheral {
 	}
 }
 
+// MARK: - Discovering Servicesin page link
 extension Peripheral {
-	/// Discover services for the peripheral.
+    /// Discover services for the peripheral.
     ///
     /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all services will be discovered.
     /// - Returns: A publisher emitting discovered services or an error.
-	public func discoverServices(serviceUUIDs: [CBUUID]?)
-		-> AnyPublisher<[CBService], Error>
-	{
-		let allServices = peripheralDelegate.discoveredServicesSubject
-			.tryCompactMap { result throws -> [CBService]? in
-				if let e = result.1 {
-					throw e
-				} else {
-					return result.0
-				}
+    public func discoverServices(serviceUUIDs: [CBUUID]?)
+    -> AnyPublisher<[CBService], Error>
+    {
+        let allServices = peripheralDelegate.discoveredServicesSubject
+            .tryCompactMap { result throws -> [CBService]? in
+                if let e = result.1 {
+                    throw e
+                } else {
+                    return result.0
+                }
             }
             .first()
-
-		return allServices.bluetooth {
-			self.peripheral.discoverServices(serviceUUIDs)
-		}
+        
+        return allServices.bluetooth {
+            self.peripheral.discoverServices(serviceUUIDs)
+        }
         .autoconnect()
         .eraseToAnyPublisher()
-	}
+    }
+    
+    /// Discovers the specified included services of a previously-discovered service.
+    public func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for: CBService) -> AnyPublisher<[CBService], Error> {
+        fatalError()
+    }
+    
+    /// A list of a peripheral’s discovered services.
+    public var services: [CBService]? {
+        peripheral.services
+    }
+}
+
+//MARK: - Discovering Characteristics and Descriptorsin page link
+extension Peripheral {
 
 	/// Discover characteristics for a given service.
     ///
@@ -221,6 +240,43 @@ extension Peripheral {
 	}
 }
 
+// MARK: - Reading Characteristic and Descriptor Values
+extension Peripheral {
+    /// Read the value of a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic to read from.
+    /// - Returns: A future emitting the read data or an error.
+    public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Error> {
+        return reader.readValue(from: characteristic)
+    }
+
+    /// Listen for updates to the value of a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic to monitor for updates.
+    /// - Returns: A publisher emitting characteristic values or an error.
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
+    {
+        return peripheralDelegate.updatedCharacteristicValuesSubject
+            .filter { $0.0.uuid == characteristic.uuid }
+            .tryCompactMap { (ch, err) in
+                if let err {
+                    throw err
+                }
+
+                return ch.value
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// Read the value of a descriptor.
+    ///
+    /// - Parameter descriptor: The descriptor to read from.
+    /// - Returns: A future emitting the read data or an error.
+    public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
+        fatalError()
+    }
+}
+
 // MARK: - Writing Characteristic and Descriptor Values
 extension Peripheral {
 	/// Write data to a characteristic and wait for a response.
@@ -268,43 +324,6 @@ extension Peripheral {
 	}
 }
 
-// MARK: - Reading Characteristic and Descriptor Values
-extension Peripheral {
-	/// Read the value of a characteristic.
-    ///
-    /// - Parameter characteristic: The characteristic to read from.
-    /// - Returns: A future emitting the read data or an error.
-	public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Error> {
-		return reader.readValue(from: characteristic)
-	}
-
-	/// Listen for updates to the value of a characteristic.
-    ///
-    /// - Parameter characteristic: The characteristic to monitor for updates.
-    /// - Returns: A publisher emitting characteristic values or an error.
-	public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
-	{
-		return peripheralDelegate.updatedCharacteristicValuesSubject
-			.filter { $0.0.uuid == characteristic.uuid }
-			.tryCompactMap { (ch, err) in
-				if let err {
-					throw err
-				}
-
-				return ch.value
-			}
-			.eraseToAnyPublisher()
-	}
-
-	/// Read the value of a descriptor.
-    ///
-    /// - Parameter descriptor: The descriptor to read from.
-    /// - Returns: A future emitting the read data or an error.
-	public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
-		fatalError()
-	}
-}
-
 // MARK: - Setting Notifications for a Characteristic’s Value
 extension Peripheral {
 	/// Set notification state for a characteristic.
@@ -336,4 +355,9 @@ extension Peripheral {
             .autoconnect()
             .eraseToAnyPublisher()
 	}
+}
+
+// MARK: - Accessing a Peripheral’s Signal Strengthin page link
+extension Peripheral {
+    
 }
