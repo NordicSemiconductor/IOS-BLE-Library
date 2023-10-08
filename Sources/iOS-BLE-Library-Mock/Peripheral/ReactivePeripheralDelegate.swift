@@ -9,16 +9,16 @@ import Combine
 import CoreBluetoothMock
 import Foundation
 
-public class ReactivePeripheralDelegate: NSObject {
+public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let l = L(category: #file)
-
-	// MARK: Discovering Services
+    
+    // MARK: Discovering Services
 	public let discoveredServicesSubject = PassthroughSubject<([CBService]?, Error?), Never>()
 	public let discoveredIncludedServicesSubject = PassthroughSubject<
 		(CBService, [CBService]?, Error?), Never
 	>()
-
-	// MARK: Discovering Characteristics and their Descriptors
+    
+    // MARK: Discovering Characteristics and their Descriptors
 	public let discoveredCharacteristicsSubject = PassthroughSubject<
 		(CBService, [CBCharacteristic]?, Error?), Never
 	>()
@@ -48,10 +48,8 @@ public class ReactivePeripheralDelegate: NSObject {
 
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 	public let updateNameSubject = PassthroughSubject<String?, Never>()
-	public let modifyServicesSubject = PassthroughSubject<[CBService], Never>()
-}
-
-extension ReactivePeripheralDelegate: CBPeripheralDelegate {
+    public let modifyServicesSubject = PassthroughSubject<[CBService], Never>()
+    
 	// MARK: Discovering Services
 
 	public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -138,12 +136,19 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
 
 	// MARK: Retrieving a Peripheral’s RSSI Data
 
+    public let readRSSISubject = PassthroughSubject<(NSNumber, Error?), Never>()
+    
 	public func peripheral(
 		_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?
 	) {
-		l.i(#function)
-		fatalError()
+        readRSSISubject.send((RSSI, error))
 	}
+    
+#if os(macOS)
+    public func peripheralDidUpdateRSSI(_ peripheral: CBPeripheral, error: Error?) {
+        readRSSISubject.send((RSSI, error))
+    }
+    #endif
 
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 
@@ -156,11 +161,11 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
 		_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]
 	) {
 		l.i(#function)
-		modifyServicesSubject.send(invalidatedServices)
+        modifyServicesSubject.send(invalidatedServices)
 	}
 
 	// MARK: Monitoring L2CAP Channels
-	/*
+/*
 	public func peripheral(
 		_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
 	) {

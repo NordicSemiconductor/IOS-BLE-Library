@@ -18,8 +18,7 @@ extension CentralManager {
 		public var localizedDescription: String {
 			switch self {
 			case .wrongManager:
-				return
-					"Incorrect manager instance provided. Delegate must be of type ReactiveCentralManagerDelegate."
+				return "Incorrect manager instance provided. Delegate must be of type ReactiveCentralManagerDelegate."
 			case .badState(let state):
 				return "Bad state: \(state)."
 			case .unknownError:
@@ -55,7 +54,7 @@ private class Observer: NSObject {
 }
 
 /// A Custom Central Manager class.
-///
+/// 
 /// It wraps the standard CBCentralManager and has similar API. However, instead of using delegate, it uses publishers, thus bringing the reactive programming paradigm to the CoreBluetooth framework.
 public class CentralManager {
 	private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
@@ -64,7 +63,7 @@ public class CentralManager {
 
 	/// The underlying CBCentralManager instance.
 	public let centralManager: CBCentralManager
-
+    
 	/// The reactive delegate for the ``centralManager``.
 	public let centralManagerDelegate: ReactiveCentralManagerDelegate
 
@@ -74,12 +73,10 @@ public class CentralManager {
 	///   - queue: The queue to perform operations on. Default is the main queue.
 	public init(
 		centralManagerDelegate: ReactiveCentralManagerDelegate =
-			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main,
-		options: [String: Any]? = nil
+			ReactiveCentralManagerDelegate(), queue: DispatchQueue = .main, options: [String : Any]? = nil
 	) {
 		self.centralManagerDelegate = centralManagerDelegate
-		self.centralManager = CBMCentralManagerFactory.instance(
-			delegate: centralManagerDelegate, queue: queue)
+self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManagerDelegate, queue: queue)
 		observer.setup()
 	}
 
@@ -112,17 +109,17 @@ extension CentralManager {
 	///            If the peripheral was disconnected successfully, the publisher finishes without error.
 	///            If the connection was unsuccessful or disconnection returns an error (e.g., peripheral disconnected unexpectedly),
 	///            the publisher finishes with an error.
-	///
-	/// Use ``CentralManager/connect(_:options:)`` to connect to a peripheral.
-	///    The returned publisher will emit the connected peripheral or an error if the connection fails.
-	///    The publisher will not complete until the peripheral is disconnected.
-	///    If the connection fails, or the peripheral is unexpectedly disconnected, the publisher will fail with an error.
-	///
-	///    ```swift
-	///    centralManager.connect(peripheral)
-	///        .sink { completion in
-	///            switch completion {
-	///            case .finished:
+    ///
+    /// Use ``CentralManager/connect(_:options:)`` to connect to a peripheral.
+    ///    The returned publisher will emit the connected peripheral or an error if the connection fails.
+    ///    The publisher will not complete until the peripheral is disconnected.
+    ///    If the connection fails, or the peripheral is unexpectedly disconnected, the publisher will fail with an error.
+    ///
+    ///    ```swift
+    ///    centralManager.connect(peripheral)
+    ///        .sink { completion in
+    ///            switch completion {
+    ///            case .finished:
 	///                print("Peripheral disconnected successfully")
 	///            case .failure(let error):
 	///                print("Error: \(error)")
@@ -155,16 +152,15 @@ extension CentralManager {
 			.bluetooth {
 				self.centralManager.connect(peripheral, options: options)
 			}
-			.autoconnect()
-			.eraseToAnyPublisher()
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Cancels the connection with the specified peripheral.
 	/// - Parameter peripheral: The peripheral to disconnect from.
 	/// - Returns: A publisher that emits the disconnected peripheral.
-	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> AnyPublisher<
-		CBPeripheral, Error
-	> {
+	public func cancelPeripheralConnection(_ peripheral: CBPeripheral) -> AnyPublisher<CBPeripheral, Error>
+	{
 		return self.disconnectedPeripheralsChannel
 			.tryFilter { r in
 				guard r.0.identifier == peripheral.identifier else {
@@ -179,17 +175,17 @@ extension CentralManager {
 			}
 			.map { $0.0 }
 			.first()
-			.bluetooth {
-				self.centralManager.cancelPeripheralConnection(peripheral)
-			}
-			.autoconnect()
-			.eraseToAnyPublisher()
+            .bluetooth {
+                self.centralManager.cancelPeripheralConnection(peripheral)
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 }
 
 // MARK: Retrieving Lists of Peripherals
 extension CentralManager {
-	#warning("check `connect` method")
+	#warning("check `connect` method")		
 	/// Returns a list of the peripherals connected to the system whose
 	/// services match a given set of criteria.
 	///
@@ -222,9 +218,9 @@ extension CentralManager {
 extension CentralManager {
 	#warning("Question: Should we throw an error if the scan is already running?")
 	/// Initiates a scan for peripherals with the specified services.
-	///
+	/// 
 	/// Calling this method stops an ongoing scan if it is already running and finishes the publisher returned by ``scanForPeripherals(withServices:)``.
-	///
+	/// 
 	/// - Parameter services: The services to scan for.
 	/// - Returns: A publisher that emits scan results or an error.
 	public func scanForPeripherals(withServices services: [CBUUID]?)
@@ -254,8 +250,8 @@ extension CentralManager {
 			.bluetooth {
 				self.centralManager.scanForPeripherals(withServices: services)
 			}
-			.autoconnect()
-			.eraseToAnyPublisher()
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Stops an ongoing scan for peripherals.
