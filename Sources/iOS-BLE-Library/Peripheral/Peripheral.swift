@@ -359,7 +359,8 @@ extension Peripheral {
 
 // MARK: - Accessing a Peripheral’s Signal Strengthin page link
 extension Peripheral {
-    func readRSSI() -> AnyPublisher<NSNumber, Error> {
+    /// Retrieves the current RSSI value for the peripheral while connected to the central manager.
+    public func readRSSI() -> AnyPublisher<NSNumber, Error> {
         peripheralDelegate.readRSSISubject
             .tryMap { rssi in
                 if let error = rssi.1 {
@@ -368,6 +369,11 @@ extension Peripheral {
                     return rssi.0
                 }
             }
+            .first()
+            .bluetooth {
+                self.peripheral.readRSSI()
+            }
+            .autoconnect()
             .eraseToAnyPublisher()
     }
 }
