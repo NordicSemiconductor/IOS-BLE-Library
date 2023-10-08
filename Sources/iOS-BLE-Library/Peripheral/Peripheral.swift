@@ -359,5 +359,15 @@ extension Peripheral {
 
 // MARK: - Accessing a Peripheral’s Signal Strengthin page link
 extension Peripheral {
-    
+    func readRSSI() -> AnyPublisher<NSNumber, Error> {
+        peripheralDelegate.readRSSISubject
+            .tryMap { rssi in
+                if let error = rssi.1 {
+                    throw error
+                } else {
+                    return rssi.0
+                }
+            }
+            .eraseToAnyPublisher()
+    }
 }

@@ -15,7 +15,7 @@ import CoreBluetoothMock
 //CG_END
 import Foundation
 
-public class ReactivePeripheralDelegate: NSObject {
+public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let l = L(category: #file)
     
     // MARK: Discovering Services
@@ -55,9 +55,7 @@ public class ReactivePeripheralDelegate: NSObject {
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 	public let updateNameSubject = PassthroughSubject<String?, Never>()
     public let modifyServicesSubject = PassthroughSubject<[CBService], Never>()
-}
-
-extension ReactivePeripheralDelegate: CBPeripheralDelegate {
+    
 	// MARK: Discovering Services
 
 	public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -144,12 +142,19 @@ extension ReactivePeripheralDelegate: CBPeripheralDelegate {
 
 	// MARK: Retrieving a Peripheral’s RSSI Data
 
+    public let readRSSISubject = PassthroughSubject<(NSNumber, Error?), Never>()
+    
 	public func peripheral(
 		_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?
 	) {
-		l.i(#function)
-		fatalError()
+        readRSSISubject.send((RSSI, error))
 	}
+    
+#if os(macOS)
+    public func peripheralDidUpdateRSSI(_ peripheral: CBPeripheral, error: Error?) {
+        readRSSISubject.send((RSSI, error))
+    }
+    #endif
 
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 
