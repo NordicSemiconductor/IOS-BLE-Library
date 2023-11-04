@@ -39,11 +39,9 @@ private class NativeObserver: Observer {
 	override func setup() {
 		observation = peripheral.observe(\.state, options: [.new]) {
 			[weak self] _, change in
-			#warning("queue can be not only main")
-			DispatchQueue.main.async {
-				guard let self else { return }
-				self.publisher.send(self.peripheral.state)
-			}
+            // TODO: Check threads
+            guard let self else { return }
+            self.publisher.send(self.peripheral.state)
 		}
 	}
 }
@@ -79,6 +77,10 @@ private class NativeObserver: Observer {
 
 
 public class Peripheral {
+    private var serviceDiscoveryQueue = Queue<UUID>()
+    
+    let l = L(category: #file)
+    
 	/// I'm Errr from Omicron Persei 8
 	public enum Err: Error {
 		case badDelegate
@@ -153,17 +155,26 @@ extension Peripheral {
     public func discoverServices(serviceUUIDs: [CBUUID]?)
     -> AnyPublisher<[CBService], Error>
     {
+        l.i(#function)
+        if let serviceUUIDs {
+            serviceUUIDs.forEach { l.d($0.description) }
+        }
+        
+        let id = UUID()
+        
         let allServices = peripheralDelegate.discoveredServicesSubject
+            .first(where: { $0.id == id } )
             .tryCompactMap { result throws -> [CBService]? in
-                if let e = result.1 {
+                if let e = result.error {
                     throw e
                 } else {
-                    return result.0
+                    return result.value
                 }
             }
             .first()
         
         return allServices.bluetooth {
+            self.peripheralDelegate.serviceDiscoveryQueue.enqueue(id)
             self.peripheral.discoverServices(serviceUUIDs)
         }
         .autoconnect()
