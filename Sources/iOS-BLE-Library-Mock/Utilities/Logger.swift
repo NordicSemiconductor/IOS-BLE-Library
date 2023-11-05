@@ -10,9 +10,7 @@ import os
 
 struct L {
 	@inline(__always)
-	static var enabled: Bool {
-		return false
-	}
+	static let enabled: Bool = false 
 
 	let subsystem: String
 	let category: String
@@ -21,7 +19,7 @@ struct L {
 
 	init(
 		subsystem: String = "com.nordicsemi.ios_ble_library", category: String,
-		enabled: Bool = false
+        enabled: Bool = Self.enabled
 	) {
 		self.subsystem = subsystem
 		self.category = category
