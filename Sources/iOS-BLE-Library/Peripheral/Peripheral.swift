@@ -39,11 +39,9 @@ private class NativeObserver: Observer {
 	override func setup() {
 		observation = peripheral.observe(\.state, options: [.new]) {
 			[weak self] _, change in
-			#warning("queue can be not only main")
-			DispatchQueue.main.async {
-				guard let self else { return }
-				self.publisher.send(self.peripheral.state)
-			}
+            // TODO: Check threads
+            guard let self else { return }
+            self.publisher.send(self.peripheral.state)
 		}
 	}
 }
@@ -79,6 +77,10 @@ private class NativeObserver: Observer {
 
 
 public class Peripheral {
+    private var serviceDiscoveryQueue = Queue<UUID>()
+    
+    let l = L(category: #file)
+    
 	/// I'm Errr from Omicron Persei 8
 	public enum Err: Error {
 		case badDelegate
@@ -153,17 +155,21 @@ extension Peripheral {
     public func discoverServices(serviceUUIDs: [CBUUID]?)
     -> AnyPublisher<[CBService], Error>
     {
+        let id = UUID()
+        
         let allServices = peripheralDelegate.discoveredServicesSubject
+            .first(where: { $0.id == id } )
             .tryCompactMap { result throws -> [CBService]? in
-                if let e = result.1 {
+                if let e = result.error {
                     throw e
                 } else {
-                    return result.0
+                    return result.value
                 }
             }
             .first()
         
         return allServices.bluetooth {
+            self.peripheralDelegate.discoveredServicesQueue.enqueue(id)
             self.peripheral.discoverServices(serviceUUIDs)
         }
         .autoconnect()
@@ -193,20 +199,24 @@ extension Peripheral {
 	public func discoverCharacteristics(
 		_ characteristicUUIDs: [CBUUID]?, for service: CBService
 	) -> AnyPublisher<[CBCharacteristic], Error> {
+        let id = UUID()
+        
 		let allCharacteristics = peripheralDelegate.discoveredCharacteristicsSubject
-			.filter {
-				$0.0.uuid == service.uuid
-			}
+            .filter {
+                $0.value.0.uuid == service.uuid
+            }
+            .first(where: { $0.id == id } )
 			.tryCompactMap { result throws -> [CBCharacteristic]? in
-				if let e = result.2 {
+                if let e = result.error {
 					throw e
 				} else {
-					return result.1
+                    return result.value.1
 				}
 			}
             .first()
 
 		return allCharacteristics.bluetooth {
+            self.peripheralDelegate.discoveredCharacteristicsQueue.enqueue(id)
 			self.peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
 		}
         .autoconnect()
@@ -220,19 +230,23 @@ extension Peripheral {
 	public func discoverDescriptors(for characteristic: CBCharacteristic)
 		-> AnyPublisher<[CBDescriptor], Error>
 	{
+        let id = UUID()
+        
 		return peripheralDelegate.discoveredDescriptorsSubject
 			.filter {
-				$0.0.uuid == characteristic.uuid
+                $0.value.0.uuid == characteristic.uuid
 			}
+            .first(where: { $0.id == id })
 			.tryCompactMap { result throws -> [CBDescriptor]? in
-				if let e = result.2 {
+                if let e = result.error {
 					throw e
 				} else {
-					return result.1
+                    return result.value.1
 				}
 			}
             .first()
 			.bluetooth {
+                self.peripheralDelegate.discoveredDescriptorsQueue.enqueue(id)
 				self.peripheral.discoverDescriptors(for: characteristic)
 			}
             .autoconnect()
