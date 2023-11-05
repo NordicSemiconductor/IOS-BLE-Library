@@ -155,11 +155,6 @@ extension Peripheral {
     public func discoverServices(serviceUUIDs: [CBUUID]?)
     -> AnyPublisher<[CBService], Error>
     {
-        l.i(#function)
-        if let serviceUUIDs {
-            serviceUUIDs.forEach { l.d($0.description) }
-        }
-        
         let id = UUID()
         
         let allServices = peripheralDelegate.discoveredServicesSubject
@@ -174,7 +169,7 @@ extension Peripheral {
             .first()
         
         return allServices.bluetooth {
-            self.peripheralDelegate.serviceDiscoveryQueue.enqueue(id)
+            self.peripheralDelegate.discoveredServicesQueue.enqueue(id)
             self.peripheral.discoverServices(serviceUUIDs)
         }
         .autoconnect()
@@ -204,20 +199,24 @@ extension Peripheral {
 	public func discoverCharacteristics(
 		_ characteristicUUIDs: [CBUUID]?, for service: CBService
 	) -> AnyPublisher<[CBCharacteristic], Error> {
+        let id = UUID()
+        
 		let allCharacteristics = peripheralDelegate.discoveredCharacteristicsSubject
-			.filter {
-				$0.0.uuid == service.uuid
-			}
+            .filter {
+                $0.value.0.uuid == service.uuid
+            }
+            .first(where: { $0.id == id } )
 			.tryCompactMap { result throws -> [CBCharacteristic]? in
-				if let e = result.2 {
+                if let e = result.error {
 					throw e
 				} else {
-					return result.1
+                    return result.value.1
 				}
 			}
             .first()
 
 		return allCharacteristics.bluetooth {
+            self.peripheralDelegate.discoveredCharacteristicsQueue.enqueue(id)
 			self.peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
 		}
         .autoconnect()
@@ -231,19 +230,23 @@ extension Peripheral {
 	public func discoverDescriptors(for characteristic: CBCharacteristic)
 		-> AnyPublisher<[CBDescriptor], Error>
 	{
+        let id = UUID()
+        
 		return peripheralDelegate.discoveredDescriptorsSubject
 			.filter {
-				$0.0.uuid == characteristic.uuid
+                $0.value.0.uuid == characteristic.uuid
 			}
+            .first(where: { $0.id == id })
 			.tryCompactMap { result throws -> [CBDescriptor]? in
-				if let e = result.2 {
+                if let e = result.error {
 					throw e
 				} else {
-					return result.1
+                    return result.value.1
 				}
 			}
             .first()
 			.bluetooth {
+                self.peripheralDelegate.discoveredDescriptorsQueue.enqueue(id)
 				self.peripheral.discoverDescriptors(for: characteristic)
 			}
             .autoconnect()
