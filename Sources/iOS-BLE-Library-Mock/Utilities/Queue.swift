@@ -26,6 +26,14 @@ struct Queue<T> {
         }
         return element
     }
+    
+    var head: T? {
+        var element: T?
+        accessQueue.sync {
+            element = queue.first
+        }
+        return element
+    }
 
     var isEmpty: Bool {
         var empty = false
