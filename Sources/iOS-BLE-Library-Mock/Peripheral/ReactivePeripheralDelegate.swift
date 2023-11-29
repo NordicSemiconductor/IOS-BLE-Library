@@ -16,9 +16,6 @@ struct BluetoothOperationResult<T> {
 }
 
 open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
-    
-    
-    
 	let l = L(category: #file)
     
     typealias NonFailureSubject<T> = PassthroughSubject<T, Never>
