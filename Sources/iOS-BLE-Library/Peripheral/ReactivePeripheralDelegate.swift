@@ -21,6 +21,32 @@ struct BluetoothOperationResult<T> {
     let id: UUID
 }
 
+struct IdentifiableOperation {
+    let id: UUID
+    let block: () -> Void
+}
+
+class SingleTaskQueue {
+    private var queue = Queue<IdentifiableOperation>()
+    
+    func addOperation(_ task: IdentifiableOperation) {
+        if queue.isEmpty {
+            queue.enqueue(task)
+            task.block()
+        } else {
+            queue.enqueue(task)
+        }
+    }
+    
+    func dequeue() -> IdentifiableOperation? {
+        queue.dequeue()
+    }
+    
+    func runNext() {
+        queue.peek()?.block()
+    }
+}
+
 open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let l = L(category: #file)
     
@@ -31,7 +57,7 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
         let task: () -> ()
     }
     
-    var discoveredServicesQueue = Queue<TaskID>()
+    var discoveredServicesQueue = SingleTaskQueue()
     var discoveredCharacteristicsQueue = Queue<UUID>()
     var discoveredDescriptorsQueue = Queue<UUID>()
     
@@ -86,27 +112,13 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	// MARK: Discovering Services
 
 	open func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        let operation = discoveredServicesQueue.dequeue()!
-        l.d("\(#function). Operation ID: \(operation.id)")
-        print("--| Operation ID: \(operation.id)")
-        
-        if let services = peripheral.services {
-            for service in services {
-                l.d("Service: \(service.uuid)")
-                print("--| Service: \(service.uuid)")
-            }
-            if services.isEmpty {
-                l.d("No Services Discovered")
-                print("--| No Services Discovered")
-            }
-        }
-        print("\n")
+        guard let operation = discoveredServicesQueue.dequeue() else { return }
         
         let result = BluetoothOperationResult<[CBService]?>(value: peripheral.services, error: error, id: operation.id)
                 
         discoveredServicesSubject.send(result)
         
-        discoveredServicesQueue.head?.task()
+        discoveredServicesQueue.runNext()
 	}
 
     /*
