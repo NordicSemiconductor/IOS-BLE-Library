@@ -118,9 +118,10 @@ public class Peripheral {
     /// - Parameters:
     ///   - peripheral: The CBPeripheral to manage.
     ///   - delegate: The delegate for handling peripheral events.
-	public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
+	public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate = ReactivePeripheralDelegate()) {
 		self.peripheral = peripheral
 		self.peripheralDelegate = delegate
+        assert(peripheral.delegate == nil, "CBPeripheral's delegate should be nil, otherwise it can lead to problems")
 		peripheral.delegate = delegate
 
 //CG_REPLACE
