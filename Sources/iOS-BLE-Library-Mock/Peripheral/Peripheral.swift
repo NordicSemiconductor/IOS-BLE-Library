@@ -106,9 +106,10 @@ public class Peripheral {
     /// - Parameters:
     ///   - peripheral: The CBPeripheral to manage.
     ///   - delegate: The delegate for handling peripheral events.
-	public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate) {
+	public init(peripheral: CBPeripheral, delegate: ReactivePeripheralDelegate = ReactivePeripheralDelegate()) {
 		self.peripheral = peripheral
 		self.peripheralDelegate = delegate
+        assert(peripheral.delegate == nil, "CBPeripheral's delegate should be nil, otherwise it can lead to problems")
 		peripheral.delegate = delegate
 
 if let p = peripheral as? CBMPeripheralNative {
@@ -152,26 +153,22 @@ extension Peripheral {
             .first()
         
         return allServices.bluetooth {
-            self.peripheralDelegate.discoveredServicesQueue.enqueue(ReactivePeripheralDelegate.TaskID(
-                id: id,
-                task: {
-                    self.peripheral.discoverServices(serviceUUIDs)
-                    self.l.d("\(#function). operation ID: \(id)")
-                    print("----| Request discover. Operation ID: \(id)")
-                    if let serviceUUIDs {
-                        for sid in serviceUUIDs {
-                            self.l.d("Services: \(sid)")
-                            print("----| Service: \(sid)")
-                        }
-                    } else {
-                        self.l.d("All services")
-                        print("----| All Services")
+            let operation = IdentifiableOperation(id: id) {
+                self.peripheral.discoverServices(serviceUUIDs)
+                self.l.d("\(#function). operation ID: \(id)")
+                print("----| Request discover. Operation ID: \(id)")
+                if let serviceUUIDs {
+                    for sid in serviceUUIDs {
+                        self.l.d("Services: \(sid)")
+                        print("----| Service: \(sid)")
                     }
-                }))
-            
-            if self.peripheralDelegate.discoveredServicesQueue.count == 1 {
-                self.peripheralDelegate.discoveredServicesQueue.head?.task()
+                } else {
+                    self.l.d("All services")
+                    print("----| All Services")
+                }
             }
+            
+            self.peripheralDelegate.discoveredServicesQueue.addOperation(operation)
         }
         .autoconnect()
         .eraseToAnyPublisher()
