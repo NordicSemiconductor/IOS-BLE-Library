@@ -28,22 +28,38 @@ struct IdentifiableOperation {
 
 class SingleTaskQueue {
     private var queue = Queue<IdentifiableOperation>()
+    let l = L(category: "SingleTaskQueue")
+    private let accessQueue = DispatchQueue(label: "com.ble-library.SingleTaskQueue")
     
     func addOperation(_ task: IdentifiableOperation) {
-        if queue.isEmpty {
-            queue.enqueue(task)
-            task.block()
-        } else {
-            queue.enqueue(task)
+        accessQueue.sync {
+            l.i("add operation \(task.id)")
+            if queue.isEmpty {
+                l.i("queue is empty")
+                queue.enqueue(task)
+                task.block()
+            } else {
+                l.i("some tasks")
+                queue.enqueue(task)
+            }
         }
     }
     
     func dequeue() -> IdentifiableOperation? {
-        queue.dequeue()
+        var task: IdentifiableOperation?
+        accessQueue.sync {
+            task = queue.dequeue()
+        }
+        l.i("dequeue: \(task?.id.uuidString ?? "no task")")
+        return task
     }
     
     func runNext() {
-        queue.peek()?.block()
+        accessQueue.sync {
+            let task = queue.peek()
+            l.i("run next: \(task?.id.uuidString ?? "no task")")
+            task?.block()            
+        }
     }
 }
 

@@ -15,7 +15,7 @@ private struct Loggers {
 
 struct L {
     @inline(__always)
-    static let enabled: Bool = false
+    static let enabled: Bool = true
     
     let subsystem: String
     let category: String
