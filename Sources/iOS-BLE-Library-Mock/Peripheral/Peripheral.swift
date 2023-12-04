@@ -156,15 +156,12 @@ extension Peripheral {
             let operation = IdentifiableOperation(id: id) {
                 self.peripheral.discoverServices(serviceUUIDs)
                 self.l.d("\(#function). operation ID: \(id)")
-                print("----| Request discover. Operation ID: \(id)")
                 if let serviceUUIDs {
                     for sid in serviceUUIDs {
                         self.l.d("Services: \(sid)")
-                        print("----| Service: \(sid)")
                     }
                 } else {
                     self.l.d("All services")
-                    print("----| All Services")
                 }
             }
             
