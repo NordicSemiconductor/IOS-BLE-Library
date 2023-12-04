@@ -16,7 +16,7 @@ extension Publisher where Failure == Never {
 }
 
 extension Publisher {
-	public var value: Output {
+	public var firstValue: Output {
 		get async throws {
 			try await ContinuationSubscriber<Self>.withCheckedContinuation(self)
 		}

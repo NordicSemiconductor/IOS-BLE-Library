@@ -21,12 +21,59 @@ struct BluetoothOperationResult<T> {
     let id: UUID
 }
 
-public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
+struct IdentifiableOperation {
+    let id: UUID
+    let block: () -> Void
+}
+
+class SingleTaskQueue {
+    private var queue = Queue<IdentifiableOperation>()
+    let l = L(category: "SingleTaskQueue")
+    private let accessQueue = DispatchQueue(label: "com.ble-library.SingleTaskQueue")
+    
+    func addOperation(_ task: IdentifiableOperation) {
+        accessQueue.sync {
+            l.i("add operation \(task.id)")
+            if queue.isEmpty {
+                l.i("queue is empty")
+                queue.enqueue(task)
+                task.block()
+            } else {
+                l.i("some tasks")
+                queue.enqueue(task)
+            }
+        }
+    }
+    
+    func dequeue() -> IdentifiableOperation? {
+        var task: IdentifiableOperation?
+        accessQueue.sync {
+            task = queue.dequeue()
+        }
+        l.i("dequeue: \(task?.id.uuidString ?? "no task")")
+        return task
+    }
+    
+    func runNext() {
+        accessQueue.sync {
+            let task = queue.peek()
+            l.i("run next: \(task?.id.uuidString ?? "no task")")
+            task?.block()            
+        }
+    }
+}
+
+open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let l = L(category: #file)
     
     typealias NonFailureSubject<T> = PassthroughSubject<T, Never>
     
-    var discoveredServicesQueue = Queue<UUID>()
+    struct TaskID {
+        let id: UUID
+        let task: () -> ()
+    }
+    
+    var discoveredServicesQueue = SingleTaskQueue()
     var discoveredCharacteristicsQueue = Queue<UUID>()
     var discoveredDescriptorsQueue = Queue<UUID>()
     
@@ -73,13 +120,20 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let updateNameSubject = PassthroughSubject<String?, Never>()
     let modifyServicesSubject = PassthroughSubject<[CBService], Never>()
     
+    let readRSSISubject = PassthroughSubject<(NSNumber, Error?), Never>()
+    
+    // MARK: - Channels
+    
+    
 	// MARK: Discovering Services
 
-	public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        let operationId = discoveredServicesQueue.dequeue()!
-        let result = BluetoothOperationResult<[CBService]?>(value: peripheral.services, error: error, id: operationId)
+	open func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        let operation = discoveredServicesQueue.dequeue()!
         
-		discoveredServicesSubject.send(result)
+        let result = BluetoothOperationResult<[CBService]?>(value: peripheral.services, error: error, id: operation.id)
+                
+        discoveredServicesSubject.send(result)
+        discoveredServicesQueue.runNext()
 	}
 
     /*
@@ -93,7 +147,7 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Discovering Characteristics and their Descriptors
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService,
 		error: Error?
     ) {
@@ -103,7 +157,7 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 		discoveredCharacteristicsSubject.send(result)
 	}
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral,
 		didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?
 	) {
@@ -115,14 +169,14 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Retrieving Characteristic and Descriptor Values
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic,
 		error: Error?
 	) {
 		updatedCharacteristicValuesSubject.send((characteristic, error))
 	}
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor,
 		error: Error?
 	) {
@@ -131,27 +185,27 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Writing Characteristic and Descriptor Values
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic,
 		error: Error?
 	) {
 		writtenCharacteristicValuesSubject.send((characteristic, error))
 	}
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Error?
 	) {
 		writtenDescriptorValuesSubject.send((descriptor, error))
 	}
 
-	public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+	open func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
 		l.i(#function)
 		fatalError()
 	}
 
 	// MARK: Managing Notifications for a Characteristic’s Value
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral,
 		didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?
 	) {
@@ -160,9 +214,7 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Retrieving a Peripheral’s RSSI Data
 
-    public let readRSSISubject = PassthroughSubject<(NSNumber, Error?), Never>()
-    
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?
 	) {
         readRSSISubject.send((RSSI, error))
@@ -170,11 +222,11 @@ public class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Monitoring Changes to a Peripheral’s Name or Services
 
-	public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
+	open func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
 		updateNameSubject.send(peripheral.name)
 	}
 
-	public func peripheral(
+	open func peripheral(
 		_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]
 	) {
         modifyServicesSubject.send(invalidatedServices)
