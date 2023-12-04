@@ -17,16 +17,16 @@ extension Publisher {
 }
 
 extension Publishers {
-    
-    /**
+
+	/**
      A publisher that is used for most of the Bluetooth operations.
-     
+
      # Overview
      This publisher conforms to the `ConnectablePublisher` protocol because most of the Bluetooth operations have to be set up before they can be used.
-     
+
 	 It means that the publisher will not emit any values until it is connected. The connection is established by calling the `connect()` or `autoconnect()` methods.
 	 To learn more about the `ConnectablePublisher` protocol, see [Apple's documentation](https://developer.apple.com/documentation/combine/connectablepublisher).
-     
+
      ```swift
      let publisher = centralManager.scanForPeripherals(withServices: nil)
          .autoconnect()
