@@ -69,7 +69,7 @@ final class PeripheralMultitaskingTests: XCTestCase {
         let p = try await central.scanForPeripherals(withServices: nil)
             .flatMap { self.central.connect($0.peripheral) }
             .map { Peripheral(peripheral: $0, delegate: ReactivePeripheralDelegate()) }
-            .value
+            .firstValue
         
         let batteryExp = expectation(description: "Battery Service Expectation")
         let hrExp = expectation(description: "Heart Rate Service Expectation")
