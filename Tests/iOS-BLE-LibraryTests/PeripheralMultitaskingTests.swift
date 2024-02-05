@@ -17,7 +17,15 @@ private extension CBMUUID {
     static let heartRateMonitorService = CBUUID(string: "180D")
     static let deviceInformationService = CBUUID(string: "180A")
     
-    static var all: [CBMUUID] = [.batteryService, .runningSpeedCadenceService, .heartRateMonitorService, .deviceInformationService]
+    static var allServices: [CBMUUID] = [
+        .batteryService,
+        .runningSpeedCadenceService,
+        .heartRateMonitorService,
+        .deviceInformationService
+    ]
+    
+    static let batteryLevel = CBUUID(string: "2A19")
+    static let presentationFormat = CBUUID(string: "2904")
 }
 
 class MockPeripheral: CBMPeripheralSpecDelegate {
@@ -35,12 +43,27 @@ class MockPeripheral: CBMPeripheralSpecDelegate {
         )
         .connectable(
             name: "Running Sensor",
-            services: CBMUUID.all.map { CBMServiceMock(type: $0, primary: true) },
+            services: CBMUUID.allServices.map {
+                if $0 == .batteryService {
+                    return CBMServiceMock(
+                        type: $0,
+                        primary: true,
+                        characteristics: [
+                            CBMCharacteristicMock(type: .batteryLevel, properties: .read, descriptors: CBMDescriptorMock(type: .presentationFormat))
+                        ])
+                } else {
+                    return CBMServiceMock(type: $0, primary: true)
+                }
+            },
             delegate: self
         )
         .build()
     
     func peripheral(_ peripheral: CBMPeripheralSpec, didReceiveServiceDiscoveryRequest serviceUUIDs: [CBMUUID]?) -> Result<Void, Error> {
+        return .success(())
+    }
+    
+    func peripheral(_ peripheral: CBMPeripheralSpec, didReceiveCharacteristicsDiscoveryRequest characteristicUUIDs: [CBMUUID]?, for service: CBMServiceMock) -> Result<Void, Error> {
         return .success(())
     }
 }
@@ -86,7 +109,7 @@ final class PeripheralMultitaskingTests: XCTestCase {
             }
             .store(in: &cancelables)
 
-        p.discoverServices(serviceUUIDs: [.deviceInformationService])
+        p.discoverServices(serviceUUIDs: [.batteryService])
             .sink { completion in
                 if case .failure = completion {
                     XCTFail("Should not fail")
@@ -99,5 +122,30 @@ final class PeripheralMultitaskingTests: XCTestCase {
             .store(in: &cancelables)
         
         await fulfillment(of: [batteryExp, hrExp], timeout: 4)
+    }
+    
+    func testDiscoverCharacteristics() async throws {
+        let p = try await central.scanForPeripherals(withServices: nil)
+            .flatMap { self.central.connect($0.peripheral) }
+            .map { Peripheral(peripheral: $0, delegate: ReactivePeripheralDelegate()) }
+            .firstValue
+        
+        let batteryService = try await p.discoverServices(serviceUUIDs: [.batteryService ]).firstValue.first!
+        
+        let characteristicExp = expectation(description: "Characteristic expectation")
+        let descriptorExp = expectation(description: "Descriptor expectation")
+        
+        Task {
+            let ch = try await p.discoverCharacteristics([.batteryLevel], for: batteryService).firstValue.first!
+            characteristicExp.fulfill()
+            
+            let desc = try await p.discoverDescriptors(for: ch).firstValue.first!
+            descriptorExp.fulfill()
+            
+            XCTAssert(ch.uuid == CBUUID.batteryLevel)
+            XCTAssert(desc.uuid == CBUUID.presentationFormat)
+        }
+        
+        await fulfillment(of: [characteristicExp, descriptorExp], timeout: 4)
     }
 }
