@@ -282,7 +282,21 @@ extension Peripheral {
     /// - Parameter descriptor: The descriptor to read from.
     /// - Returns: A future emitting the read data or an error.
     public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
-        fatalError()
+        return Future.init { promis in
+            promis(.failure(Err.badDelegate))
+        }
+        /*
+        return peripheralDelegate.updatedDescriptorValuesSubject
+            .filter { $0.0.uuid == descriptor.uuid }
+            .tryCompactMap { (desc, err) in
+                if let err {
+                    throw err
+                }
+                
+                return desc.value
+            }
+            .eraseToAnyPublisher()
+         */
     }
 }
 
@@ -385,4 +399,108 @@ extension Peripheral {
             .autoconnect()
             .eraseToAnyPublisher()
     }
+}
+
+// MARK: - Channels
+extension Peripheral {
+    /// A publisher that emits the discovered services of the peripheral.
+    public var discoveredServicesChannel: AnyPublisher<[CBService]?, Error> {
+        peripheralDelegate.discoveredServicesSubject
+            .tryMap { result in
+                if let e = result.error {
+                    throw e
+                } else {
+                    return result.value
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the discovered characteristics of a service.
+    public var discoveredCharacteristicsChannel: AnyPublisher<(CBService, [CBCharacteristic]?)?, Error> {
+        peripheralDelegate.discoveredCharacteristicsSubject
+            .tryMap { result in
+                if let e = result.error {
+                    throw e
+                } else {
+                    return result.value
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the discovered descriptors of a characteristic.
+    public var discoveredDescriptorsChannel: AnyPublisher<(CBCharacteristic, [CBDescriptor]?)?, Error> {
+        peripheralDelegate.discoveredDescriptorsSubject
+            .tryMap { result in
+                if let e = result.error {
+                    throw e
+                } else {
+                    return result.value
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the updated value of a characteristic.
+    public var updatedCharacteristicValuesChannel: AnyPublisher<(CBCharacteristic, Error?), Never> {
+        peripheralDelegate.updatedCharacteristicValuesSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the updated value of a descriptor.
+    public var updatedDescriptorValuesChannel: AnyPublisher<(CBDescriptor, Error?), Never> {
+        peripheralDelegate.updatedDescriptorValuesSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the written value of a characteristic.
+    public var writtenCharacteristicValuesChannel: AnyPublisher<(CBCharacteristic, Error?), Never> {
+        peripheralDelegate.writtenCharacteristicValuesSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the written value of a descriptor.
+    public var writtenDescriptorValuesChannel: AnyPublisher<(CBDescriptor, Error?), Never> {
+        peripheralDelegate.writtenDescriptorValuesSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the notification state of a characteristic.
+    public var notificationStateChannel: AnyPublisher<(CBCharacteristic, Error?), Never> {
+        peripheralDelegate.notificationStateSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the update name of a peripheral.
+    public var updateNameChannel: AnyPublisher<String?, Never> {
+        peripheralDelegate.updateNameSubject
+            .eraseToAnyPublisher()
+    }
+
+    public var modifyServices: AnyPublisher<[CBService], Never> {
+        peripheralDelegate.modifyServicesSubject
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the read RSSI value of a peripheral.
+    public var readRSSIChannel: AnyPublisher<NSNumber?, Error> {
+        peripheralDelegate.readRSSISubject
+            .tryMap { rssi in
+                if let error = rssi.1 {
+                    throw error
+                } else {
+                    return rssi.0
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// A publisher that emits the isReadyToSendWriteWithoutResponse value of a peripheral.
+    public var isReadyToSendWriteWithoutResponseChannel: AnyPublisher<Void, Never> {
+        peripheralDelegate.isReadyToSendWriteWithoutResponseSubject
+            .first()
+            .eraseToAnyPublisher()
+    }
+
 }
