@@ -53,7 +53,7 @@ private class MockPeripheral: CBMPeripheralSpecDelegate {
                         type: $0,
                         primary: true,
                         characteristics: [
-                            CBMCharacteristicMock(type: .batteryLevel, properties: .read, descriptors: CBMDescriptorMock(type: .presentationFormat))
+                            CBMCharacteristicMock(type: .batteryLevel, properties: .indicate, descriptors: CBMDescriptorMock(type: .presentationFormat))
                         ])
                 } else {
                     return CBMServiceMock(type: $0, primary: true)
@@ -91,6 +91,7 @@ private class MockPeripheral: CBMPeripheralSpecDelegate {
         if data[0] % 2 == 0 {
             return .failure(NSError(domain: "com.ble.characteristic", code: 2, userInfo: ["value": data]))
         } else {
+            peripheral.simulateValueUpdate(data, for: characteristic)
             return .success(())
         }
     }
@@ -114,6 +115,11 @@ final class PeripheralReadWriteDescriptorTests: XCTestCase {
         self.central = try CentralManager(centralManager: cm)
         
         cancelables = Set()
+    }
+    
+    override func tearDown() async throws {
+        CBMCentralManagerMock.tearDownSimulation()
+        try await super.tearDown()
     }
     
     func testReadCharacteristic() async throws {
@@ -169,5 +175,66 @@ final class PeripheralReadWriteDescriptorTests: XCTestCase {
         XCTAssertEqual(data, rs.lastWroteCommandValue)
         
         await fulfillment(of: [isReadyExp], timeout: 3)
+    }
+    
+    func testWriteWithResponse() async throws {
+        let delegate = ReactivePeripheralDelegate()
+        
+        let p = try await central.scanForPeripherals(withServices: nil)
+            .flatMap { self.central.connect($0.peripheral) }
+            .map { Peripheral(peripheral: $0, delegate: delegate) }
+            .firstValue
+        
+        let batteryService = try await p.discoverServices(serviceUUIDs: [.batteryService ]).firstValue.first!
+        let batteryLevelCharacteristic = try await p.discoverCharacteristics([.batteryLevel], for: batteryService).firstValue.first!
+        
+        let sendData = Data([0])
+        do {
+            _ = try await p.writeValueWithResponse(sendData, for: batteryLevelCharacteristic).firstValue
+        } catch let e as NSError {
+            let level = try XCTUnwrap(e.userInfo["value"] as? Data)
+            XCTAssertEqual(level, sendData)
+            XCTAssertEqual(e.code, 2)
+        } catch {
+            XCTFail("unexpected error")
+        }
+        
+        do {
+            _ = try await p.writeValueWithResponse(Data([1]), for: batteryLevelCharacteristic).firstValue
+        } catch {
+            XCTFail("unexpected error")
+        }
+    }
+    
+    func testNotifyCharacteristic() async throws {
+        let delegate = ReactivePeripheralDelegate()
+        
+        let p = try await central.scanForPeripherals(withServices: nil)
+            .flatMap { self.central.connect($0.peripheral) }
+            .map { Peripheral(peripheral: $0, delegate: delegate) }
+            .firstValue
+        
+        let batteryService = try await p.discoverServices(serviceUUIDs: [.batteryService ]).firstValue.first!
+        let batteryLevelCharacteristic = try await p.discoverCharacteristics([.batteryLevel], for: batteryService).firstValue.first!
+        
+        let exp = expectation(description: "write response expectation")
+        
+        p.listenValues(for: batteryLevelCharacteristic)
+            .sink { _ in
+                
+            } receiveValue: { data in
+                XCTAssertEqual(data, Data([1]))
+                exp.fulfill()
+            }
+            .store(in: &cancelables)
+
+        do {
+            _ = try await p.setNotifyValue(true, for: batteryLevelCharacteristic).firstValue
+            _ = try await p.writeValueWithResponse(Data([1]), for: batteryLevelCharacteristic).firstValue
+        } catch {
+            XCTFail("unexpected error")
+        }
+        
+        await fulfillment(of: [exp], timeout: 3)
     }
 }
