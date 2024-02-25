@@ -32,13 +32,13 @@ final class CentralManagerTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        try super.tearDownWithError()
-        
         cancelables.removeAll()
         cancelables = nil
         central = nil
         rs = nil
         CBMCentralManagerMock.tearDownSimulation()
+        
+        try super.tearDownWithError()
     }
     
     func testCentralManagerCreation() throws {

@@ -88,6 +88,11 @@ final class PeripheralMultitaskingTests: XCTestCase {
         cancelables = Set()
     }
     
+    override func tearDown() async throws {
+        CBMCentralManagerMock.tearDownSimulation()
+        try await super.tearDown()
+    }
+    
     func testDiscoverServices() async throws {
         let p = try await central.scanForPeripherals(withServices: nil)
             .flatMap { self.central.connect($0.peripheral) }
