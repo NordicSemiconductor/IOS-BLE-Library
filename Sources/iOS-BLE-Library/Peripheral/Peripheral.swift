@@ -100,17 +100,27 @@ public class Peripheral {
 
 	private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
 	private var observer: Observer!
-	private lazy var writer = CharacteristicWriter(
+	private lazy var characteristicWriter = CharacteristicWriter(
 		writtenEventsPublisher: self.peripheralDelegate.writtenCharacteristicValuesSubject
 			.eraseToAnyPublisher(),
 		peripheral: self.peripheral
 	)
 
-	private lazy var reader = CharacteristicReader(
+	private lazy var characteristicReader = CharacteristicReader(
 		updateEventPublisher: self.peripheralDelegate.updatedCharacteristicValuesSubject
 			.eraseToAnyPublisher(),
 		peripheral: peripheral
 	)
+    
+    private lazy var descriptorWriter = DescriptorWriter(
+        writtenEventsPublisher: self.peripheralDelegate.writtenDescriptorValuesSubject.eraseToAnyPublisher(),
+        peripheral: peripheral
+    )
+    
+    private lazy var descriptorReader = DescriptorReader(
+        updateEventsPublisher: self.peripheralDelegate.updatedDescriptorValuesSubject.eraseToAnyPublisher(),
+        peripheral: peripheral
+    )
 
 	// TODO: Why don't we use default delegate?
 	/// Initializes a Peripheral instance.
@@ -275,7 +285,7 @@ extension Peripheral {
     /// - Parameter characteristic: The characteristic to read from.
     /// - Returns: A future emitting the read data or an error.
     public func readValue(for characteristic: CBCharacteristic) -> Future<Data?, Error> {
-        return reader.readValue(from: characteristic)
+        return characteristicReader.readValue(from: characteristic)
     }
 
     /// Listen for updates to the value of a characteristic.
@@ -300,22 +310,8 @@ extension Peripheral {
     ///
     /// - Parameter descriptor: The descriptor to read from.
     /// - Returns: A future emitting the read data or an error.
-    public func readValue(for descriptor: CBDescriptor) -> Future<Data, Error> {
-        return Future.init { promis in
-            promis(.failure(Err.badDelegate))
-        }
-        /*
-        return peripheralDelegate.updatedDescriptorValuesSubject
-            .filter { $0.0.uuid == descriptor.uuid }
-            .tryCompactMap { (desc, err) in
-                if let err {
-                    throw err
-                }
-                
-                return desc.value
-            }
-            .eraseToAnyPublisher()
-         */
+    public func readValue(for descriptor: CBDescriptor) -> Future<Any?, Error> {
+        return descriptorReader.readValue(from: descriptor)
     }
 }
 
@@ -361,8 +357,8 @@ extension Peripheral {
     /// - Parameters:
     ///   - data: The data to write.
     ///   - descriptor: The descriptor to write to.
-	public func writeValue(_ data: Data, for descriptor: CBDescriptor) {
-		fatalError()
+	public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Future<Void, Error> {
+        return descriptorWriter.write(data, to: descriptor)
 	}
 }
 
