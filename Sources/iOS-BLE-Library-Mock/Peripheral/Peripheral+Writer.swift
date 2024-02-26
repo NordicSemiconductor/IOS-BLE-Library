@@ -43,30 +43,30 @@ extension Peripheral {
 			super.init(peripheral: peripheral)
 		}
 	}
-    
-    class DescriptorWriter: OperationQueue {
-        let writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
 
-        init(
-            writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
-            peripheral: CBPeripheral
-        ) {
-            self.writtenEventsPublisher = writtenEventsPublisher
-            super.init(peripheral: peripheral)
-        }
-    }
-    
-    class DescriptorReader: OperationQueue {
-        let updateEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
+	class DescriptorWriter: OperationQueue {
+		let writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
 
-        init(
-            updateEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
-            peripheral: CBPeripheral
-        ) {
-            self.updateEventsPublisher = updateEventsPublisher
-            super.init(peripheral: peripheral)
-        }
-    }
+		init(
+			writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
+			peripheral: CBPeripheral
+		) {
+			self.writtenEventsPublisher = writtenEventsPublisher
+			super.init(peripheral: peripheral)
+		}
+	}
+
+	class DescriptorReader: OperationQueue {
+		let updateEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
+
+		init(
+			updateEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
+			peripheral: CBPeripheral
+		) {
+			self.updateEventsPublisher = updateEventsPublisher
+			super.init(peripheral: peripheral)
+		}
+	}
 }
 
 extension Peripheral.CharacteristicWriter {
@@ -98,32 +98,32 @@ extension Peripheral.CharacteristicReader {
 }
 
 extension Peripheral.DescriptorWriter {
-    func write(_ value: Data, to dsecriptor: CBDescriptor) -> Future<Void, Error> {
-        let operation = WriteDescriptorOperation(
-            data: value,
-            writtenEventsPublisher: writtenEventsPublisher,
-            descriptor: dsecriptor,
-            peripheral: peripheral
-        )
+	func write(_ value: Data, to dsecriptor: CBDescriptor) -> Future<Void, Error> {
+		let operation = WriteDescriptorOperation(
+			data: value,
+			writtenEventsPublisher: writtenEventsPublisher,
+			descriptor: dsecriptor,
+			peripheral: peripheral
+		)
 
-        queue.addOperation(operation)
+		queue.addOperation(operation)
 
-        return operation.future
-    }
+		return operation.future
+	}
 }
 
 extension Peripheral.DescriptorReader {
-    func readValue(from descriptor: CBDescriptor) -> Future<Any?, Error> {
-        let operation = ReadDescriptorOperation(
-            updateEventPublisher: updateEventsPublisher,
-            descriptor: descriptor,
-            peripheral: peripheral
-        )
+	func readValue(from descriptor: CBDescriptor) -> Future<Any?, Error> {
+		let operation = ReadDescriptorOperation(
+			updateEventPublisher: updateEventsPublisher,
+			descriptor: descriptor,
+			peripheral: peripheral
+		)
 
-        queue.addOperation(operation)
+		queue.addOperation(operation)
 
-        return operation.future
-    }
+		return operation.future
+	}
 }
 
 private class BasicOperation<T>: Operation {
@@ -279,101 +279,109 @@ private class ReadCharacteristicOperation: BasicOperation<Data?> {
 
 private class WriteDescriptorOperation: BasicOperation<Void> {
 
-    let writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
-    let descriptor: CBDescriptor
+	let writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
+	let descriptor: CBDescriptor
 
-    let data: Data
+	let data: Data
 
-    init(
-        data: Data, writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
-        descriptor: CBDescriptor, peripheral: CBPeripheral
-    ) {
-        self.data = data
-        self.writtenEventsPublisher = writtenEventsPublisher
-        self.descriptor = descriptor
-        super.init(peripheral: peripheral)
-    }
+	init(
+		data: Data, writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
+		descriptor: CBDescriptor, peripheral: CBPeripheral
+	) {
+		self.data = data
+		self.writtenEventsPublisher = writtenEventsPublisher
+		self.descriptor = descriptor
+		super.init(peripheral: peripheral)
+	}
 
-    override func main() {
-        peripheral.writeValue(data, for: descriptor)
-    }
+	override func main() {
+		peripheral.writeValue(data, for: descriptor)
+	}
 
-    override func start() {
-        if isCancelled {
-            state = .finished
-            return
-        }
+	override func start() {
+		if isCancelled {
+			state = .finished
+			return
+		}
 
-        self.cancelable = writtenEventsPublisher.share()
-            .filter { $0.0.uuid == self.descriptor.uuid && $0.0.characteristic?.uuid == self.descriptor.characteristic?.uuid }
-            .first()
-            .tryMap { v in
-                if let e = v.1 {
-                    throw e
-                } else {
-                    return v.0
-                }
-            }
-            .sink { [unowned self] completion in
-                switch completion {
-                case .finished:
-                    self.promise?(.success(()))
-                case .failure(let e):
-                    self.promise?(.failure(e))
-                }
-                self.state = .finished
-            } receiveValue: { _ in
+		self.cancelable = writtenEventsPublisher.share()
+			.filter {
+				$0.0.uuid == self.descriptor.uuid
+					&& $0.0.characteristic?.uuid
+						== self.descriptor.characteristic?.uuid
+			}
+			.first()
+			.tryMap { v in
+				if let e = v.1 {
+					throw e
+				} else {
+					return v.0
+				}
+			}
+			.sink { [unowned self] completion in
+				switch completion {
+				case .finished:
+					self.promise?(.success(()))
+				case .failure(let e):
+					self.promise?(.failure(e))
+				}
+				self.state = .finished
+			} receiveValue: { _ in
 
-            }
+			}
 
-        state = .executing
-        main()
-    }
+		state = .executing
+		main()
+	}
 }
 
 private class ReadDescriptorOperation: BasicOperation<Any?> {
-    let updateEventPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
-    let descriptor: CBDescriptor
+	let updateEventPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
+	let descriptor: CBDescriptor
 
-    init(
-        updateEventPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
-        descriptor: CBDescriptor, peripheral: CBPeripheral
-    ) {
-        self.updateEventPublisher = updateEventPublisher
-        self.descriptor = descriptor
-        super.init(peripheral: peripheral)
-    }
+	init(
+		updateEventPublisher: AnyPublisher<(CBDescriptor, Error?), Never>,
+		descriptor: CBDescriptor, peripheral: CBPeripheral
+	) {
+		self.updateEventPublisher = updateEventPublisher
+		self.descriptor = descriptor
+		super.init(peripheral: peripheral)
+	}
 
-    override func main() {
-        peripheral.readValue(for: descriptor)
-    }
+	override func main() {
+		peripheral.readValue(for: descriptor)
+	}
 
-    override func start() {
-        if isCancelled {
-            state = .finished
-            return
-        }
+	override func start() {
+		if isCancelled {
+			state = .finished
+			return
+		}
 
-        self.cancelable = updateEventPublisher.share()
-            .filter { $0.0.uuid == self.descriptor.uuid && $0.0.characteristic?.uuid == self.descriptor.characteristic?.uuid }
-            .first()
-            .tryMap { v in
-                if let e = v.1 {
-                    throw e
-                } else {
-                    return v.0.value
-                }
-            }
-            .sink { [unowned self] completion in
-                if case .failure(let e) = completion {
-                    self.promise?(.failure(e))
-                }
-                self.state = .finished
-            } receiveValue: { v in
-                self.promise?(.success(v))
-            }
+		self.cancelable = updateEventPublisher.share()
+			.filter {
+				$0.0.uuid == self.descriptor.uuid
+					&& $0.0.characteristic?.uuid
+						== self.descriptor.characteristic?.uuid
+			}
+			.first()
+			.tryMap { v in
+				if let e = v.1 {
+					throw e
+				} else {
+					return v.0.value
+				}
+			}
+			.sink { [unowned self] completion in
+				if case .failure(let e) = completion {
+					self.promise?(.failure(e))
+				}
+				self.state = .finished
+			} receiveValue: { v in
+				self.promise?(.success(v))
+			}
 
-        state = .executing
-        main()
-    }
+		state = .executing
+		main()
+	}
 }
