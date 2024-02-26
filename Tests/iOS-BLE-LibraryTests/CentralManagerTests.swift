@@ -32,13 +32,13 @@ final class CentralManagerTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        try super.tearDownWithError()
-        
         cancelables.removeAll()
         cancelables = nil
         central = nil
         rs = nil
         CBMCentralManagerMock.tearDownSimulation()
+        
+        try super.tearDownWithError()
     }
     
     func testCentralManagerCreation() throws {
@@ -144,7 +144,7 @@ final class CentralManagerTests: XCTestCase {
     
     func testConnect() async throws {
         let connectionPeripheral = try await central.scanForPeripherals(withServices: nil)
-            .value
+            .firstValue
             .peripheral
         
         let connectionExpectation = XCTestExpectation(description: "Connection expectation")
@@ -180,7 +180,7 @@ final class CentralManagerTests: XCTestCase {
     
     func testDisconnectFromPeripheral() async throws {
         let connectionPeripheral = try await central.scanForPeripherals(withServices: nil)
-            .value
+            .firstValue
             .peripheral
         
         let connectionExpectation = XCTestExpectation(description: "Connection expectation")

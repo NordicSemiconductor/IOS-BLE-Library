@@ -24,7 +24,7 @@ let package = Package(
     /// . . .
     dependencies: [
         // Set the link to the library and choose the version
-        .package(url: "https://github.com/NordicSemiconductor/IOS-BLE-Library.git", from: "0.1.3"),
+        .package(url: "https://github.com/NordicSemiconductor/IOS-BLE-Library.git", from: "0.3.1"),
     ],
     targets: [
         .target(
@@ -51,12 +51,12 @@ The library can be installed using CocoaPods.
 
 Add the following line to your Podfile:
 ```ruby
-pod 'iOS-BLE-Library', '~> 0.1.3'
+pod 'iOS-BLE-Library', '~> 0.3.1'
 ```
 
 or 
 ```ruby
-pod 'iOS-BLE-Library-Mock', '~> 0.1.3'
+pod 'iOS-BLE-Library-Mock', '~> 0.3.1'
 ```
 
 # Documentation & Examples

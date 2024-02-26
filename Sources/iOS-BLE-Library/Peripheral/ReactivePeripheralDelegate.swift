@@ -103,6 +103,8 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	let updatedDescriptorValuesSubject = PassthroughSubject<
 		(CBDescriptor, Error?), Never
 	>()
+    
+    let isReadyToSendWriteWithoutResponseSubject = PassthroughSubject<Void, Never>() 
 
 	let writtenCharacteristicValuesSubject = PassthroughSubject<
 		(CBCharacteristic, Error?), Never
@@ -199,9 +201,8 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	}
 
 	open func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-		l.i(#function)
-		fatalError()
-	}
+        isReadyToSendWriteWithoutResponseSubject.send(())
+    }
 
 	// MARK: Managing Notifications for a Characteristic’s Value
 
