@@ -234,9 +234,11 @@ extension CentralManager {
 	/// 
 	/// Calling this method stops an ongoing scan if it is already running and finishes the publisher returned by ``scanForPeripherals(withServices:)``.
 	/// 
-	/// - Parameter services: The services to scan for.
+	/// - Parameters:
+	///   - services: The services to scan for.
+	///   - options: A dictionary to customize the scan, such as specifying whether duplicate results should be reported.
 	/// - Returns: A publisher that emits scan results or an error.
-	public func scanForPeripherals(withServices services: [CBUUID]?)
+	public func scanForPeripherals(withServices services: [CBUUID]?, options: [String: Any]? = nil)
 		-> AnyPublisher<ScanResult, Error>
 	{
 		stopScan()
@@ -261,7 +263,7 @@ extension CentralManager {
 				return e
 			}
 			.bluetooth {
-				self.centralManager.scanForPeripherals(withServices: services)
+				self.centralManager.scanForPeripherals(withServices: services, options: options)
 			}
             .autoconnect()
             .eraseToAnyPublisher()
