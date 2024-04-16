@@ -51,12 +51,12 @@ The library can be installed using CocoaPods.
 
 Add the following line to your Podfile:
 ```ruby
-pod 'IOS-BLE-Library', '~> 0.3.1'
+pod 'IOS-BLE-Library', '~> 0.3.2'
 ```
 
 or 
 ```ruby
-pod 'IOS-BLE-Library-Mock', '~> 0.3.1'
+pod 'IOS-BLE-Library-Mock', '~> 0.3.2'
 ```
 
 # Documentation & Examples
