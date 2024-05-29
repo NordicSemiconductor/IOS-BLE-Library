@@ -130,7 +130,13 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	// MARK: Discovering Services
 
 	open func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+//CG_REPLACE
         let operation = discoveredServicesQueue.dequeue()!
+//CG_WITH
+/*
+         guard let operation = discoveredServicesQueue.dequeue() else { return }
+*/
+//CG_END
         
         let result = BluetoothOperationResult<[CBService]?>(value: peripheral.services, error: error, id: operation.id)
                 
