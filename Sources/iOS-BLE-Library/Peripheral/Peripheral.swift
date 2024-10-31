@@ -330,16 +330,14 @@ extension Peripheral {
 	public func writeValueWithResponse(_ data: Data, for characteristic: CBCharacteristic)
 		-> AnyPublisher<Void, Error>
 	{
-        print("......")
 		return peripheralDelegate.writtenCharacteristicValuesSubject
-            .map{ result in
-                print("receive ...")
-                return result
-            }
-            .first(where: {
-                $0.0.uuid == characteristic.uuid &&
-                $0.0.service?.uuid == characteristic.service?.uuid
-            })
+			.map{ result in
+				return result
+			}
+			.first(where: {
+				$0.0.uuid == characteristic.uuid &&
+				$0.0.service?.uuid == characteristic.service?.uuid
+			})
 			.tryMap { result in
 				if let e = result.1 {
 					throw e

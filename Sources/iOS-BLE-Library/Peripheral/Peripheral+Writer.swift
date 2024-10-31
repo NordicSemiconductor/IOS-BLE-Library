@@ -208,7 +208,6 @@ private class WriteCharacteristicOperation: BasicOperation<Void> {
 			state = .finished
 			return
 		}
-        print(".............")
 		self.cancelable = writtenEventsPublisher.share()
             .filter { $0.0.uuid == self.characteristic.uuid  && $0.0.service?.uuid == self.characteristic.service?.uuid }
 			.first()
