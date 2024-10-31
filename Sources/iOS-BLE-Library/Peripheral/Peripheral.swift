@@ -327,7 +327,7 @@ extension Peripheral {
 		-> AnyPublisher<Void, Error>
 	{
 		return peripheralDelegate.writtenCharacteristicValuesSubject
-			.first(where: { $0.0.uuid == characteristic.uuid &&$0.0.service?.uuid == characteristic.service?.uuid })
+			.first(where: { $0.0.uuid == characteristic.uuid && $0.0.service?.uuid == characteristic.service?.uuid })
 			.tryMap { result in
 				if let e = result.1 {
 					throw e
