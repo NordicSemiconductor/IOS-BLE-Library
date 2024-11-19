@@ -34,10 +34,10 @@ extension CBManagerState: CustomDebugStringConvertible, CustomStringConvertible 
 			return "resetting"
 		case .unauthorized:
 			return "unauthorized"
-		case .unknown:
-			return "unknown"
 		case .unsupported:
 			return "unsupported"
+        default:
+            return "unknown"
 		}
 	}
 }

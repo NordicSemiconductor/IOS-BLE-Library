@@ -15,7 +15,8 @@ import CoreBluetoothMock
 import Foundation
 
 extension CBManagerState {
-	var ready: Bool? {
+	
+    var ready: Bool? {
 		switch self {
 		case .poweredOn:
 			return true
@@ -23,6 +24,8 @@ extension CBManagerState {
 			return nil
 		case .poweredOff, .unauthorized, .unsupported:
 			return false
+        default:
+            return false
 		}
 	}
 }
