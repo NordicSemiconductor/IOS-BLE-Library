@@ -77,9 +77,8 @@ class ContinuationSubscriber<Upstream: Publisher>: Subscriber {
 }
 
 extension ContinuationSubscriber {
-	static func withCheckedContinuation<Upstream: Publisher>(_ upstream: Upstream) async throws
-		-> Input where Upstream.Output == Input, Upstream.Failure == Failure
-	{
+	
+    static func withCheckedContinuation(_ upstream: Upstream) async throws -> Input where Upstream.Output == Input, Upstream.Failure == Failure {
 
 		try await withCheckedThrowingContinuation { c in
 			upstream.subscribe(ContinuationSubscriber(continuation: c))
