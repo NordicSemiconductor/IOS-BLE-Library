@@ -126,7 +126,7 @@ extension Peripheral.DescriptorReader {
 	}
 }
 
-private class BasicOperation<T>: Operation {
+private class BasicOperation<T>: Operation, @unchecked Sendable {
 	let peripheral: CBPeripheral
 	var cancelable: AnyCancellable?
 
@@ -176,7 +176,7 @@ private class BasicOperation<T>: Operation {
 	}
 }
 
-private class WriteCharacteristicOperation: BasicOperation<Void> {
+private class WriteCharacteristicOperation: BasicOperation<Void>, @unchecked Sendable {
 
 	let writtenEventsPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
 	let characteristic: CBCharacteristic
@@ -230,7 +230,7 @@ private class WriteCharacteristicOperation: BasicOperation<Void> {
 	}
 }
 
-private class ReadCharacteristicOperation: BasicOperation<Data?> {
+private class ReadCharacteristicOperation: BasicOperation<Data?>, @unchecked Sendable {
 	let updateEventPublisher: AnyPublisher<(CBCharacteristic, Error?), Never>
 	let characteristic: CBCharacteristic
 
@@ -277,7 +277,7 @@ private class ReadCharacteristicOperation: BasicOperation<Data?> {
 	}
 }
 
-private class WriteDescriptorOperation: BasicOperation<Void> {
+private class WriteDescriptorOperation: BasicOperation<Void>, @unchecked Sendable {
 
 	let writtenEventsPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
 	let descriptor: CBDescriptor
@@ -335,7 +335,7 @@ private class WriteDescriptorOperation: BasicOperation<Void> {
 	}
 }
 
-private class ReadDescriptorOperation: BasicOperation<Any?> {
+private class ReadDescriptorOperation: BasicOperation<Any?>, @unchecked Sendable {
 	let updateEventPublisher: AnyPublisher<(CBDescriptor, Error?), Never>
 	let descriptor: CBDescriptor
 
