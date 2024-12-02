@@ -132,31 +132,27 @@ extension CentralManager {
 	///        }
 	///        .store(in: &cancellables)
 	///    ```
-	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil)
-		-> AnyPublisher<CBPeripheral, Error>
-	{
-		let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { p in
-			if let e = p.1 {
-				throw e
-			}
-			return p.0.identifier == peripheral.identifier
+	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil) -> AnyPublisher<CBPeripheral, Error> {
+		let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { disconnectedPeripheral, error in
+            if let error {
+                throw error
+            }
+            return disconnectedPeripheral.identifier == peripheral.identifier
 		})
-
-		return self.connectedPeripheralChannel
-			.filter { $0.0.identifier == peripheral.identifier }
-			.tryMap { peripheral, error in
-				if let error {
-					throw error
-				}
-
-				return peripheral
-			}
-			.prefix(untilUntilOutputOrCompletion: killSwitch)
-			.bluetooth {
-				self.centralManager.connect(peripheral, options: options)
-			}
-			.autoconnect()
-			.eraseToAnyPublisher()
+        return self.connectedPeripheralChannel
+            .filter { $0.0.identifier == peripheral.identifier }
+            .tryMap { peripheral, error in
+                if let error {
+                    throw error
+                }
+                return peripheral
+            }
+            .prefix(untilUntilOutputOrCompletion: killSwitch)
+            .bluetooth {
+                self.centralManager.connect(peripheral, options: options)
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
 	}
 
 	/// Cancels the connection with the specified peripheral.
