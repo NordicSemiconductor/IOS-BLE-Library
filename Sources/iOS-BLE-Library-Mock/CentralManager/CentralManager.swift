@@ -144,12 +144,12 @@ extension CentralManager {
 
 		return self.connectedPeripheralChannel
 			.filter { $0.0.identifier == peripheral.identifier }
-			.tryMap { p in
-				if let e = p.1 {
-					throw e
+			.tryMap { peripheral, error in
+				if let error {
+					throw error
 				}
 
-				return p.0
+				return peripheral
 			}
 			.prefix(untilUntilOutputOrCompletion: killSwitch)
 			.bluetooth {
@@ -201,9 +201,7 @@ extension CentralManager {
 	/// - Returns: A list of the peripherals that are currently connected
 	///            to the system and that contain any of the services
 	///            specified in the `serviceUUID` parameter.
-	public func retrieveConnectedPeripherals(withServices identifiers: [CBUUID])
-		-> [CBPeripheral]
-	{
+	public func retrieveConnectedPeripherals(withServices identifiers: [CBUUID]) -> [CBPeripheral] {
 		centralManager.retrieveConnectedPeripherals(withServices: identifiers)
 	}
 
@@ -229,11 +227,7 @@ extension CentralManager {
 	///   - services: The services to scan for.
 	///   - options: A dictionary to customize the scan, such as specifying whether duplicate results should be reported.
 	/// - Returns: A publisher that emits scan results or an error.
-	public func scanForPeripherals(
-		withServices services: [CBUUID]?, options: [String: Any]? = nil
-	)
-		-> AnyPublisher<ScanResult, Error>
-	{
+	public func scanForPeripherals(withServices services: [CBUUID]?, options: [String: Any]? = nil) -> AnyPublisher<ScanResult, Error> {
 		stopScan()
 		return centralManagerDelegate.stateSubject
 			.tryFirst { state in
