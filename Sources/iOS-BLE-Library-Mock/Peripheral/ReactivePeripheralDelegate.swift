@@ -232,11 +232,11 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Monitoring L2CAP Channels
 	/*
-	public func peripheral(
-		_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
-	) {
-		l.i(#function)
-		fatalError()
-	}
-*/
+		public func peripheral(
+			_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
+		) {
+			l.i(#function)
+			fatalError()
+		}
+	*/
 }
