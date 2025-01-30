@@ -49,8 +49,8 @@ jobs:
     - name: Reindent Code
       run: |
         brew install mint
-        mint install apple/swift-format@release/5.7
-        mint run apple/swift-format@release/5.7 -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
+        mint install apple/swift-format
+        mint run apple/swift-format -i -r Sources/iOS-BLE-Library-Mock --configuration format.swift-format
     - name: Check for Changes
       id: check_changes
       run: |
