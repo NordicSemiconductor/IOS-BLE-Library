@@ -15,6 +15,8 @@ import CoreBluetoothMock
 //CG_END
 import Foundation
 
+// MARK: - ReactiveCentralManagerDelegate
+
 open class ReactiveCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
 	enum BluetoothError: Error {
 		case failedToConnect

@@ -406,6 +406,21 @@ extension Peripheral {
 			.autoconnect()
 			.eraseToAnyPublisher()
 	}
+    
+    public func isReadyToSendWriteWithoutResponse() -> AnyPublisher<Void, Never> {
+        isReadyToSendWriteWithoutResponseChannel
+            .bluetooth { [unowned self] in
+                guard self.peripheral.canSendWriteWithoutResponse else {
+                    // isReadyToSendWriteWithoutResponseSubject will fire on
+                    // peripheralIsReady() callback
+                    return
+                }
+                // Signal to continue.
+                self.peripheralDelegate.isReadyToSendWriteWithoutResponseSubject.send(Void())
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
+    }
 }
 
 // MARK: - Channels
