@@ -12,7 +12,9 @@ import Foundation
 
 @available(iOS 10.0, *)
 @available(macOS 10.13, *)
-extension CBManagerState: @retroactive CustomDebugStringConvertible, @retroactive CustomStringConvertible {
+extension CBManagerState: @retroactive CustomDebugStringConvertible, @retroactive
+	CustomStringConvertible
+{
 
 	public var debugDescription: String {
 		return description
@@ -28,10 +30,10 @@ extension CBManagerState: @retroactive CustomDebugStringConvertible, @retroactiv
 			return "resetting"
 		case .unauthorized:
 			return "unauthorized"
-		case .unknown:
-			return "unknown"
 		case .unsupported:
 			return "unsupported"
+		default:
+			return "unknown"
 		}
 	}
 }

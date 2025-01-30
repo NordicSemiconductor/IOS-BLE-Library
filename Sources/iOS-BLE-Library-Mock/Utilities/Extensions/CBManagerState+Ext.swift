@@ -9,6 +9,7 @@ import CoreBluetoothMock
 import Foundation
 
 extension CBManagerState {
+
 	var ready: Bool? {
 		switch self {
 		case .poweredOn:
