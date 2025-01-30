@@ -18,7 +18,8 @@ extension Publisher where Output == CBPeripheral, Failure == Error {
 extension Publishers.Peripheral {
 	var value: Output {
 		get async throws {
-			try await ContinuationSubscriber<Publishers.Peripheral>.withCheckedContinuation(self)
+			try await ContinuationSubscriber<Publishers.Peripheral>
+				.withCheckedContinuation(self)
 		}
 	}
 }

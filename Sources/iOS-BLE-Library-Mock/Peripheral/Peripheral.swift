@@ -287,7 +287,10 @@ extension Peripheral {
 	public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
 	{
 		return peripheralDelegate.updatedCharacteristicValuesSubject
-			.filter { $0.0.uuid == characteristic.uuid }
+			.filter {
+				$0.0.uuid == characteristic.uuid
+					&& $0.0.service?.uuid == characteristic.service?.uuid
+			}
 			.tryCompactMap { (ch, err) in
 				if let err {
 					throw err
@@ -319,7 +322,10 @@ extension Peripheral {
 		-> AnyPublisher<Void, Error>
 	{
 		return peripheralDelegate.writtenCharacteristicValuesSubject
-			.first(where: { $0.0.uuid == characteristic.uuid })
+			.first(where: {
+				$0.0.uuid == characteristic.uuid
+					&& $0.0.service?.uuid == characteristic.service?.uuid
+			})
 			.tryMap { result in
 				if let e = result.1 {
 					throw e
@@ -372,7 +378,10 @@ extension Peripheral {
 		}
 
 		return peripheralDelegate.notificationStateSubject
-			.first { $0.0.uuid == characteristic.uuid }
+			.first {
+				$0.0.uuid == characteristic.uuid
+					&& $0.0.service?.uuid == characteristic.service?.uuid
+			}
 			.tryMap { result in
 				if let e = result.1 {
 					throw e
@@ -406,21 +415,6 @@ extension Peripheral {
 			.autoconnect()
 			.eraseToAnyPublisher()
 	}
-    
-    public func isReadyToSendWriteWithoutResponse() -> AnyPublisher<Void, Never> {
-        isReadyToSendWriteWithoutResponseChannel
-            .bluetooth { [unowned self] in
-                guard self.peripheral.canSendWriteWithoutResponse else {
-                    // isReadyToSendWriteWithoutResponseSubject will fire on
-                    // peripheralIsReady() callback
-                    return
-                }
-                // Signal to continue.
-                self.peripheralDelegate.isReadyToSendWriteWithoutResponseSubject.send(Void())
-            }
-            .autoconnect()
-            .eraseToAnyPublisher()
-    }
 }
 
 // MARK: - Channels

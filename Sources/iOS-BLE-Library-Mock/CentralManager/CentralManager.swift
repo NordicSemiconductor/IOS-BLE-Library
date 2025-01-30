@@ -132,27 +132,31 @@ extension CentralManager {
 	///        }
 	///        .store(in: &cancellables)
 	///    ```
-	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil) -> AnyPublisher<CBPeripheral, Error> {
-		let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { disconnectedPeripheral, error in
-            if let error {
-                throw error
-            }
-            return disconnectedPeripheral.identifier == peripheral.identifier
+	public func connect(_ peripheral: CBPeripheral, options: [String: Any]? = nil)
+		-> AnyPublisher<CBPeripheral, Error>
+	{
+		let killSwitch = self.disconnectedPeripheralsChannel.tryFirst(where: { p in
+			if let e = p.1 {
+				throw e
+			}
+			return p.0.identifier == peripheral.identifier
 		})
-        return self.connectedPeripheralChannel
-            .filter { $0.0.identifier == peripheral.identifier }
-            .tryMap { peripheral, error in
-                if let error {
-                    throw error
-                }
-                return peripheral
-            }
-            .prefix(untilUntilOutputOrCompletion: killSwitch)
-            .bluetooth {
-                self.centralManager.connect(peripheral, options: options)
-            }
-            .autoconnect()
-            .eraseToAnyPublisher()
+
+		return self.connectedPeripheralChannel
+			.filter { $0.0.identifier == peripheral.identifier }
+			.tryMap { p in
+				if let e = p.1 {
+					throw e
+				}
+
+				return p.0
+			}
+			.prefix(untilUntilOutputOrCompletion: killSwitch)
+			.bluetooth {
+				self.centralManager.connect(peripheral, options: options)
+			}
+			.autoconnect()
+			.eraseToAnyPublisher()
 	}
 
 	/// Cancels the connection with the specified peripheral.
@@ -197,7 +201,9 @@ extension CentralManager {
 	/// - Returns: A list of the peripherals that are currently connected
 	///            to the system and that contain any of the services
 	///            specified in the `serviceUUID` parameter.
-	public func retrieveConnectedPeripherals(withServices identifiers: [CBUUID]) -> [CBPeripheral] {
+	public func retrieveConnectedPeripherals(withServices identifiers: [CBUUID])
+		-> [CBPeripheral]
+	{
 		centralManager.retrieveConnectedPeripherals(withServices: identifiers)
 	}
 
@@ -223,7 +229,11 @@ extension CentralManager {
 	///   - services: The services to scan for.
 	///   - options: A dictionary to customize the scan, such as specifying whether duplicate results should be reported.
 	/// - Returns: A publisher that emits scan results or an error.
-	public func scanForPeripherals(withServices services: [CBUUID]?, options: [String: Any]? = nil) -> AnyPublisher<ScanResult, Error> {
+	public func scanForPeripherals(
+		withServices services: [CBUUID]?, options: [String: Any]? = nil
+	)
+		-> AnyPublisher<ScanResult, Error>
+	{
 		stopScan()
 		return centralManagerDelegate.stateSubject
 			.tryFirst { state in
