@@ -204,7 +204,10 @@ private class WriteCharacteristicOperation: BasicOperation<Void>, @unchecked Sen
 		}
 
 		self.cancelable = writtenEventsPublisher.share()
-			.filter { $0.0.uuid == self.characteristic.uuid }
+			.filter {
+				$0.0.uuid == self.characteristic.uuid
+					&& $0.0.service?.uuid == self.characteristic.service?.uuid
+			}
 			.first()
 			.tryMap { v in
 				if let e = v.1 {
@@ -254,7 +257,10 @@ private class ReadCharacteristicOperation: BasicOperation<Data?>, @unchecked Sen
 		}
 
 		self.cancelable = updateEventPublisher.share()
-			.filter { $0.0.uuid == self.characteristic.uuid }
+			.filter {
+				$0.0.uuid == self.characteristic.uuid
+					&& $0.0.service?.uuid == self.characteristic.service?.uuid
+			}
 			.first()
 			.tryMap { v in
 				if let e = v.1 {
@@ -309,6 +315,10 @@ private class WriteDescriptorOperation: BasicOperation<Void>, @unchecked Sendabl
 				$0.0.uuid == self.descriptor.uuid
 					&& $0.0.characteristic?.uuid
 						== self.descriptor.characteristic?.uuid
+					&& $0.0.characteristic?.uuid
+						== self.descriptor.characteristic?.uuid
+					&& $0.0.characteristic?.service?.uuid
+						== self.descriptor.characteristic?.service?.uuid
 			}
 			.first()
 			.tryMap { v in
@@ -363,6 +373,10 @@ private class ReadDescriptorOperation: BasicOperation<Any?>, @unchecked Sendable
 				$0.0.uuid == self.descriptor.uuid
 					&& $0.0.characteristic?.uuid
 						== self.descriptor.characteristic?.uuid
+					&& $0.0.characteristic?.uuid
+						== self.descriptor.characteristic?.uuid
+					&& $0.0.characteristic?.service?.uuid
+						== self.descriptor.characteristic?.service?.uuid
 			}
 			.first()
 			.tryMap { v in

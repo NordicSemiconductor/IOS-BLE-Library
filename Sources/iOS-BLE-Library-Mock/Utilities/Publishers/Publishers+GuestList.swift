@@ -1,5 +1,5 @@
 //
-//  Publishers+GuestList.swift
+//  File.swift
 //
 //
 //  Created by Nick Kibysh on 01/05/2023.
@@ -7,11 +7,9 @@
 
 import Combine
 
-// MARK: - GuestList
-
 extension Publishers {
-	
-    struct GuestList<Upstream, Guest: Equatable>: Publisher where Upstream: Publisher {
+
+	struct GuestList<Upstream, Guest: Equatable>: Publisher where Upstream: Publisher {
 		typealias Output = Upstream.Output
 		typealias Failure = Upstream.Failure
 
@@ -37,18 +35,21 @@ extension Publishers {
 			self.upstream = upstream
 		}
 
-        func receive<S: Subscriber>(subscriber: S) where Upstream.Failure == S.Failure, Upstream.Output == S.Input {
-			
-            upstream.subscribe(Inner(downstream: subscriber, list: list, check: check))
+		func receive<S>(subscriber: S)
+		where S: Subscriber, Upstream.Failure == S.Failure, Upstream.Output == S.Input {
+			upstream.subscribe(Inner(downstream: subscriber, list: list, check: check))
 		}
 	}
 }
 
 extension Publishers.GuestList {
-	
-    class Inner<Downstream>: Subscriber, Subscription where Downstream: Subscriber, Upstream.Output == Downstream.Input, Upstream.Failure == Downstream.Failure {
-		
-        typealias Input = Upstream.Output
+
+	class Inner<Downstream>: Subscriber, Subscription
+	where
+		Downstream: Subscriber, Upstream.Output == Downstream.Input,
+		Upstream.Failure == Downstream.Failure
+	{
+		typealias Input = Upstream.Output
 		typealias Failure = Upstream.Failure
 
 		private var list: [Guest]
@@ -57,7 +58,8 @@ extension Publishers.GuestList {
 		private let downstream: Downstream
 		private var demand: Subscribers.Demand = .unlimited
 
-		init(downstream: Downstream, list: [Guest], check: @escaping (Guest, Input) -> Bool) {
+		init(downstream: Downstream, list: [Guest], check: @escaping (Guest, Input) -> Bool)
+		{
 			self.downstream = downstream
 			self.list = list
 			self.check = check
@@ -102,16 +104,21 @@ extension Publishers.GuestList {
 }
 
 extension Publisher {
-	
-    func guestList<Guest>(_ list: [Guest], check: @escaping (Guest, Output) -> Bool) -> Publishers.GuestList<Self, Guest> {
+
+	func guestList<Guest>(_ list: [Guest], check: @escaping (Guest, Output) -> Bool)
+		-> Publishers.GuestList<Self, Guest>
+	{
 		Publishers.GuestList(upstream: self, list: list, check: check)
 	}
 
-	func guestList<Guest: Equatable>(_ list: [Guest]) -> Publishers.GuestList<Self, Guest> where Guest == Output {
+	func guestList<Guest: Equatable>(_ list: [Guest]) -> Publishers.GuestList<Self, Guest>
+	where Guest == Output {
 		Publishers.GuestList(upstream: self, list: list)
 	}
 
-	func guestList<Guest: Equatable>(_ list: [Guest], keypath: KeyPath<Output, Guest>) -> Publishers.GuestList<Self, Guest> {
+	func guestList<Guest: Equatable>(_ list: [Guest], keypath: KeyPath<Output, Guest>)
+		-> Publishers.GuestList<Self, Guest>
+	{
 		Publishers.GuestList(upstream: self, list: list, keypath: keypath)
 	}
 }

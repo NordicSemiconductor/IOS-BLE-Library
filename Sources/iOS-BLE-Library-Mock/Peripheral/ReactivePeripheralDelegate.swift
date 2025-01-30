@@ -123,7 +123,7 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 	// MARK: Discovering Services
 
 	open func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-		let operation = discoveredServicesQueue.dequeue()!
+		guard let operation = discoveredServicesQueue.dequeue() else { return }
 
 		let result = BluetoothOperationResult<[CBService]?>(
 			value: peripheral.services, error: error, id: operation.id)
@@ -232,11 +232,11 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 
 	// MARK: Monitoring L2CAP Channels
 	/*
-	public func peripheral(
-		_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
-	) {
-		l.i(#function)
-		fatalError()
-	}
-*/
+		public func peripheral(
+			_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?
+		) {
+			l.i(#function)
+			fatalError()
+		}
+	*/
 }
