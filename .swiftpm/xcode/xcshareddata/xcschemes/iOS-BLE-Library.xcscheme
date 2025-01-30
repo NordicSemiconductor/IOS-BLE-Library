@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "export PATH=/usr/local/bin:$PATH&#10;cd &quot;$WORKSPACE_PATH&quot;/../../../IOS-BLE-Library/&#10;&#10;python3 code_gen/code_gen.py Sources&#10;">
+               scriptText = "&#10;">
             </ActionContent>
          </ExecutionAction>
       </PreActions>
