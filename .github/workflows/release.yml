@@ -112,8 +112,8 @@ jobs:
           ref: ${{ needs.run_copy_script.outputs.working_branch }}
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        with: 
-          ruby-version: 2.7
+        with:
+          ruby-version: 2.7.8
       - name: Install CocoaPods
         run: |
           sudo bundle install
