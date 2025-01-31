@@ -15,7 +15,7 @@ import CoreBluetoothMock
 import Foundation
 
 // MARK: - CBManagerState
-
+#if hasFeature(RetroactiveAttribute)
 @available(iOS 10.0, *)
 @available(macOS 10.13, *)
 extension CBManagerState: @retroactive CustomDebugStringConvertible, @retroactive CustomStringConvertible {
@@ -41,3 +41,4 @@ extension CBManagerState: @retroactive CustomDebugStringConvertible, @retroactiv
 		}
 	}
 }
+#endif
