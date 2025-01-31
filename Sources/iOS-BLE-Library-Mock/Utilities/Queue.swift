@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Nick Kibysh on 03/11/2023.
 //
@@ -8,58 +8,58 @@
 import Foundation
 
 class Node<T> {
-    var value: T
-    var next: Node?
+	var value: T
+	var next: Node?
 
-    init(value: T) {
-        self.value = value
-    }
+	init(value: T) {
+		self.value = value
+	}
 }
 
 class Queue<T> {
-    private var front: Node<T>?
-    private var rear: Node<T>?
-    private let accessQueue = DispatchQueue(label: "com.ble-library.threadSafeQueue")
+	private var front: Node<T>?
+	private var rear: Node<T>?
+	private let accessQueue = DispatchQueue(label: "com.ble-library.threadSafeQueue")
 
-    var isEmpty: Bool {
-        return front == nil
-    }
+	var isEmpty: Bool {
+		return front == nil
+	}
 
-    // Enqueue operation to add an element to the rear of the queue
-    func enqueue(_ value: T) {
-        accessQueue.sync {
-            let newNode = Node(value: value)
-            if isEmpty {
-                front = newNode
-                rear = newNode
-            } else {
-                rear?.next = newNode
-                rear = newNode
-            }
-        }
-    }
+	// Enqueue operation to add an element to the rear of the queue
+	func enqueue(_ value: T) {
+		accessQueue.sync {
+			let newNode = Node(value: value)
+			if isEmpty {
+				front = newNode
+				rear = newNode
+			} else {
+				rear?.next = newNode
+				rear = newNode
+			}
+		}
+	}
 
-    // Dequeue operation to remove and return the element from the front of the queue
-    func dequeue() -> T? {
-        var element: T?
-        accessQueue.sync {
-            if let currentFront = front {
-                front = currentFront.next
-                if front == nil {
-                    rear = nil
-                }
-                element = currentFront.value
-            } else {
-                element = nil
-            }
-        }
-        return element
-    }
+	// Dequeue operation to remove and return the element from the front of the queue
+	func dequeue() -> T? {
+		var element: T?
+		accessQueue.sync {
+			if let currentFront = front {
+				front = currentFront.next
+				if front == nil {
+					rear = nil
+				}
+				element = currentFront.value
+			} else {
+				element = nil
+			}
+		}
+		return element
+	}
 
-    // Peek operation to get the value at the front of the queue without removing it
-    func peek() -> T? {
-        return front?.value
-    }
+	// Peek operation to get the value at the front of the queue without removing it
+	func peek() -> T? {
+		return front?.value
+	}
 }
 /*
 struct Queue<T> {
@@ -81,7 +81,7 @@ struct Queue<T> {
         }
         return element
     }
-    
+
     var head: T? {
         var element: T?
         accessQueue.sync {
