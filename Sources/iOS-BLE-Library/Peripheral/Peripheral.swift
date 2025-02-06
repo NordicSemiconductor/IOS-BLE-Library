@@ -151,6 +151,15 @@ public class Peripheral {
 	}
 }
 
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
+    }
+}
+
 // MARK: - Channels
 extension Peripheral {
 	/// A publisher for the current state of the peripheral.
