@@ -358,6 +358,21 @@ extension Peripheral {
 	public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Future<Void, Error> {
 		return descriptorWriter.write(data, to: descriptor)
 	}
+    
+    public func isReadyToSendWriteWithoutResponse() -> AnyPublisher<Void, Never> {
+        isReadyToSendWriteWithoutResponseChannel
+            .bluetooth { [unowned self] in
+                guard self.peripheral.canSendWriteWithoutResponse else {
+                    // isReadyToSendWriteWithoutResponseSubject will fire on
+                    // peripheralIsReady() callback
+                    return
+                }
+                // Signal to continue.
+                self.peripheralDelegate.isReadyToSendWriteWithoutResponseSubject.send(Void())
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
+    }
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
