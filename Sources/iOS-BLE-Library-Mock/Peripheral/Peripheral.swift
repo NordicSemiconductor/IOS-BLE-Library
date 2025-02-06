@@ -10,9 +10,13 @@ import CoreBluetooth
 import CoreBluetoothMock
 import Foundation
 
+// MARK: - Observer
+
 private class Observer: NSObject {
 	func setup() {}
 }
+
+// MARK: - NativeObserver
 
 private class NativeObserver: Observer {
 	@objc private var peripheral: CoreBluetooth.CBPeripheral
@@ -27,7 +31,7 @@ private class NativeObserver: Observer {
 		publisher: CurrentValueSubject<CBPeripheralState, Never>
 	) {
 		self.peripheral = peripheral
-		self.publisher = publisher
+        self.publisher = publisher
 		super.init()
 	}
 
@@ -40,6 +44,8 @@ private class NativeObserver: Observer {
 		}
 	}
 }
+
+// MARK: - MockObserver
 
 private class MockObserver: Observer {
 	@objc private var peripheral: CBMPeripheralMock
@@ -68,6 +74,8 @@ private class MockObserver: Observer {
 	}
 }
 
+// MARK: - Peripheral
+
 public class Peripheral {
 	private var serviceDiscoveryQueue = Queue<UUID>()
 
@@ -88,7 +96,7 @@ public class Peripheral {
 	/// The delegate for handling peripheral events.
 	public let peripheralDelegate: ReactivePeripheralDelegate
 
-	private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
+    private let stateSubject = CurrentValueSubject<CBPeripheralState, Never>(.disconnected)
 	private var observer: Observer!
 	private lazy var characteristicWriter = CharacteristicWriter(
 		writtenEventsPublisher: self.peripheralDelegate.writtenCharacteristicValuesSubject
@@ -139,6 +147,15 @@ public class Peripheral {
 			observer.setup()
 		}
 	}
+}
+
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
+    }
 }
 
 // MARK: - Channels
@@ -203,7 +220,7 @@ extension Peripheral {
 	}
 }
 
-//MARK: - Discovering Characteristics and Descriptorsin page link
+//MARK: - Discovering Characteristics and Descriptors in page link
 extension Peripheral {
 
 	/// Discover characteristics for a given service.
