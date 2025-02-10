@@ -305,8 +305,12 @@ extension Peripheral {
 	{
 		return peripheralDelegate.updatedCharacteristicValuesSubject
 			.filter {
-				$0.0.uuid == characteristic.uuid
-					&& $0.0.service?.uuid == characteristic.service?.uuid
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
 			}
 			.tryCompactMap { (ch, err) in
 				if let err {
@@ -340,8 +344,12 @@ extension Peripheral {
 	{
 		return peripheralDelegate.writtenCharacteristicValuesSubject
 			.first(where: {
-				$0.0.uuid == characteristic.uuid
-					&& $0.0.service?.uuid == characteristic.service?.uuid
+				let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
 			})
 			.tryMap { result in
 				if let e = result.1 {
@@ -411,8 +419,12 @@ extension Peripheral {
 
 		return peripheralDelegate.notificationStateSubject
 			.first {
-				$0.0.uuid == characteristic.uuid
-					&& $0.0.service?.uuid == characteristic.service?.uuid
+				let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
 			}
 			.tryMap { result in
 				if let e = result.1 {
