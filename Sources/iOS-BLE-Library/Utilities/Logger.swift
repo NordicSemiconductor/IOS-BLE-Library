@@ -8,7 +8,7 @@
 import Foundation
 import os
 
-@available(iOS 14.0, macOS 11, *)
+@available(iOS 14.0, macOS 11, watchOS 7.0, *)
 private struct Loggers {
     static var loggers: [UUID : Logger] = [:]
 }
@@ -32,7 +32,7 @@ struct L {
         self.category = category
         self.shouldLog = enabled
         
-        if #available(iOS 14, macOS 11, *) {
+        if #available(iOS 14, macOS 11, watchOS 7, *) {
             Loggers.loggers[self.id] = Logger(subsystem: subsystem, category: category)
         }
     }
@@ -41,7 +41,7 @@ struct L {
 #if DEBUG
         if !shouldLog { return }
         
-        if #available(iOS 14, macOS 11, *) {
+        if #available(iOS 14, macOS 11, watchOS 7, *) {
             Loggers.loggers[id]?.info("\(msg)")
         } else {
             os_log("%@", type: .info, msg)
@@ -53,7 +53,7 @@ struct L {
     func d(_ msg: String) {
 #if DEBUG
         if !shouldLog { return }
-        if #available(iOS 14, macOS 11, *) {
+        if #available(iOS 14, macOS 11, watchOS 7, *) {
             Loggers.loggers[id]?.debug("\(msg)")
         } else {
             os_log("%@", type: .debug, msg)
@@ -64,7 +64,7 @@ struct L {
     func e(_ msg: String) {
 #if DEBUG
         if !shouldLog { return }
-        if #available(iOS 14, macOS 11, *) {
+        if #available(iOS 14, macOS 11, watchOS 7, *) {
             Loggers.loggers[id]?.error("\(msg)")
         } else {
             os_log("%@", type: .error, msg)
@@ -75,7 +75,7 @@ struct L {
     func f(_ msg: String) {
 #if DEBUG
         if !shouldLog { return }
-        if #available(iOS 14, macOS 11, *) {
+        if #available(iOS 14, macOS 11, watchOS 7, *) {
             Loggers.loggers[id]?.fault("\(msg)")
         } else {
             os_log("%@", type: .fault, msg)
