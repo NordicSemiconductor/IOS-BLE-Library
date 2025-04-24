@@ -5,7 +5,8 @@ let package = Package(
     name: "iOS-BLE-Library",
     platforms: [
         .iOS(.v13),
-        .macOS(.v10_15)
+        .macOS(.v10_15),
+        .watchOS(.v6)
     ],
     products: [
         .library(name: "iOS-BLE-Library", targets: ["iOS-BLE-Library"]),
