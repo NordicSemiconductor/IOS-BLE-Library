@@ -4,8 +4,9 @@ import PackageDescription
 let package = Package(
     name: "iOS-BLE-Library",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12)
+        .iOS(.v13),
+        .macOS(.v10_15),
+        .watchOS(.v6)
     ],
     products: [
         .library(name: "iOS-BLE-Library", targets: ["iOS-BLE-Library"]),
@@ -15,7 +16,6 @@ let package = Package(
         .package(url: "https://github.com/NordicSemiconductor/IOS-CoreBluetooth-Mock.git", from: "0.17.0"),
         .package(url: "https://github.com/NickKibish/CoreBluetoothMock-Collection.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
-        .package(url: "https://github.com/NordicPlayground/IOS-Common-Libraries", branch: "main"),
     ],
     targets: [
         .target(name: "iOS-BLE-Library"),

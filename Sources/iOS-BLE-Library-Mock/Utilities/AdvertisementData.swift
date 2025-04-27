@@ -7,7 +7,6 @@
 
 import CoreBluetoothMock
 import Foundation
-import iOS_Common_Libraries
 
 public struct AdvertisementData: Hashable {
 	public static func == (lhs: AdvertisementData, rhs: AdvertisementData) -> Bool {
@@ -88,7 +87,8 @@ public struct AdvertisementData: Hashable {
 		guard advData.removeFirst() == Self.ExpectedManufacturerDataPrefix else {
 			return nil
 		}
-        return advData.hexEncodedString(options: [.upperCase], separator: ":")
+//        return advData.hexEncodedString(options: [.upperCase], separator: ":")
+        return advData.hexEncodedString(separator: ":").uppercased()
 	}
 }
 
