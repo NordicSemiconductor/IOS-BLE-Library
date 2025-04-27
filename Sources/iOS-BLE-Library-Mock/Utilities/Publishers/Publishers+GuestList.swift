@@ -8,8 +8,8 @@
 import Combine
 
 extension Publishers {
-	
-    struct GuestList<Upstream, Guest: Equatable>: Publisher where Upstream: Publisher {
+
+	struct GuestList<Upstream, Guest: Equatable>: Publisher where Upstream: Publisher {
 		typealias Output = Upstream.Output
 		typealias Failure = Upstream.Failure
 
@@ -43,8 +43,12 @@ extension Publishers {
 }
 
 extension Publishers.GuestList {
-	
-    class Inner<Downstream>: Subscriber, Subscription where Downstream: Subscriber, Upstream.Output == Downstream.Input, Upstream.Failure == Downstream.Failure {
+
+	class Inner<Downstream>: Subscriber, Subscription
+	where
+		Downstream: Subscriber, Upstream.Output == Downstream.Input,
+		Upstream.Failure == Downstream.Failure
+	{
 		typealias Input = Upstream.Output
 		typealias Failure = Upstream.Failure
 
@@ -54,7 +58,8 @@ extension Publishers.GuestList {
 		private let downstream: Downstream
 		private var demand: Subscribers.Demand = .unlimited
 
-		init(downstream: Downstream, list: [Guest], check: @escaping (Guest, Input) -> Bool) {
+		init(downstream: Downstream, list: [Guest], check: @escaping (Guest, Input) -> Bool)
+		{
 			self.downstream = downstream
 			self.list = list
 			self.check = check
@@ -99,16 +104,21 @@ extension Publishers.GuestList {
 }
 
 extension Publisher {
-	
-    func guestList<Guest>(_ list: [Guest], check: @escaping (Guest, Output) -> Bool) -> Publishers.GuestList<Self, Guest> {
+
+	func guestList<Guest>(_ list: [Guest], check: @escaping (Guest, Output) -> Bool)
+		-> Publishers.GuestList<Self, Guest>
+	{
 		Publishers.GuestList(upstream: self, list: list, check: check)
 	}
 
-	func guestList<Guest: Equatable>(_ list: [Guest]) -> Publishers.GuestList<Self, Guest> where Guest == Output {
+	func guestList<Guest: Equatable>(_ list: [Guest]) -> Publishers.GuestList<Self, Guest>
+	where Guest == Output {
 		Publishers.GuestList(upstream: self, list: list)
 	}
 
-	func guestList<Guest: Equatable>(_ list: [Guest], keypath: KeyPath<Output, Guest>) -> Publishers.GuestList<Self, Guest> {
+	func guestList<Guest: Equatable>(_ list: [Guest], keypath: KeyPath<Output, Guest>)
+		-> Publishers.GuestList<Self, Guest>
+	{
 		Publishers.GuestList(upstream: self, list: list, keypath: keypath)
 	}
 }
