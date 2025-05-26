@@ -7,13 +7,16 @@
 
 import Combine
 import CoreBluetooth
-
 import CoreBluetoothMock
 import Foundation
+
+// MARK: - Observer
 
 private class Observer: NSObject {
 	func setup() {}
 }
+
+// MARK: - NativeObserver
 
 private class NativeObserver: Observer {
 	@objc private var peripheral: CoreBluetooth.CBPeripheral
@@ -42,6 +45,8 @@ private class NativeObserver: Observer {
 	}
 }
 
+// MARK: - MockObserver
+
 private class MockObserver: Observer {
      @objc private var peripheral: CBMPeripheralMock
 
@@ -65,6 +70,7 @@ private class MockObserver: Observer {
      }
  }
 
+// MARK: - Peripheral
 
 public class Peripheral {
     private var serviceDiscoveryQueue = Queue<UUID>()
@@ -130,6 +136,15 @@ if let p = peripheral as? CBMPeripheralNative {
                      observer.setup()
                  }
 	}
+}
+
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
+    }
 }
 
 // MARK: - Channels
