@@ -10,9 +10,13 @@ import CoreBluetooth
 import CoreBluetoothMock
 import Foundation
 
+// MARK: - Observer
+
 private class Observer: NSObject {
 	func setup() {}
 }
+
+// MARK: - NativeObserver
 
 private class NativeObserver: Observer {
 	@objc private var peripheral: CoreBluetooth.CBPeripheral
@@ -40,6 +44,8 @@ private class NativeObserver: Observer {
 		}
 	}
 }
+
+// MARK: - MockObserver
 
 private class MockObserver: Observer {
 	@objc private var peripheral: CBMPeripheralMock
@@ -148,6 +154,15 @@ extension Peripheral {
 	public func MTU() -> Int {
 		return peripheral.maximumWriteValueLength(for: .withoutResponse)
 	}
+}
+
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
+    }
 }
 
 // MARK: - Channels
