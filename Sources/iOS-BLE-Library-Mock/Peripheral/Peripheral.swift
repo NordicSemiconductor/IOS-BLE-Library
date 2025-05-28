@@ -291,7 +291,14 @@ extension Peripheral {
     public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
     {
         return peripheralDelegate.updatedCharacteristicValuesSubject
-            .filter { $0.0.uuid == characteristic.uuid && $0.0.service?.uuid == characteristic.service?.uuid }
+            .filter {
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
+            }
             .tryCompactMap { (ch, err) in
                 if let err {
                     throw err
@@ -323,7 +330,14 @@ extension Peripheral {
 		-> AnyPublisher<Void, Error>
 	{
 		return peripheralDelegate.writtenCharacteristicValuesSubject
-			.first(where: { $0.0.uuid == characteristic.uuid && $0.0.service?.uuid == characteristic.service?.uuid })
+            .first(where: {
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
+            })
 			.tryMap { result in
 				if let e = result.1 {
 					throw e
