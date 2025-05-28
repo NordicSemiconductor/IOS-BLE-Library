@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Peripheral.swift
 //
 //
 //  Created by Nick Kibysh on 28/04/2023.
@@ -304,22 +304,24 @@ extension Peripheral {
 		return characteristicReader.readValue(from: characteristic)
 	}
 
-	/// Listen for updates to the value of a characteristic.
-	///
-	/// - Parameter characteristic: The characteristic to monitor for updates.
-	/// - Returns: A publisher emitting characteristic values or an error.
-	public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
-	{
-		return peripheralDelegate.updatedCharacteristicValuesSubject
-			.filter {
-				$0.0.uuid == characteristic.uuid
-					&& $0.0.service?.uuid == characteristic.service?.uuid
-			}
-			.tryCompactMap { (ch, err) in
-				if let err {
-					throw err
-				}
-
+    /// Listen for updates to the value of a characteristic.
+    ///
+    /// - Parameter characteristic: The characteristic to monitor for updates.
+    /// - Returns: A publisher emitting characteristic values or an error.
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error> {
+        return peripheralDelegate.updatedCharacteristicValuesSubject
+            .filter {
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
+            }
+            .tryCompactMap { (ch, err) in
+                if let err {
+                    throw err
+                }
 				return ch.value
 			}
 			.eraseToAnyPublisher()
@@ -335,6 +337,7 @@ extension Peripheral {
 }
 
 // MARK: - Writing Characteristic and Descriptor Values
+
 extension Peripheral {
 	/// Write data to a characteristic and wait for a response.
 	///
@@ -342,14 +345,16 @@ extension Peripheral {
 	///   - data: The data to write.
 	///   - characteristic: The characteristic to write to.
 	/// - Returns: A publisher indicating success or an error.
-	public func writeValueWithResponse(_ data: Data, for characteristic: CBCharacteristic)
-		-> AnyPublisher<Void, Error>
-	{
+	public func writeValueWithResponse(_ data: Data, for characteristic: CBCharacteristic) -> AnyPublisher<Void, Error> {
 		return peripheralDelegate.writtenCharacteristicValuesSubject
-			.first(where: {
-				$0.0.uuid == characteristic.uuid
-					&& $0.0.service?.uuid == characteristic.service?.uuid
-			})
+            .first(where: {
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
+            })
 			.tryMap { result in
 				if let e = result.1 {
 					throw e
@@ -400,6 +405,7 @@ extension Peripheral {
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
+
 extension Peripheral {
 	/// Set notification state for a characteristic.
 	///
@@ -407,9 +413,7 @@ extension Peripheral {
 	///   - isEnabled: Whether notifications should be enabled or disabled.
 	///   - characteristic: The characteristic for which to set the notification state.
 	/// - Returns: A publisher indicating success or an error.
-	public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic)
-		-> AnyPublisher<Bool, Error>
-	{
+	public func setNotifyValue(_ isEnabled: Bool, for characteristic: CBCharacteristic) -> AnyPublisher<Bool, Error> {
 		if characteristic.isNotifying == isEnabled {
 			return Just(isEnabled)
 				.setFailureType(to: Error.self)
