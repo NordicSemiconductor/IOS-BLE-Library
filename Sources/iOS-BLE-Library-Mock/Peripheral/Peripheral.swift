@@ -405,10 +405,17 @@ extension Peripheral {
 		}
 
 		return peripheralDelegate.notificationStateSubject
-			.first { $0.0.uuid == characteristic.uuid && $0.0.service?.uuid == characteristic.service?.uuid }
+            .first {
+                let characteristicMatch = $0.0.uuid == characteristic.uuid
+                if let service = characteristic.service {
+                    return characteristicMatch && service.uuid == $0.0.service?.uuid
+                } else {
+                    return characteristicMatch
+                }
+            }
 			.tryMap { result in
-				if let e = result.1 {
-					throw e
+				if let error = result.1 {
+					throw error
 				}
 				return result.0.isNotifying
 			}
