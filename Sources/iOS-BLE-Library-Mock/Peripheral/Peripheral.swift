@@ -149,15 +149,6 @@ public class Peripheral {
 
 // MARK: - API
 
-extension Peripheral {
-
-	public func MTU() -> Int {
-		return peripheral.maximumWriteValueLength(for: .withoutResponse)
-	}
-}
-
-// MARK: - API
-
 public extension Peripheral {
     
     func MTU() -> Int {
