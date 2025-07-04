@@ -132,15 +132,6 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 		discoveredServicesQueue.runNext()
 	}
 
-	/*
-	public func peripheral(
-		_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService,
-		error: Error?
-	) {
-		discoveredIncludedServicesSubject.send((service, service.includedServices, error))
-	}
-     */
-
 	// MARK: Discovering Characteristics and their Descriptors
 
 	open func peripheral(
