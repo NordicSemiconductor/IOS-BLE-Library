@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
     s.platforms        = { :ios => '13.0', :osx => '12' }
     s.source_files = 'Sources/iOS-BLE-Library-Mock/**/*'
 
-    s.dependency 'CoreBluetoothMock', '~> 0.17.0'
+    s.dependency 'CoreBluetoothMock', '~> 1.0.1'
 end
