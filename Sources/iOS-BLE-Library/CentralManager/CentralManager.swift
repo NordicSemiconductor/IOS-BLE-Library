@@ -346,9 +346,9 @@ extension CentralManager {
      */
     public func isPoweredOn() async throws {
         let currentState = try await stateChannel
-            // if state is .resetting, we should wait for it to
-            // return to .poweredOn or switch to Error.
+            // Wait for a state that is not subject to change quickly.
             .filter({ $0 != .resetting })
+            .filter({ $0 != .unknown })
             .firstValue
         
         guard currentState == .poweredOn else {
