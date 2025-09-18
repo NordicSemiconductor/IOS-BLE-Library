@@ -1,6 +1,6 @@
 //
-//  File.swift
-//
+//  CentralManager.swift
+//  iOS-BLE-Library-Mock
 //
 //  Created by Nick Kibysh on 18/04/2023.
 //
@@ -8,6 +8,8 @@
 import Combine
 import CoreBluetoothMock
 import Foundation
+
+// MARK: - Error
 
 extension CentralManager {
 	public enum Err: Error {
@@ -28,6 +30,8 @@ extension CentralManager {
 		}
 	}
 }
+
+// MARK: - Observer
 
 private class Observer: NSObject {
 	@objc dynamic private weak var cm: CBCentralManager?
@@ -53,6 +57,8 @@ private class Observer: NSObject {
 		)
 	}
 }
+
+// MARK: - CentralManager
 
 /// A Custom Central Manager class.
 ///
@@ -303,4 +309,41 @@ extension CentralManager {
 		centralManagerDelegate.disconnectedPeripheralsSubject
 			.eraseToAnyPublisher()
 	}
+}
+
+// MARK: - State
+
+extension CentralManager {
+    
+    /**
+     Helper function to quickly ensure ``CentralManager`` is ready for use.
+     
+     As ``CentralManager`` is a wrapper around `CoreBluetooth`'s `CBCentralManager`, we must still abide by its requirements. The most important one being, to check whether its current state is valid in order to continue with proper BLE functions. As we know, BLE / `CoreBluetooth` might be unavailable for a variety of reasons, from the device's Bluetooth being turned off, to the current app not having Bluetooth permission, even up to hardware issues.
+     
+     - Tip: if you're setting up a ``CentralManager`` with a shared underlying `CBCentralManager` with other frameworks or areas of your app, and you'd like to retrieve a ``Peripheral`` that you're connected to via another "Manager" of some sort, waiting for ``isPoweredOn()`` before trying to find said ``Peripheral`` would be a good idea.
+     - Throws: if ``CentralManager`` cannot be used for Bluetooth. In other words, if ``stateChannel`` returns anything other than `CBManagerState.poweredOn`.
+     
+     Sample Usage:
+     ```swift
+     let centralManager: CentralManager = // init CentralManager
+     do {
+        // Assumed async environment
+        await centralManager.isPoweredOn()
+        // Bluetooth available
+     } catch let bleError {
+        // Bluetooth unavailable
+     }
+     */
+    public func isPoweredOn() async throws {
+        let currentState = try await stateChannel
+            // if state is .resetting, we should wait for it to
+            // return to .poweredOn or switch to Error.
+            .filter({ $0 != .resetting })
+            .firstValue
+        
+        guard currentState == .poweredOn else {
+            throw Err.badState(currentState)
+        }
+        return // System Ready / BLE Radio Available
+    }
 }
