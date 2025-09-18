@@ -8,6 +8,23 @@ The new instance of `CBCentralManager` can be created during initialization usin
 
 If you pass a central manager inside ``init(centralManager:)``, it should already have a delegate set. The delegate should be an instance of ``ReactiveCentralManagerDelegate``; otherwise, an error will be thrown.
 
+### Use of Central Manager
+
+As a wrapper around `CoreBluetooth`'s `CBCentralManager`, ``CentralManager`` cannot work unless the underlying `CBCentralManager` is in a valid state. Mainly, it must be `.poweredOn`. If you're familiar with BLE on Apple Platforms we're sure you have your own strategy to account for this. You can roll your own, listening to the ``stateChannel`` `PassthroughSubject`. We offer a quick solution for `async` environments in the form of ``CentralManager/isPoweredOn()``:
+
+```swift
+let centralManager: CentralManager = // init CentralManager
+
+do {
+   // Assumed async environment
+   await centralManager.isPoweredOn()
+
+   // Bluetooth available
+} catch let bleError {
+   // Bluetooth unavailable
+}
+```
+
 ### Channels
 
 Channels are used to pass through data from the `CBCentralManagerDelegate` methods.
