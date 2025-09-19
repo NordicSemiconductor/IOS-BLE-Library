@@ -297,12 +297,15 @@ extension Peripheral {
         return characteristicReader.readValue(from: characteristic)
     }
 
-    /// Listen for updates to the value of a characteristic.
-    ///
-    /// - Parameter characteristic: The characteristic to monitor for updates.
-    /// - Returns: A publisher emitting characteristic values or an error.
-    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
-    {
+    /**
+     Listen for updates to the value of a characteristic.
+     
+     You are of course free to listen to ``updatedCharacteristicValuesChannel`` to get direct access to a `CBCharacteristic`'s updates. However, it being backed by a `PassthroughSubject` rather than some form of `AsyncSequence`, means that **the values are not buffered**. If your downstream publisher / sequence does its work very quickly, it's likely there's very little compared to using this API. But if your attached publisher does some form of heavy work, like a network request, the upstream ``updatedCharacteristicValuesChannel`` will drop events and therefore `CBCharacteristic` value updates. In contrast, **this API will buffer as many events as we can**.
+     
+     - Parameter characteristic: The characteristic to monitor for updates.
+     - Returns: A publisher emitting characteristic values or an error.
+     */
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error> {
         return peripheralDelegate.updatedCharacteristicValuesSubject
             .filter {
                 let characteristicMatch = $0.0.uuid == characteristic.uuid
@@ -319,6 +322,7 @@ extension Peripheral {
 
                 return ch.value
             }
+            .buffer(size: .max, prefetch: .byRequest, whenFull: .dropOldest)
             .eraseToAnyPublisher()
     }
 
