@@ -1,8 +1,9 @@
 //
-//  File.swift
+//  Peripheral.swift
+//  iOS-BLE-Library
 //
-//
-//  Created by Nick Kibysh on 28/04/2023.
+//  Created by Nick Kibysh on 07/05/2023.
+//  Copyright © 2025 Nordic Semiconductor ASA. All rights reserved.
 //
 
 import Combine
@@ -288,7 +289,9 @@ extension Peripheral {
 }
 
 // MARK: - Reading Characteristic and Descriptor Values
+
 extension Peripheral {
+    
     /// Read the value of a characteristic.
     ///
     /// - Parameter characteristic: The characteristic to read from.

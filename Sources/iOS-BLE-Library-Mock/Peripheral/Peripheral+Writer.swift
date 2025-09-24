@@ -1,8 +1,9 @@
 //
-//  File.swift
-//
+//  Peripheral+Writer.swift
+//  iOS-BLE-Library-Mock
 //
 //  Created by Nick Kibysh on 07/05/2023.
+//  Copyright © 2025 Nordic Semiconductor ASA. All rights reserved.
 //
 
 import Combine
