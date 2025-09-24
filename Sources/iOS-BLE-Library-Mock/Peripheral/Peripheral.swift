@@ -286,8 +286,10 @@ extension Peripheral {
 }
 
 // MARK: - Reading Characteristic and Descriptor Values
+
 extension Peripheral {
-	/// Read the value of a characteristic.
+	
+    /// Read the value of a characteristic.
 	///
 	/// - Parameter characteristic: The characteristic to read from.
 	/// - Returns: A future emitting the read data or an error.
