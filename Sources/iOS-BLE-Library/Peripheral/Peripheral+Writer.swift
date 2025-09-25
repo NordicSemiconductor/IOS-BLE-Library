@@ -18,6 +18,8 @@ import Foundation
 
 extension Peripheral {
     
+    // MARK: OperationQueue
+    
     class OperationQueue {
         let queue = Foundation.OperationQueue()
         let peripheral: CBPeripheral
@@ -67,6 +69,8 @@ extension Peripheral {
     }
 }
 
+// MARK: - write(_to:CBCharacteristic)
+
 extension Peripheral.CharacteristicWriter {
     
     func write(_ value: Data, to characteristic: CBCharacteristic) -> Future<Void, Error> {
@@ -75,19 +79,19 @@ extension Peripheral.CharacteristicWriter {
             writtenEventsPublisher: writtenEventsPublisher,
             characteristic: characteristic,
             peripheral: peripheral)
-
         queue.addOperation(operation)
-
         return operation.future
     }
 }
+
+// MARK: - readValue(CBCharacteristic)
 
 extension Peripheral.CharacteristicReader {
     
-    func readValue(from characteristc: CBCharacteristic) -> Future<Data?, Error> {
+    func readValue(from characteristic: CBCharacteristic) -> Future<Data?, Error> {
         let operation = ReadCharacteristicOperation(
             updateEventPublisher: updateEventPublisher,
-            characteristic: characteristc,
+            characteristic: characteristic,
             peripheral: peripheral
         )
         queue.addOperation(operation)
@@ -95,19 +99,23 @@ extension Peripheral.CharacteristicReader {
     }
 }
 
+// MARK: - write(_to:CBDescriptor)
+
 extension Peripheral.DescriptorWriter {
     
-    func write(_ value: Data, to dsecriptor: CBDescriptor) -> Future<Void, Error> {
+    func write(_ value: Data, to descriptor: CBDescriptor) -> Future<Void, Error> {
         let operation = WriteDescriptorOperation(
             data: value,
             writtenEventsPublisher: writtenEventsPublisher,
-            descriptor: dsecriptor,
+            descriptor: descriptor,
             peripheral: peripheral
         )
         queue.addOperation(operation)
         return operation.future
     }
 }
+
+// MARK: - readValue(CBDescriptor)
 
 extension Peripheral.DescriptorReader {
     
@@ -117,9 +125,7 @@ extension Peripheral.DescriptorReader {
             descriptor: descriptor,
             peripheral: peripheral
         )
-
         queue.addOperation(operation)
-
         return operation.future
     }
 }
@@ -127,11 +133,9 @@ extension Peripheral.DescriptorReader {
 // MARK: - BasicOperation
 
 private class BasicOperation<T>: Operation, @unchecked Sendable {
-    let peripheral: CBPeripheral
-    var cancelable: AnyCancellable?
-
-    private(set) var promise: ((Result<T, Error>) -> Void)?
-
+    
+    // MARK: State
+    
     enum State: String {
         case ready, executing, finished
 
@@ -139,10 +143,13 @@ private class BasicOperation<T>: Operation, @unchecked Sendable {
             "is\(rawValue.capitalized)"
         }
     }
+    
+    // MARK: Properties
+    
+    let peripheral: CBPeripheral
+    var cancellable: AnyCancellable?
 
-    init(peripheral: CBPeripheral) {
-        self.peripheral = peripheral
-    }
+    private(set) var promise: ((Result<T, Error>) -> Void)?
 
     lazy private(set) var future: Future<T, Error> = Future { [unowned self] promise in
         self.promise = promise
@@ -168,11 +175,41 @@ private class BasicOperation<T>: Operation, @unchecked Sendable {
     }
 
     override func cancel() {
-        cancelable?.cancel()
+        cancellable?.cancel()
     }
 
     override var isAsynchronous: Bool {
         true
+    }
+    
+    // MARK: init
+    
+    init(peripheral: CBPeripheral) {
+        self.peripheral = peripheral
+    }
+    
+    // MARK: match(_to:)
+    
+    func match(_ eventCharacteristic: CBCharacteristic, to characteristic: CBCharacteristic) -> Bool {
+        guard eventCharacteristic.uuid == characteristic.uuid else {
+            return false
+        }
+        guard let eventService = eventCharacteristic.service,
+              let targetService = characteristic.service else {
+            return true
+        }
+        return eventService.uuid == targetService.uuid
+    }
+    
+    func match(_ eventDescriptor: CBDescriptor, to descriptor: CBDescriptor) -> Bool {
+        guard eventDescriptor.uuid == descriptor.uuid else {
+            return false
+        }
+        guard let eventCharacteristic = eventDescriptor.characteristic,
+              let targetCharacteristic = descriptor.characteristic else {
+            return true
+        }
+        return match(eventCharacteristic, to: targetCharacteristic)
     }
 }
 
@@ -202,25 +239,24 @@ private class WriteCharacteristicOperation: BasicOperation<Void>, @unchecked Sen
             return
         }
 
-        self.cancelable = writtenEventsPublisher.share()
-            .filter {
-                $0.0.uuid == self.characteristic.uuid
-                    && $0.0.service?.uuid == self.characteristic.service?.uuid
+        self.cancellable = writtenEventsPublisher.share()
+            .filter { [unowned self] eventCharacteristic, _ in
+                match(eventCharacteristic, to: characteristic)
             }
             .first()
-            .tryMap { v in
-                if let e = v.1 {
-                    throw e
+            .tryMap { eventCharacteristic, error in
+                if let error {
+                    throw error
                 } else {
-                    return v.0
+                    return eventCharacteristic
                 }
             }
             .sink { [unowned self] completion in
                 switch completion {
                 case .finished:
                     self.promise?(.success(()))
-                case .failure(let e):
-                    self.promise?(.failure(e))
+                case .failure(let error):
+                    self.promise?(.failure(error))
                 }
                 self.state = .finished
             } receiveValue: { _ in
@@ -256,16 +292,9 @@ private class ReadCharacteristicOperation: BasicOperation<Data?>, @unchecked Sen
             return
         }
 
-        self.cancelable = updateEventPublisher.share()
+        self.cancellable = updateEventPublisher.share()
             .filter { [unowned self] eventCharacteristic, _ in
-                guard eventCharacteristic.uuid == characteristic.uuid else {
-                    return false
-                }
-                guard let eventService = eventCharacteristic.service,
-                      let targetService = characteristic.service else {
-                    return true
-                }
-                return eventService.uuid == targetService.uuid
+                match(eventCharacteristic, to: characteristic)
             }
             .first()
             .tryMap { eventCharacteristic, error in
@@ -315,30 +344,24 @@ private class WriteDescriptorOperation: BasicOperation<Void>, @unchecked Sendabl
             return
         }
 
-        self.cancelable = writtenEventsPublisher.share()
-            .filter {
-                $0.0.uuid == self.descriptor.uuid
-                    && $0.0.characteristic?.uuid
-                        == self.descriptor.characteristic?.uuid
-                    && $0.0.characteristic?.uuid
-                        == self.descriptor.characteristic?.uuid
-                    && $0.0.characteristic?.service?.uuid
-                        == self.descriptor.characteristic?.service?.uuid
+        self.cancellable = writtenEventsPublisher.share()
+            .filter { [unowned self] eventDescriptor, error in
+                match(eventDescriptor, to: descriptor)
             }
             .first()
-            .tryMap { v in
-                if let e = v.1 {
-                    throw e
+            .tryMap { eventDescriptor, error in
+                if let error {
+                    throw error
                 } else {
-                    return v.0
+                    return eventDescriptor
                 }
             }
             .sink { [unowned self] completion in
                 switch completion {
                 case .finished:
                     self.promise?(.success(()))
-                case .failure(let e):
-                    self.promise?(.failure(e))
+                case .failure(let error):
+                    self.promise?(.failure(error))
                 }
                 self.state = .finished
             } receiveValue: { _ in
@@ -374,31 +397,25 @@ private class ReadDescriptorOperation: BasicOperation<Any?>, @unchecked Sendable
             return
         }
 
-        self.cancelable = updateEventPublisher.share()
-            .filter {
-                $0.0.uuid == self.descriptor.uuid
-                    && $0.0.characteristic?.uuid
-                        == self.descriptor.characteristic?.uuid
-                    && $0.0.characteristic?.uuid
-                        == self.descriptor.characteristic?.uuid
-                    && $0.0.characteristic?.service?.uuid
-                        == self.descriptor.characteristic?.service?.uuid
+        self.cancellable = updateEventPublisher.share()
+            .filter { [unowned self] eventDescriptor, error in
+                match(eventDescriptor, to: descriptor)
             }
             .first()
-            .tryMap { v in
-                if let e = v.1 {
-                    throw e
+            .tryMap { eventDescriptor, error in
+                if let error {
+                    throw error
                 } else {
-                    return v.0.value
+                    return eventDescriptor.value
                 }
             }
             .sink { [unowned self] completion in
-                if case .failure(let e) = completion {
-                    self.promise?(.failure(e))
+                if case .failure(let error) = completion {
+                    self.promise?(.failure(error))
                 }
                 self.state = .finished
-            } receiveValue: { v in
-                self.promise?(.success(v))
+            } receiveValue: { data in
+                self.promise?(.success(data))
             }
 
         state = .executing
