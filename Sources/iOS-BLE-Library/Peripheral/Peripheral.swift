@@ -170,44 +170,52 @@ extension Peripheral {
 }
 
 // MARK: - Discovering Servicesin page link
+
 extension Peripheral {
+    
     /// Discover services for the peripheral.
     ///
-    /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all services will be discovered.
-    /// - Returns: A publisher emitting discovered services or an error.
-    public func discoverServices(serviceUUIDs: [CBUUID]?)
-    -> AnyPublisher<[CBService], Error>
-    {
-        let id = UUID()
+    /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all discovered services will be returned.
+    /// - Returns: A publisher emitting discovered services, or an error.
+    public func discoverServices(serviceUUIDs: [CBUUID]?) -> AnyPublisher<[CBService], Error> {
+        let operationID = UUID()
         
-        let allServices = peripheralDelegate.discoveredServicesSubject
-            .first(where: { $0.id == id } )
+        return peripheralDelegate.discoveredServicesSubject
+            .first(where: { $0.id == operationID })
             .tryCompactMap { result throws -> [CBService]? in
-                if let e = result.error {
-                    throw e
+                if let error = result.error {
+                    throw error
                 } else {
                     return result.value
                 }
             }
-            .first()
-        
-        return allServices.bluetooth {
-            let operation = IdentifiableOperation(id: id) {
-                self.peripheral.discoverServices(serviceUUIDs)
-                self.l.d("\(#function). operation ID: \(id)")
-                if let serviceUUIDs {
-                    for sid in serviceUUIDs {
-                        self.l.d("Services: \(sid)")
-                    }
-                } else {
-                    self.l.d("All services")
+            .map { input -> [CBService] in
+                guard let serviceUUIDs else {
+                    return input // No filter applied.
                 }
+                let filterSet = Set(serviceUUIDs)
+                return input.filter({
+                    filterSet.contains($0.uuid)
+                })
             }
-            
-            self.peripheralDelegate.discoveredServicesQueue.addOperation(operation)
-        }
-        .autoconnect()
-        .eraseToAnyPublisher()
+            .first()
+            .bluetooth {
+                let operation = IdentifiableOperation(id: operationID) {
+                    self.peripheral.discoverServices(serviceUUIDs)
+                    self.l.d("\(#function): OpID: \(operationID)")
+                    if let serviceUUIDs {
+                        for sid in serviceUUIDs {
+                            self.l.d("Services: \(sid)")
+                        }
+                    } else {
+                        self.l.d("All services")
+                    }
+                }
+
+                self.peripheralDelegate.discoveredServicesQueue.addOperation(operation)
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
     }
     
     /// Discovers the specified included services of a previously-discovered service.
