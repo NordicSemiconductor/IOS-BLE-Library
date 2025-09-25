@@ -102,40 +102,10 @@ jobs:
       # - name: Test
       #   run: swift test -v --skip-build 
 
-  pod_release:
-    needs: [get_tag_info, build_and_test, run_copy_script]
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.run_copy_script.outputs.working_branch }}
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.8
-      - name: Install CocoaPods
-        run: |
-          sudo bundle install
-      - name: Deploy IOS-BLE-Library to Cocoapods
-        run: |
-          pod lib lint IOS-BLE-Library.podspec --allow-warnings
-          pod trunk push IOS-BLE-Library.podspec --allow-warnings
-        env:
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
-      - name: Deploy IOS-BLE-Library-Mock to Cocoapods
-        run: |
-          pod lib lint IOS-BLE-Library-Mock.podspec --allow-warnings
-          pod trunk push IOS-BLE-Library-Mock.podspec --allow-warnings
-        env:
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-          LIB_VERSION: ${{ needs.get_tag_info.outputs.tag_name }}
-          
   create_release:
     permissions:
       contents: write
-    needs: [get_tag_info, pod_release]
+    needs: [get_tag_info, build_and_test]
     runs-on: ubuntu-latest
     steps:
     - name: Create Release
