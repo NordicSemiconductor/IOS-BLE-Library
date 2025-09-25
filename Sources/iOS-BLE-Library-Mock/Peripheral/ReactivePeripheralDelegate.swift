@@ -132,16 +132,7 @@ guard let operation = discoveredServicesQueue.dequeue() else { return }
         discoveredServicesQueue.runNext()
 	}
 
-    /*
-	public func peripheral(
-		_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService,
-		error: Error?
-	) {
-		discoveredIncludedServicesSubject.send((service, service.includedServices, error))
-	}
-     */
-
-	// MARK: Discovering Characteristics and their Descriptors
+    // MARK: Discovering Characteristics and their Descriptors
 
 	open func peripheral(
 		_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService,

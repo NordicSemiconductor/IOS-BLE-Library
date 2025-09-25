@@ -1,6 +1,6 @@
 //
-//  File.swift
-//
+//  CentralManager.swift
+//  iOS-BLE-Library
 //
 //  Created by Nick Kibysh on 18/04/2023.
 //
@@ -9,7 +9,10 @@ import Combine
 import CoreBluetoothMock
 import Foundation
 
+// MARK: - Error
+
 extension CentralManager {
+    
 	public enum Err: Error {
 		case wrongManager
 		case badState(CBManagerState)
@@ -28,6 +31,8 @@ extension CentralManager {
 	}
 }
 
+// MARK: - Observer
+
 private class Observer: NSObject {
 	@objc dynamic private weak var cm: CBCentralManager?
 	private weak var publisher: CurrentValueSubject<Bool, Never>?
@@ -40,24 +45,23 @@ private class Observer: NSObject {
 	}
 
 	func setup() {
-		observation = observe(
-			\.cm?.isScanning,
-			options: [.old, .new],
-			changeHandler: { _, change in
-
-				change.newValue?.flatMap { [weak self] new in
-					self?.publisher?.send(new)
-				}
-			}
-		)
+		observation = observe(\.cm?.isScanning, options: [.old, .new],
+                               changeHandler: { _, change in
+            change.newValue?.flatMap { [weak self] new in
+                self?.publisher?.send(new)
+            }
+        })
 	}
 }
+
+// MARK: - CentralManager
 
 /// A Custom Central Manager class.
 /// 
 /// It wraps the standard CBCentralManager and has similar API. However, instead of using delegate, it uses publishers, thus bringing the reactive programming paradigm to the CoreBluetooth framework.
 public class CentralManager {
-	private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
+	
+    private let isScanningSubject = CurrentValueSubject<Bool, Never>(false)
 	private let killSwitchSubject = PassthroughSubject<Void, Never>()
 	private lazy var observer = Observer(cm: centralManager, publisher: isScanningSubject)
 
@@ -67,6 +71,8 @@ public class CentralManager {
 	/// The reactive delegate for the ``centralManager``.
 	public let centralManagerDelegate: ReactiveCentralManagerDelegate
 
+    // MARK: init
+    
 	/// Initializes a new instance of `CentralManager`.
 	/// - Parameters:
 	///   - centralManagerDelegate: The delegate for the reactive central manager. Default is `ReactiveCentralManagerDelegate()`.
@@ -99,6 +105,7 @@ self.centralManager = CBMCentralManagerFactory.instance(delegate: centralManager
 }
 
 // MARK: Establishing or Canceling Connections with Peripherals
+
 extension CentralManager {
 	/// Establishes a connection with the specified peripheral.
 	/// - Parameters:
@@ -184,6 +191,7 @@ extension CentralManager {
 }
 
 // MARK: Retrieving Lists of Peripherals
+
 extension CentralManager {
 	#warning("check `connect` method")		
 	/// Returns a list of the peripherals connected to the system whose
@@ -215,6 +223,7 @@ extension CentralManager {
 }
 
 // MARK: Scanning or Stopping Scans of Peripherals
+
 extension CentralManager {
 	#warning("Question: Should we throw an error if the scan is already running?")
 	/// Initiates a scan for peripherals with the specified services.
@@ -265,6 +274,7 @@ extension CentralManager {
 }
 
 // MARK: Channels
+
 extension CentralManager {
 	/// A publisher that emits the state of the central manager.
 	public var stateChannel: AnyPublisher<CBManagerState, Never> {
@@ -296,4 +306,41 @@ extension CentralManager {
 		centralManagerDelegate.disconnectedPeripheralsSubject
 			.eraseToAnyPublisher()
 	}
+}
+
+// MARK: - State
+
+extension CentralManager {
+    
+    /**
+     Helper function to quickly ensure ``CentralManager`` is ready for use.
+     
+     As ``CentralManager`` is a wrapper around `CoreBluetooth`'s `CBCentralManager`, we must still abide by its requirements. The most important one being, to check whether its current state is valid in order to continue with proper BLE functions. As we know, BLE / `CoreBluetooth` might be unavailable for a variety of reasons, from the device's Bluetooth being turned off, to the current app not having Bluetooth permission, even up to hardware issues.
+     
+     - Tip: if you're setting up a ``CentralManager`` with a shared underlying `CBCentralManager` with other frameworks or areas of your app, and you'd like to retrieve a ``Peripheral`` that you're connected to via another "Manager" of some sort, waiting for ``isPoweredOn()`` before trying to find said ``Peripheral`` would be a good idea.
+     - Throws: if ``CentralManager`` cannot be used for Bluetooth. In other words, if ``stateChannel`` returns anything other than `CBManagerState.poweredOn`.
+     
+     Sample Usage:
+     ```swift
+     let centralManager: CentralManager = // init CentralManager
+     do {
+        // Assumed async environment
+        await centralManager.isPoweredOn()
+        // Bluetooth available
+     } catch let bleError {
+        // Bluetooth unavailable
+     }
+     */
+    public func isPoweredOn() async throws {
+        let currentState = try await stateChannel
+            // Wait for a state that is not subject to change quickly.
+            .filter({ $0 != .resetting })
+            .filter({ $0 != .unknown })
+            .firstValue
+        
+        guard currentState == .poweredOn else {
+            throw Err.badState(currentState)
+        }
+        return // System Ready / BLE Radio Available
+    }
 }

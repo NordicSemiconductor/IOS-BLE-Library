@@ -1,22 +1,20 @@
 //
-//  File.swift
+//  Peripheral.swift
+//  iOS-BLE-Library
 //
-//
-//  Created by Nick Kibysh on 28/04/2023.
+//  Created by Nick Kibysh on 07/05/2023.
+//  Copyright © 2025 Nordic Semiconductor ASA. All rights reserved.
 //
 
 import Combine
 import CoreBluetooth
+
 import CoreBluetoothMock
 import Foundation
-
-// MARK: - Observer
 
 private class Observer: NSObject {
 	func setup() {}
 }
-
-// MARK: - NativeObserver
 
 private class NativeObserver: Observer {
 	@objc private var peripheral: CoreBluetooth.CBPeripheral
@@ -45,8 +43,6 @@ private class NativeObserver: Observer {
 	}
 }
 
-// MARK: - MockObserver
-
 private class MockObserver: Observer {
      @objc private var peripheral: CBMPeripheralMock
 
@@ -70,7 +66,6 @@ private class MockObserver: Observer {
      }
  }
 
-// MARK: - Peripheral
 
 public class Peripheral {
     private var serviceDiscoveryQueue = Queue<UUID>()
@@ -156,44 +151,52 @@ extension Peripheral {
 }
 
 // MARK: - Discovering Servicesin page link
+
 extension Peripheral {
+    
     /// Discover services for the peripheral.
     ///
-    /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all services will be discovered.
-    /// - Returns: A publisher emitting discovered services or an error.
-    public func discoverServices(serviceUUIDs: [CBUUID]?)
-    -> AnyPublisher<[CBService], Error>
-    {
-        let id = UUID()
+    /// - Parameter serviceUUIDs: An optional array of service UUIDs to filter the discovery results. If nil, all discovered services will be returned.
+    /// - Returns: A publisher emitting discovered services, or an error.
+    public func discoverServices(serviceUUIDs: [CBUUID]?) -> AnyPublisher<[CBService], Error> {
+        let operationID = UUID()
         
-        let allServices = peripheralDelegate.discoveredServicesSubject
-            .first(where: { $0.id == id } )
+        return peripheralDelegate.discoveredServicesSubject
+            .first(where: { $0.id == operationID })
             .tryCompactMap { result throws -> [CBService]? in
-                if let e = result.error {
-                    throw e
+                if let error = result.error {
+                    throw error
                 } else {
                     return result.value
                 }
             }
-            .first()
-        
-        return allServices.bluetooth {
-            let operation = IdentifiableOperation(id: id) {
-                self.peripheral.discoverServices(serviceUUIDs)
-                self.l.d("\(#function). operation ID: \(id)")
-                if let serviceUUIDs {
-                    for sid in serviceUUIDs {
-                        self.l.d("Services: \(sid)")
-                    }
-                } else {
-                    self.l.d("All services")
+            .map { input -> [CBService] in
+                guard let serviceUUIDs else {
+                    return input // No filter applied.
                 }
+                let filterSet = Set(serviceUUIDs)
+                return input.filter({
+                    filterSet.contains($0.uuid)
+                })
             }
-            
-            self.peripheralDelegate.discoveredServicesQueue.addOperation(operation)
-        }
-        .autoconnect()
-        .eraseToAnyPublisher()
+            .first()
+            .bluetooth {
+                let operation = IdentifiableOperation(id: operationID) {
+                    self.peripheral.discoverServices(serviceUUIDs)
+                    self.l.d("\(#function): OpID: \(operationID)")
+                    if let serviceUUIDs {
+                        for sid in serviceUUIDs {
+                            self.l.d("Services: \(sid)")
+                        }
+                    } else {
+                        self.l.d("All services")
+                    }
+                }
+
+                self.peripheralDelegate.discoveredServicesQueue.addOperation(operation)
+            }
+            .autoconnect()
+            .eraseToAnyPublisher()
     }
     
     /// Discovers the specified included services of a previously-discovered service.
@@ -275,7 +278,9 @@ extension Peripheral {
 }
 
 // MARK: - Reading Characteristic and Descriptor Values
+
 extension Peripheral {
+    
     /// Read the value of a characteristic.
     ///
     /// - Parameter characteristic: The characteristic to read from.
@@ -284,12 +289,15 @@ extension Peripheral {
         return characteristicReader.readValue(from: characteristic)
     }
 
-    /// Listen for updates to the value of a characteristic.
-    ///
-    /// - Parameter characteristic: The characteristic to monitor for updates.
-    /// - Returns: A publisher emitting characteristic values or an error.
-    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error>
-    {
+    /**
+     Listen for updates to the value of a characteristic.
+     
+     You are of course free to listen to ``updatedCharacteristicValuesChannel`` to get direct access to a `CBCharacteristic`'s updates. However, it being backed by a `PassthroughSubject` rather than some form of `AsyncSequence`, means that **the values are not buffered**. If your downstream publisher / sequence does its work very quickly, it's likely there's very little compared to using this API. But if your attached publisher does some form of heavy work, like a network request, the upstream ``updatedCharacteristicValuesChannel`` will drop events and therefore `CBCharacteristic` value updates. In contrast, **this API will buffer as many events as we can**.
+     
+     - Parameter characteristic: The characteristic to monitor for updates.
+     - Returns: A publisher emitting characteristic values or an error.
+     */
+    public func listenValues(for characteristic: CBCharacteristic) -> AnyPublisher<Data, Error> {
         return peripheralDelegate.updatedCharacteristicValuesSubject
             .filter {
                 let characteristicMatch = $0.0.uuid == characteristic.uuid
@@ -306,6 +314,7 @@ extension Peripheral {
 
                 return ch.value
             }
+            .buffer(size: .max, prefetch: .byRequest, whenFull: .dropOldest)
             .eraseToAnyPublisher()
     }
 
@@ -370,21 +379,6 @@ extension Peripheral {
 	public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Future<Void, Error> {
         return descriptorWriter.write(data, to: descriptor)
 	}
-    
-    public func isReadyToSendWriteWithoutResponse() -> AnyPublisher<Void, Never> {
-        isReadyToSendWriteWithoutResponseChannel
-            .bluetooth { [unowned self] in
-                guard self.peripheral.canSendWriteWithoutResponse else {
-                    // isReadyToSendWriteWithoutResponseSubject will fire on
-                    // peripheralIsReady() callback
-                    return
-                }
-                // Signal to continue.
-                self.peripheralDelegate.isReadyToSendWriteWithoutResponseSubject.send(Void())
-            }
-            .autoconnect()
-            .eraseToAnyPublisher()
-    }
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
@@ -405,7 +399,7 @@ extension Peripheral {
 		}
 
 		return peripheralDelegate.notificationStateSubject
-            .first {
+			.first {
                 let characteristicMatch = $0.0.uuid == characteristic.uuid
                 if let service = characteristic.service {
                     return characteristicMatch && service.uuid == $0.0.service?.uuid
@@ -413,15 +407,15 @@ extension Peripheral {
                     return characteristicMatch
                 }
             }
-			.tryMap { result in
-				if let error = result.1 {
-					throw error
-				}
-				return result.0.isNotifying
-			}
-			.bluetooth {
-				self.peripheral.setNotifyValue(isEnabled, for: characteristic)
-			}
+            .tryMap { result in
+                if let error = result.1 {
+                    throw error
+                }
+                return result.0.isNotifying
+            }
+            .bluetooth {
+                self.peripheral.setNotifyValue(isEnabled, for: characteristic)
+            }
             .autoconnect()
             .eraseToAnyPublisher()
 	}
@@ -445,6 +439,15 @@ extension Peripheral {
             }
             .autoconnect()
             .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
     }
 }
 
