@@ -379,6 +379,27 @@ extension Peripheral {
 	public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Future<Void, Error> {
         return descriptorWriter.write(data, to: descriptor)
 	}
+    
+    /**
+     Check if a `CBPeripheral` is ready to accept more `writeValue(_for:type:.withoutResponse)` calls.
+     
+     Writing values without response is an asynchronous Bluetooth LE operation that relies on a lower-level buffer. If either the sender (you, the user of this API) or the receiver (the `CBPeripheral`) is not ready to receive more, that `Data` can be dropped and lost. In order to prevent that, you can ask this API if we're ready to send more `Data`.
+     */
+    public func isReadyToSendWriteWithoutResponse() -> AnyPublisher<Void, Never> {
+        isReadyToSendWriteWithoutResponseChannel
+            .bluetooth { [unowned self] in
+                guard self.peripheral.canSendWriteWithoutResponse else {
+                    // isReadyToSendWriteWithoutResponseSubject will fire on
+                    // peripheralIsReady() callback
+                    return
+                }
+                // Signal to continue.
+                self.peripheralDelegate.isReadyToSendWriteWithoutResponseSubject.send(Void())
+            }
+            // TODO: 15ms (Bluetooth LE Radio connection interval) timeout like McuMgrLibrary transport uses.
+            .autoconnect()
+            .eraseToAnyPublisher()
+    }
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
@@ -439,15 +460,6 @@ extension Peripheral {
             }
             .autoconnect()
             .eraseToAnyPublisher()
-    }
-}
-
-// MARK: - API
-
-public extension Peripheral {
-    
-    func MTU() -> Int {
-        return peripheral.maximumWriteValueLength(for: .withoutResponse)
     }
 }
 
