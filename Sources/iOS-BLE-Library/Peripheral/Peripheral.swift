@@ -461,6 +461,15 @@ extension Peripheral {
     }
 }
 
+// MARK: - API
+
+public extension Peripheral {
+    
+    func MTU() -> Int {
+        return peripheral.maximumWriteValueLength(for: .withoutResponse)
+    }
+}
+
 // MARK: - Channels
 extension Peripheral {
     /// A publisher that emits the discovered services of the peripheral.
