@@ -156,12 +156,25 @@ public class Peripheral {
 
 public extension Peripheral {
     
-    func MTU() -> Int {
+    /**
+     Returns the Maximum Write Value Length agreed for a single write operation between the device calling this API and the ``Peripheral``. This applies to calls to ``writeValueWithoutResponse(_:for:)``.
+     
+     The Maximum Transmission Unit (or MTU) is the negotiated maximum `Data` packet size for transmission. This includes any form of overhead such as headers and error correction at the application (i.e. library user) level. The GATT protocol for writeWithoutResponse uses 3 bytes for opcode and handle number. In effect, this means ``maximumWriteValueLength()`` equals ATT MTU - 3 bytes.
+     
+     - warning: Attempting to send ``writeValueWithoutResponse(_:for:)`` calls for `Data` that's larger in size than ``maximumWriteValueLength()`` will result in data loss due to the extra bytes being truncated by the transport (i.e. Bluetooth LE) layer level.
+     
+     - throws: ``PeripheralError.onlyConnectedPeripheralsHaveNegotiatedMTU`` if ``Peripheral`` is not `CBPeripheralState.connected`. This is because MTU negotiation occurs during the connection process. Any value returned before connection is therefore meaningless in practice.
+     */
+    func maximumWriteValueLength() throws -> Int {
+        guard peripheral.state == .connected else {
+            throw PeripheralError.onlyConnectedPeripheralsHaveNegotiatedMTU
+        }
         return peripheral.maximumWriteValueLength(for: .withoutResponse)
     }
 }
 
 // MARK: - Channels
+
 extension Peripheral {
 	/// A publisher for the current state of the peripheral.
 	public var peripheralStateChannel: AnyPublisher<CBPeripheralState, Never> {
@@ -169,7 +182,7 @@ extension Peripheral {
 	}
 }
 
-// MARK: - Discovering Servicesin page link
+// MARK: - Discovering Services in page link
 
 extension Peripheral {
     
@@ -229,7 +242,8 @@ extension Peripheral {
     }
 }
 
-//MARK: - Discovering Characteristics and Descriptorsin page link
+// MARK: - Discovering Characteristics and Descriptors in page link
+
 extension Peripheral {
 
 	/// Discover characteristics for a given service.
@@ -347,7 +361,9 @@ extension Peripheral {
 }
 
 // MARK: - Writing Characteristic and Descriptor Values
+
 extension Peripheral {
+    
 	/// Write data to a characteristic and wait for a response.
     ///
     /// - Parameters:
@@ -422,7 +438,9 @@ extension Peripheral {
 }
 
 // MARK: - Setting Notifications for a Characteristic’s Value
+
 extension Peripheral {
+    
 	/// Set notification state for a characteristic.
     ///
     /// - Parameters:
@@ -462,7 +480,9 @@ extension Peripheral {
 }
 
 // MARK: - Accessing a Peripheral’s Signal Strengthin page link
+
 extension Peripheral {
+    
     /// Retrieves the current RSSI value for the peripheral while connected to the central manager.
     public func readRSSI() -> AnyPublisher<NSNumber, Error> {
         peripheralDelegate.readRSSISubject
@@ -483,7 +503,9 @@ extension Peripheral {
 }
 
 // MARK: - Channels
+
 extension Peripheral {
+    
     /// A publisher that emits the discovered services of the peripheral.
     public var discoveredServicesChannel: AnyPublisher<[CBService]?, Error> {
         peripheralDelegate.discoveredServicesSubject
