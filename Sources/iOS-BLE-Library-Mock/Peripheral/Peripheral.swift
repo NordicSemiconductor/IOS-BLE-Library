@@ -255,11 +255,11 @@ extension Peripheral {
 				$0.value.0.uuid == service.uuid
 			}
 			.first(where: { $0.id == id })
-			.tryCompactMap { result throws -> [CBCharacteristic]? in
+			.tryMap { result throws -> [CBCharacteristic] in
 				if let e = result.error {
 					throw e
 				} else {
-					return result.value.1
+					return result.value.1 ?? []
 				}
 			}
 			.first()
@@ -286,11 +286,11 @@ extension Peripheral {
 				$0.value.0.uuid == characteristic.uuid
 			}
 			.first(where: { $0.id == id })
-			.tryCompactMap { result throws -> [CBDescriptor]? in
+			.tryMap { result throws -> [CBDescriptor] in
 				if let e = result.error {
 					throw e
 				} else {
-					return result.value.1
+					return result.value.1 ?? []
 				}
 			}
 			.first()
