@@ -140,13 +140,13 @@ public class Peripheral {
 		observer.setup()
 //CG_WITH
 /*
-         if let p = peripheral as? CBMPeripheralNative {
-                     observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
-                     observer.setup()
-                 } else if let p = peripheral as? CBMPeripheralMock {
-                     observer = MockObserver(peripheral: p, publisher: stateSubject)
-                     observer.setup()
-                 }
+        if let p = peripheral as? CBMPeripheralNative {
+            observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
+            observer.setup()
+        } else if let p = peripheral as? CBMPeripheralMock {
+            observer = MockObserver(peripheral: p, publisher: stateSubject)
+            observer.setup()
+        }
 */
 //CG_END
 	}

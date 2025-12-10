@@ -123,13 +123,13 @@ public class Peripheral {
         assert(peripheral.delegate == nil, "CBPeripheral's delegate should be nil, otherwise it can lead to problems")
 		peripheral.delegate = delegate
 
-if let p = peripheral as? CBMPeripheralNative {
-                     observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
-                     observer.setup()
-                 } else if let p = peripheral as? CBMPeripheralMock {
-                     observer = MockObserver(peripheral: p, publisher: stateSubject)
-                     observer.setup()
-                 }
+        if let p = peripheral as? CBMPeripheralNative {
+            observer = NativeObserver(peripheral: p.peripheral, publisher: stateSubject)
+            observer.setup()
+        } else if let p = peripheral as? CBMPeripheralMock {
+            observer = MockObserver(peripheral: p, publisher: stateSubject)
+            observer.setup()
+        }
 	}
 }
 
