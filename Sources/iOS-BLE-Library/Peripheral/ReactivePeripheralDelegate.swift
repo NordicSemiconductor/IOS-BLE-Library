@@ -133,8 +133,8 @@ open class ReactivePeripheralDelegate: NSObject, CBPeripheralDelegate {
 //CG_REPLACE
         let operation = discoveredServicesQueue.dequeue()!
 //CG_WITH
-/*
-         guard let operation = discoveredServicesQueue.dequeue() else { return }
+/* 
+        guard let operation = discoveredServicesQueue.dequeue() else { return }
 */
 //CG_END
         
