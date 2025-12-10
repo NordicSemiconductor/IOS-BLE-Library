@@ -87,8 +87,8 @@ public struct AdvertisementData: Hashable {
 		guard advData.removeFirst() == Self.ExpectedManufacturerDataPrefix else {
 			return nil
 		}
-//        return advData.hexEncodedString(options: [.upperCase], separator: ":")
-        return advData.hexEncodedString(separator: ":").uppercased()
+		//        return advData.hexEncodedString(options: [.upperCase], separator: ":")
+		return advData.hexEncodedString(separator: ":").uppercased()
 	}
 }
 
